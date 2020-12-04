@@ -1,0 +1,185 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="12/6/2019 7:19:22 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="WIN10VM059"
+  DTS:CreatorName="spalla"
+  DTS:DTSID="{BEFC7CA3-F816-4BE2-A3E5-6D76CC9FD08B}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="15.0.2000.68"
+  DTS:LocaleID="4105"
+  DTS:ObjectName="chCompleteExecAuditLog"
+  DTS:ProtectionLevel="0"
+  DTS:VersionGUID="{F8BBB8FF-2C06-42C1-B6D1-8FE6884D6D19}"
+  DTS:VersionMajor="0">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Utility]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{364C545C-EBDD-4D52-AD30-5998F7EE5773}"
+      DTS:ObjectName="Utility">
+      <DTS:PropertyExpression
+        DTS:Name="InitialCatalog">@[$Project::Utility_InitalCatalog]</DTS:PropertyExpression>
+      <DTS:PropertyExpression
+        DTS:Name="ServerName">@[$Project::Utility_ServerName]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="data source=Delta;initial catalog=Sandbox2;provider=SQLNCLI11.1;integrated security=SSPI;auto translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:PackageParameters>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="3"
+      DTS:DTSID="{AD073D7D-BD78-48FA-AF79-D42C9EF95344}"
+      DTS:ObjectName="ExecAuditlog_Exec_Id">
+      <DTS:Property
+        DTS:DataType="3"
+        DTS:Name="ParameterValue">0</DTS:Property>
+    </DTS:PackageParameter>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="8"
+      DTS:DTSID="{086239B7-C12E-488D-BDE8-5DBD598B1EB5}"
+      DTS:ObjectName="ExecAuditlog_Exec_Info_Msg">
+      <DTS:Property
+        DTS:DataType="8"
+        DTS:Name="ParameterValue"
+        xml:space="preserve"></DTS:Property>
+    </DTS:PackageParameter>
+  </DTS:PackageParameters>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{E570AE60-8532-4FE7-B977-69DE6A3F39B2}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;exec log.LogUpdateEntry ?,?,?&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="LocalcmdExecAuditlog_UpdateEntry">
+      <DTS:VariableValue
+        DTS:DataType="8">exec log.LogUpdateEntry ?,?,?</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{21208DDD-79A4-41E4-A21A-22ED9CA0F66B}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="LocalExecAuditlog_Exec_Info_Msg">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{4C74B5C5-BC19-4C20-941F-E1AEA090078F}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="LocalExecAuditlog_Exec_Status">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Sequence Container"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:DTSID="{629A59C1-2192-43B0-B006-0150FC8A0C22}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Sequence Container">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Sequence Container\LogPkgEnd"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:DTSID="{CBC31ED9-F45B-4765-9CEE-BFA7CC99643F}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="LogPkgEnd"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{364C545C-EBDD-4D52-AD30-5998F7EE5773}"
+              SQLTask:SqlStmtSourceType="Variable"
+              SQLTask:SqlStatementSource="User::LocalcmdExecAuditlog_UpdateEntry" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="$Package::ExecAuditlog_Exec_Id"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="1"
+                SQLTask:DtsVariableName="User::LocalExecAuditlog_Exec_Status"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="2"
+                SQLTask:DtsVariableName="User::LocalExecAuditlog_Exec_Info_Msg"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Sequence Container\set ExecStatus"
+          DTS:CreationName="Microsoft.ExpressionTask"
+          DTS:DTSID="{C6105E3C-ACC0-4E27-A643-D5A6A33CFD5E}"
+          DTS:ExecutableType="Microsoft.ExpressionTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="set ExecStatus"
+          DTS:TaskContact="Expression Task;Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExpressionTask
+              Expression="@[User::LocalExecAuditlog_Exec_Status]   = &quot;Complete&quot;" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Sequence Container\setExecInfoMsg"
+          DTS:CreationName="Microsoft.ExpressionTask"
+          DTS:DTSID="{7E724303-9BE1-4537-B322-3B3BF44ECAAE}"
+          DTS:ExecutableType="Microsoft.ExpressionTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="setExecInfoMsg"
+          DTS:TaskContact="Expression Task;Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExpressionTask
+              Expression="@[User::LocalExecAuditlog_Exec_Info_Msg]   =  @[$Package::ExecAuditlog_Exec_Info_Msg]  + &quot;Complete&quot;" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Sequence Container.PrecedenceConstraints[Constraint_set ExecStatus_To_setExecInfoMsg]"
+          DTS:CreationName=""
+          DTS:DTSID="{474DB160-6B6E-4690-B5F7-C2F66B053B92}"
+          DTS:From="Package\Sequence Container\set ExecStatus"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint_set ExecStatus_To_setExecInfoMsg"
+          DTS:To="Package\Sequence Container\setExecInfoMsg" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Sequence Container.PrecedenceConstraints[Constraint_setExecInfoMsg_To_LogPkgEnd]"
+          DTS:CreationName=""
+          DTS:DTSID="{DBCD21F7-F660-46C6-B639-EA583365FEA0}"
+          DTS:From="Package\Sequence Container\setExecInfoMsg"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint_setExecInfoMsg_To_LogPkgEnd"
+          DTS:To="Package\Sequence Container\LogPkgEnd" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+  </DTS:Executables>
+</DTS:Executable>

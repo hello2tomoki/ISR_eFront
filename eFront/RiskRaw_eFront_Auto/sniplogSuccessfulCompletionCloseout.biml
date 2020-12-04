@@ -1,0 +1,41 @@
+﻿
+            <Container Name="Successful Completion Closeout" ConstraintMode="LinearOnSuccess">
+
+                    <Tasks>
+                        <ExecutePackage Name="chSuccessfulCompletionCloseout">
+                            <ParameterBindings>
+                                <ParameterBinding Name="Param_BatchID" VariableName="Param_BatchID" />
+                                <ParameterBinding Name="SuccessMessage" VariableName="User.SuccessMessage" />
+                                <ParameterBinding Name="ExecutionInstanceGUID" VariableName="System.ExecutionInstanceGUID" />
+                                <ParameterBinding Name="SSISAudit_RowCountBefore" VariableName="User.SSISAudit_RowCountBefore" />
+                                <ParameterBinding Name="SSISAudit_RowCountProcessedNew" VariableName="User.SSISAudit_RowCountProcessedNew" />
+                                <ParameterBinding Name="SSISAudit_RowCountProcessedUpdated" VariableName="User.SSISAudit_RowCountProcessedUpdated" />
+                                <ParameterBinding Name="SSISAudit_RowCountProcessedIgnored" VariableName="User.SSISAudit_RowCountProcessedIgnored" />
+                                <ParameterBinding Name="SSISAudit_RowCountFailed" VariableName="User.SSISAudit_RowCountFailed" />
+                                <ParameterBinding Name="SSISAudit_RowCountAfter" VariableName="User.SSISAudit_RowCountAfter" />
+                                <ParameterBinding Name="SSISAudit_MaxSurrogateKey" VariableName="User.SSISAudit_MaxSurrogateKey" />
+                                <ParameterBinding Name="SSISAudit_LineageID" VariableName="User.SSISAudit_LineageID" />
+                                <ParameterBinding Name="ParentPackageName" VariableName="System.PackageName" />
+                                <ParameterBinding Name="cmdSourceDataLoadRegister_Insert" VariableName="User.cmdSourceDataLoadRegister_Insert" />
+                                <ParameterBinding Name="SSISAudit_RowCountProcessedTotal" VariableName="User.SSISAudit_RowCountProcessedTotal" />
+                            </ParameterBindings>
+                            <ExternalProjectPackage Package="chSuccessfulCompletionCloseout.dtsx" />
+                        </ExecutePackage>
+                        
+                        <Expression Name="ExecAuditlogEndOfWorkFlow" Expression="@[User::ExecAuditlog_Exec_Info_Msg] = &quot;Done full workflow. Complete &quot;">
+                            <Events>
+                                <Event Name="OnPostExecute" EventType="OnPostExecute" />
+                            </Events>
+                        </Expression>
+                        
+                        <ExecutePackage Name="CompleteExecAuditLog">
+                            <ParameterBindings>
+                                <ParameterBinding Name="ExecAuditlog_Exec_Id" VariableName="User.ExecAuditlog_ExecID" />
+                                <ParameterBinding Name="ExecAuditlog_Exec_Info_Msg" VariableName="User.ExecAuditlog_Exec_Info_Msg" />
+                            </ParameterBindings>
+                            <ExternalProjectPackage Package="chCompleteExecAuditLog.dtsx" />
+                        </ExecutePackage>
+                            
+                    </Tasks>
+                        
+                </Container>

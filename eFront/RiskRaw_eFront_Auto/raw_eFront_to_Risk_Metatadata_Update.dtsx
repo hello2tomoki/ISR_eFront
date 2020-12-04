@@ -1,0 +1,3283 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="11/29/2019 10:52:40 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="WIN10VM059"
+  DTS:CreatorName="BCIMC\spalla"
+  DTS:DTSID="{A504859A-8372-41DA-8EAB-C3230D079B36}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="15.0.2000.128"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="raw_eFront_to_Risk_Metatadata_Update"
+  DTS:PackageType="5"
+  DTS:ProtectionLevel="0"
+  DTS:VersionBuild="126"
+  DTS:VersionGUID="{69DC0FFF-4383-4D9B-B43A-F8913D4B4EBD}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[MDS_ISR]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{33524136-16B3-4324-9A7C-042B8D568C2B}"
+      DTS:ObjectName="MDS_ISR">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=Delta;Initial Catalog=MDS_ISR;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Source]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{1EEA4DF9-ABB4-4518-90B8-CD0CE7AAE2A0}"
+      DTS:ObjectName="Source">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=Plymouth;Initial Catalog=eFrontPCOTracking;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Utility]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{8FA8C553-5C1A-4621-97DB-EC5D822A8424}"
+      DTS:ObjectName="Utility">
+      <DTS:PropertyExpression
+        DTS:Name="InitialCatalog">@[$Project::Utility_Metadata_InitalCatalog]</DTS:PropertyExpression>
+      <DTS:PropertyExpression
+        DTS:Name="ServerName">@[$Project::Utility_Metadata_ServerName]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=Delta;Initial Catalog=Sandbox3;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{23E18DFC-EBF5-40F4-A7E3-0E6180EC6CBE}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="BatchLoggingId">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{F9629F7B-7403-41A0-A4D5-CBD4E489AD41}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Candidate_FN_Destination">
+      <DTS:VariableValue
+        DTS:DataType="8">[etl].[Candidate_FN_List]</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{1A914A23-5E6D-41F5-B35D-19950B58690A}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;DECLARE @Schema_Name VARCHAR(50)= 'SCD';&#xA;&#xA;WITH CTE_Table_Column_Details&#xA;-- Extract from [etl].[FN_Metadata] with picking version name and columna to delete from mds entity&#xA;     AS (&#xA;&#x9;&#x9;&#x9;SELECT [Schema_Name], &#xA;                [Object_Name] AS Object_Name_Orginal, &#xA;                [Schema_Name] + '_' + [Object_Name] +&#x9;&#x9;&#x9;ISNULL(&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; (&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; SELECT  Destination_Table_Version&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; FROM [MDS_ISR].[mdm].[ETL_Candidate_Functions_Members] f&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; WHERE f.Function_Name = md.[Schema_Name] + '.' + md.[Object_Name]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; ), '') AS [Object_Name], &#xA;                [Column_Name], &#xA;                [Column_ID], &#xA;                [Data_type], &#xA;                [Column_Name] + ' ' + [Data_type] Column_Data_Type_Declaration, &#xA;                ISNULL(&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; (&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; SELECT Delete_Column&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; FROM [MDS_ISR].[mdm].[ETL_Candidate_Functions_Members] f&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; WHERE f.Function_Name = md.[Schema_Name] + '.' + md.[Object_Name]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; ), '') AS Additional_Columns&#xA;         FROM [etl].[FN_Metadata] md  &#xA;&#x9;&#x9; &#xA;&#x9;&#x9; )&#xA;&#x9;--Select * from  CTE_Table_Column_Details &#xA;&#x9;,&#xA;     CTE_Create_Table_Details&#xA;&#x9; --Make comma separated datatypes for all columns and column names itself&#xA;     AS &#xA;&#x9; (&#xA;&#x9;&#x9;Select Schema_Name&#x9;,&#xA;&#x9;&#x9;Object_Name_Orginal&#x9;,&#xA;&#x9;&#x9;Object_Name&#x9;,&#xA;&#x9;&#x9;Column_Data_Type_Declarations&#x9;,&#xA;&#x9;&#x9;COLUMN_NAME_Select&#x9;,&#xA;&#x9;&#x9;IIF(Additional_Columns&#x9;= '' , Additional_Columns, Additional_Columns + ' ,') Additional_Columns&#xA;&#x9;&#x9; from &#xA;&#x9;&#x9;&#x9; (SELECT&#x9;[Schema_Name], &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Object_Name_Orginal, &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;[Object_Name], &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;STUFF(&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; (&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; SELECT CHAR(10) + t1.Column_Data_Type_Declaration&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; FROM CTE_Table_Column_Details t1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; WHERE t1.[Object_Name] = t0.[Object_Name]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; ORDER BY t1.COLUMN_ID FOR XML PATH('')&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; ), 1, LEN(','), '')&#x9;AS&#x9;Column_Data_Type_Declarations, &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;STUFF(&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; (&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; SELECT ', ' + CHAR(10) + t1.COLUMN_NAME&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; FROM CTE_Table_Column_Details t1&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; WHERE t1.[Object_Name] = t0.[Object_Name]&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; ORDER BY t1.COLUMN_ID FOR XML PATH('')&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9; ), 1, LEN(','), '')&#x9;AS&#x9;COLUMN_NAME_Select, &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Additional_Columns&#xA;&#x9;&#x9;&#x9;&#x9; FROM CTE_Table_Column_Details t0&#xA;&#x9;&#x9;&#x9;&#x9; GROUP BY t0.[Schema_Name], &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  Object_Name_Orginal, &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  [Object_Name], &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  Additional_Columns)A&#xA;&#x9;&#x9;&#x9;&#x9;  )&#xA;     --Select * from   CTE_Create_Table_Details&#xA;     ,&#xA;&#x9; CTE_Create_Table_Details_All&#xA;&#x9; --Develop ddl to drop/create stg/historical(tables)/views&#xA;     AS (SELECT [Schema_Name] AS Schema_Name, &#xA;                Object_Name_Orginal, &#xA;                [Object_Name] AS Destination_Table_Name, &#xA;                 &#xA;&#x9;&#x9;&#x9;&#x9;' Drop Table IF Exists   &quot;  + @[User::StagingSchema]  + &quot;.' + [Object_Name]  + ' Create Table  &quot; +  @[User::StagingSchema]  + &quot;.' + &quot; + &quot;[Object_Name]  + '( ' + Column_Data_Type_Declarations + Additional_Columns + '[TransactionID] int  ,&#xA;&#x9;&#x9;&#x9;&#x9;[LineageTMST] [datetime] ,&#xA;&#x9;&#x9;&#x9;&#x9;[LineageID] [int] ,&#xA;&#x9;&#x9;&#x9;&#x9;[InsertTMST] [datetime] DEFAULT (getdate()) ,&#xA;&#x9;&#x9;&#x9;&#x9;[InsertedBy] [sysname]  DEFAULT (suser_sname()) ' + ') ON stg_SCD' AS Create_Stg_Table_SQL_Statement, &#xA;&#xA;                ' Drop Table IF Exists   &quot;  + @[User::TemporalTableSchema]  + &quot;.'  + [Object_Name]  + ' Create Table  &quot; +  @[User::TemporalTableSchema]  + &quot;.' + &quot; + &quot;[Object_Name]  + '( ' +[Object_Name] + '_Key Int Identity (1,1)  Primary Key,' + Column_Data_Type_Declarations + Additional_Columns + '  [RowHash] [varbinary](max) NULL, [TransactionID] int  ,&#xA;&#x9;&#x9;&#x9;&#x9;[LineageTMST] [datetime]   DEFAULT (getdate()) ,&#xA;&#x9;&#x9;&#x9;&#x9;[LineageID] [int] ,&#xA;&#x9;&#x9;&#x9;&#x9;[InsertTMST] [datetime] ,&#xA;&#x9;&#x9;&#x9;&#x9;[InsertedBy] [sysname],&#xA;&#x9;&#x9;&#x9;&#x9;[ValidFrom_utc]        DATETIME2 (3) GENERATED ALWAYS AS ROW START DEFAULT (getdate()) NOT NULL,&#xA;&#x9;&#x9;&#x9;&#x9;[ValidTo_utc]          DATETIME2 (3) GENERATED ALWAYS AS ROW END   DEFAULT (''9999-12-31 23:59:59'') NOT NULL,&#xA;&#x9;&#x9;&#x9;&#x9;PERIOD FOR SYSTEM_TIME ([ValidFrom_utc], [ValidTo_utc]) &#xA;&#x9;&#x9;&#x9;&#x9;) ON SCD&#xA;&#x9;&#x9;&#x9;&#x9;WITH&#xA;&#x9;&#x9;&#x9;&#x9;(&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;SYSTEM_VERSIONING = ON ( HISTORY_TABLE = [&quot; +    @[User::HistoryTableSchema]    + &quot;].[' + [Object_Name] + '] ,DATA_CONSISTENCY_CHECK=ON )&#xA;&#x9;&#x9;&#x9;&#x9;)' AS Create_Temporal_Table_SQL_Statement, &#xA;&#xA;                'CREATE OR ALTER VIEW &quot; +  @[User::ReportViewSchema] + &quot;.' + [Object_Name] + '  AS  Select * from  &quot; + @[User::TemporalTableSchema] + &quot;.' + [Object_Name] + '   with (nolock);' AS Create_View_SQL_Statement&#xA;&#xA;         FROM CTE_Create_Table_Details)&#xA;     SELECT T.*, &#xA;            C.Function_Name, &#xA;            C.Controller_Package_Group, &#xA;            C.Source_Query&#xA;     FROM CTE_Create_Table_Details_All T&#xA;          JOIN [MDS_ISR].[mdm].[ETL_Candidate_Functions_Members] C ON(C.Function_Name = T.[Schema_Name] + '.' + T.Object_Name_Orginal);&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Candidate_FN_List">
+      <DTS:VariableValue
+        DTS:DataType="8">DECLARE @Schema_Name VARCHAR(50)= 'SCD';
+
+WITH CTE_Table_Column_Details
+-- Extract from [etl].[FN_Metadata] with picking version name and columna to delete from mds entity
+     AS (
+			SELECT [Schema_Name], 
+                [Object_Name] AS Object_Name_Orginal, 
+                [Schema_Name] + '_' + [Object_Name] +			ISNULL(
+						 (
+							 SELECT  Destination_Table_Version
+							 FROM [MDS_ISR].[mdm].[ETL_Candidate_Functions_Members] f
+							 WHERE f.Function_Name = md.[Schema_Name] + '.' + md.[Object_Name]
+						 ), '') AS [Object_Name], 
+                [Column_Name], 
+                [Column_ID], 
+                [Data_type], 
+                [Column_Name] + ' ' + [Data_type] Column_Data_Type_Declaration, 
+                ISNULL(
+						 (
+							 SELECT Delete_Column
+							 FROM [MDS_ISR].[mdm].[ETL_Candidate_Functions_Members] f
+							 WHERE f.Function_Name = md.[Schema_Name] + '.' + md.[Object_Name]
+						 ), '') AS Additional_Columns
+         FROM [etl].[FN_Metadata] md  
+		 
+		 )
+	--Select * from  CTE_Table_Column_Details 
+	,
+     CTE_Create_Table_Details
+	 --Make comma separated datatypes for all columns and column names itself
+     AS 
+	 (
+		Select Schema_Name	,
+		Object_Name_Orginal	,
+		Object_Name	,
+		Column_Data_Type_Declarations	,
+		COLUMN_NAME_Select	,
+		IIF(Additional_Columns	= '' , Additional_Columns, Additional_Columns + ' ,') Additional_Columns
+		 from 
+			 (SELECT	[Schema_Name], 
+						Object_Name_Orginal, 
+						[Object_Name], 
+						STUFF(
+								 (
+									 SELECT CHAR(10) + t1.Column_Data_Type_Declaration
+									 FROM CTE_Table_Column_Details t1
+									 WHERE t1.[Object_Name] = t0.[Object_Name]
+									 ORDER BY t1.COLUMN_ID FOR XML PATH('')
+								 ), 1, LEN(','), '')	AS	Column_Data_Type_Declarations, 
+						STUFF(
+								 (
+									 SELECT ', ' + CHAR(10) + t1.COLUMN_NAME
+									 FROM CTE_Table_Column_Details t1
+									 WHERE t1.[Object_Name] = t0.[Object_Name]
+									 ORDER BY t1.COLUMN_ID FOR XML PATH('')
+								 ), 1, LEN(','), '')	AS	COLUMN_NAME_Select, 
+						Additional_Columns
+				 FROM CTE_Table_Column_Details t0
+				 GROUP BY t0.[Schema_Name], 
+						  Object_Name_Orginal, 
+						  [Object_Name], 
+						  Additional_Columns)A
+				  )
+     --Select * from   CTE_Create_Table_Details
+     ,
+	 CTE_Create_Table_Details_All
+	 --Develop ddl to drop/create stg/historical(tables)/views
+     AS (SELECT [Schema_Name] AS Schema_Name, 
+                Object_Name_Orginal, 
+                [Object_Name] AS Destination_Table_Name, 
+                 
+				' Drop Table IF Exists   stg_eFront.' + [Object_Name]  + ' Create Table  stg_eFront.' + [Object_Name]  + '( ' + Column_Data_Type_Declarations + Additional_Columns + '[TransactionID] int  ,
+				[LineageTMST] [datetime] ,
+				[LineageID] [int] ,
+				[InsertTMST] [datetime] DEFAULT (getdate()) ,
+				[InsertedBy] [sysname]  DEFAULT (suser_sname()) ' + ') ON stg_SCD' AS Create_Stg_Table_SQL_Statement, 
+
+                ' Drop Table IF Exists   eFront.'  + [Object_Name]  + ' Create Table  eFront.' + [Object_Name]  + '( ' +[Object_Name] + '_Key Int Identity (1,1)  Primary Key,' + Column_Data_Type_Declarations + Additional_Columns + '  [RowHash] [varbinary](max) NULL, [TransactionID] int  ,
+				[LineageTMST] [datetime]   DEFAULT (getdate()) ,
+				[LineageID] [int] ,
+				[InsertTMST] [datetime] ,
+				[InsertedBy] [sysname],
+				[ValidFrom_utc]        DATETIME2 (3) GENERATED ALWAYS AS ROW START DEFAULT (getdate()) NOT NULL,
+				[ValidTo_utc]          DATETIME2 (3) GENERATED ALWAYS AS ROW END   DEFAULT (''9999-12-31 23:59:59'') NOT NULL,
+				PERIOD FOR SYSTEM_TIME ([ValidFrom_utc], [ValidTo_utc]) 
+				) ON SCD
+				WITH
+				(
+					SYSTEM_VERSIONING = ON ( HISTORY_TABLE = [History_eFront].[' + [Object_Name] + '] ,DATA_CONSISTENCY_CHECK=ON )
+				)' AS Create_Temporal_Table_SQL_Statement, 
+
+                'CREATE OR ALTER VIEW rpt_eFront.' + [Object_Name] + '  AS  Select * from  eFront.' + [Object_Name] + '   with (nolock);' AS Create_View_SQL_Statement
+
+         FROM CTE_Create_Table_Details)
+     SELECT T.*, 
+            C.Function_Name, 
+            C.Controller_Package_Group, 
+            C.Source_Query
+     FROM CTE_Create_Table_Details_All T
+          JOIN [MDS_ISR].[mdm].[ETL_Candidate_Functions_Members] C ON(C.Function_Name = T.[Schema_Name] + '.' + T.Object_Name_Orginal);</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{DB0F9A84-EDB2-437C-94DF-CAABF726A27C}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;Exec ETL.Create_New_SCD_Views ?&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Create_SCD_Views">
+      <DTS:VariableValue
+        DTS:DataType="8">Exec ETL.Create_New_SCD_Views ?</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{97AE469E-4E84-47BD-AD74-89D0752687A3}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;Exec ETL.Create_New_Stg_Tables ?, ?&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Create_Staging_Tables">
+      <DTS:VariableValue
+        DTS:DataType="8">Exec ETL.Create_New_Stg_Tables ?, ?</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{502ED503-BCED-4C8F-A3E9-DF87DE0CB96B}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;Exec ETL.Create_New_Temporal_Tables ?&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Create_Temporal_Tables">
+      <DTS:VariableValue
+        DTS:DataType="8">Exec ETL.Create_New_Temporal_Tables ?</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{3045B045-FC5F-4E16-B48C-0661997DE147}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DBObject_Name">
+      <DTS:VariableValue
+        DTS:DataType="8">t</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{42731A6D-8915-45B6-808F-6DC1B995FA76}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DBObject_Name_VObject">
+      <DTS:VariableValue
+        DTS:DataSubType="ManagedSerializable"
+        DTS:DataType="13">
+        <SOAP-ENV:Envelope xmlns:clr="http://schemas.microsoft.com/soap/encoding/clr/1.0" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+          <SOAP-ENV:Body>
+            <xsd:anyType
+              id="ref-1"></xsd:anyType>
+          </SOAP-ENV:Body>
+        </SOAP-ENV:Envelope>
+      </DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{E405F054-66BE-416A-935F-D8C38631E798}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;SELECT &#xA;       functionName, &#xA;       SchemaName, &#xA;       functionnamefull, &#xA;&#x9;  &#xA;&#x9;  &#xA;&#x9;  '['+a.columnname + '] ' Column_Name, CASE&#xA;                                  WHEN data_type_name IN('varchar', 'nvarchar')&#xA;                                  THEN data_type_name + '(' + CAST(max_length AS VARCHAR(5)) + ')'&#xA;                                  WHEN data_type_name IN('decimal', 'numeric')&#xA;                                  THEN data_type_name + '(' + CAST(precision AS VARCHAR(2)) + ',' + CAST(scale AS VARCHAR(2)) + ')'&#xA;                                  ELSE data_type_name&#xA;                              END + IIF(is_nullable = 1, ' NULL', ' NULL') + ',' AS data_type &#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;  ,column_id&#xA;FROM&#xA;(&#xA;    SELECT S.name + '.' + OBJECT_NAME(c.OBJECT_ID) AS functionnamefull, &#xA;           c.name columnname, &#xA;           ty.name AS data_type_name, &#xA;               Case When  c.max_length= -1 Then 'Max' Else cast (c.max_length as varchar(4)) End as max_length,&#xA;           c.precision, &#xA;           c.scale, &#xA;           column_id, &#xA;           c.is_nullable, &#xA;           OBJECT_NAME(c.OBJECT_ID) AS functionname,&#xA;&#x9;&#x9;   S.name AS SchemaName&#xA;    FROM sys.all_columns c&#xA;         JOIN&#xA;    (&#xA;        SELECT *&#xA;        FROM sys.objects&#xA;        WHERE type IN('V')&#xA;    ) F ON(c.OBJECT_ID = F.OBJECT_ID)&#xA;         JOIN sys.schemas AS s ON s.schema_id = F.schema_id&#xA;         JOIN sys.types AS ty ON ty.system_type_id = C.system_type_id&#xA;                                 AND ty.user_type_id = C.user_type_id&#xA;) a&#xA;WHERE functionnamefull = '&quot;+ @[User::DBObject_Name] +&quot;'&#xA;ORDER BY column_id;&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DB_Object_Metadata_Query">
+      <DTS:VariableValue
+        DTS:DataType="8">SELECT 
+       functionName, 
+       SchemaName, 
+       functionnamefull, 
+	  
+	  
+	  '['+a.columnname + '] ' Column_Name, CASE
+                                  WHEN data_type_name IN('varchar', 'nvarchar')
+                                  THEN data_type_name + '(' + CAST(max_length AS VARCHAR(5)) + ')'
+                                  WHEN data_type_name IN('decimal', 'numeric')
+                                  THEN data_type_name + '(' + CAST(precision AS VARCHAR(2)) + ',' + CAST(scale AS VARCHAR(2)) + ')'
+                                  ELSE data_type_name
+                              END + IIF(is_nullable = 1, ' NULL', ' NULL') + ',' AS data_type 
+							  ,column_id
+FROM
+(
+    SELECT S.name + '.' + OBJECT_NAME(c.OBJECT_ID) AS functionnamefull, 
+           c.name columnname, 
+           ty.name AS data_type_name, 
+               Case When  c.max_length= -1 Then 'Max' Else cast (c.max_length as varchar(4)) End as max_length,
+           c.precision, 
+           c.scale, 
+           column_id, 
+           c.is_nullable, 
+           OBJECT_NAME(c.OBJECT_ID) AS functionname,
+		   S.name AS SchemaName
+    FROM sys.all_columns c
+         JOIN
+    (
+        SELECT *
+        FROM sys.objects
+        WHERE type IN('V')
+    ) F ON(c.OBJECT_ID = F.OBJECT_ID)
+         JOIN sys.schemas AS s ON s.schema_id = F.schema_id
+         JOIN sys.types AS ty ON ty.system_type_id = C.system_type_id
+                                 AND ty.user_type_id = C.user_type_id
+) a
+WHERE functionnamefull = 't'
+ORDER BY column_id;</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{DE78B83D-5115-40B0-9EA6-80866DDC7E32}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="HistoryTableSchema">
+      <DTS:VariableValue
+        DTS:DataType="8">History_eFront</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{D493ABC3-F847-47D2-821F-8B6045B8D384}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="History_Metadata_Table">
+      <DTS:VariableValue
+        DTS:DataType="8">[ETL].[FN_Metadata_History]</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{71F1F0F3-B541-464A-9B2E-429CB33029CA}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Log_Table">
+      <DTS:VariableValue
+        DTS:DataType="8">[ETL].[Metadata_Processing_Log]</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{8998E747-1ECE-4089-AB2B-909D248A0FF8}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="ReportViewSchema">
+      <DTS:VariableValue
+        DTS:DataType="8">rpt_eFront</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{1656E3D3-F2AC-4DE5-895F-F11765EFDEAA}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;&#xA;SELECT [Function_Name]&#xA;FROM [MDS_ISR].[mdm].[ETL_Candidate_Functions_Members] where IS_Valid =2&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Source_Function_Query">
+      <DTS:VariableValue
+        DTS:DataType="8">
+SELECT [Function_Name]
+FROM [MDS_ISR].[mdm].[ETL_Candidate_Functions_Members] where IS_Valid =2</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{DF23C732-B7D3-4942-81F0-67CB80F5E311}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="StagingSchema">
+      <DTS:VariableValue
+        DTS:DataType="8">stg_eFront</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{E64317D2-6577-4F57-B40E-8497CF648F68}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Stg_Metadata_Table">
+      <DTS:VariableValue
+        DTS:DataType="8">[etl].[FN_Metadata]</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{DD3FB7ED-B3CD-49D7-AF0E-8A53377B397A}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="TemporalTableSchema">
+      <DTS:VariableValue
+        DTS:DataType="8">eFront</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{B2B3AB0B-3789-4A5B-9599-47C57438AEF7}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;Truncate Table &quot; +   @[User::Stg_Metadata_Table]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Truncate_Stg">
+      <DTS:VariableValue
+        DTS:DataType="8">Truncate Table [etl].[FN_Metadata]</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\BatchLoggingId"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{1c9e101c-a416-4810-b6bf-339765886fc4}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="BatchLoggingId"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{8FA8C553-5C1A-4621-97DB-EC5D822A8424}"
+          SQLTask:SqlStatementSource="SELECT ISNULL(MAX(Batch_Logging_Id),0) +1 AS Last_Bacth_Id FROM etl.Metadata_Processing_Log"
+          SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="Last_Bacth_Id"
+            SQLTask:DtsVariableName="User::BatchLoggingId" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Create SCD Views"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{15a575f7-7830-4f8f-838a-d498de84132e}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Create SCD Views"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{8FA8C553-5C1A-4621-97DB-EC5D822A8424}"
+          SQLTask:SqlStmtSourceType="Variable"
+          SQLTask:SqlStatementSource="User::Create_SCD_Views" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="User::BatchLoggingId"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Create Staing Tables"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{62F1C130-58DA-465E-99F5-62055C01F95B}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Create Staing Tables"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{8FA8C553-5C1A-4621-97DB-EC5D822A8424}"
+          SQLTask:SqlStmtSourceType="Variable"
+          SQLTask:SqlStatementSource="User::Create_Staging_Tables" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="User::BatchLoggingId"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="1"
+            SQLTask:DtsVariableName="User::StagingSchema"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="129"
+            SQLTask:ParameterSize="-1" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Create Temporal Tables Will fail if table already exists"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{917CCD71-BBA5-4148-867B-C3A5B6D553B5}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Create Temporal Tables Will fail if table already exists"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{8FA8C553-5C1A-4621-97DB-EC5D822A8424}"
+          SQLTask:SqlStmtSourceType="Variable"
+          SQLTask:SqlStatementSource="User::Create_Temporal_Tables" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="User::BatchLoggingId"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Disable_Sytem_Versioning"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{D62B05F1-DFBF-4212-AACB-13AC9B04B548}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Disable_Sytem_Versioning"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{8FA8C553-5C1A-4621-97DB-EC5D822A8424}"
+          SQLTask:SqlStatementSource="Execute [ETL].[Enable_Disable_SystemVersioned_Table] &#xA;@Input_SchemaName_SystemVersioned_Table = 'eFront', &#xA;@Input_SchemaName_SystemVersioned_TableHistorical = 'History_eFront',&#xA;@Input_SystemVersioned_Status=0" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Foreach Loop Container"
+      DTS:CreationName="STOCK:FOREACHLOOP"
+      DTS:Description="Foreach Loop Container"
+      DTS:DTSID="{4BC55107-D1C5-4E6E-9A25-F959CFC7C6D7}"
+      DTS:ExecutableType="STOCK:FOREACHLOOP"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Foreach Loop Container">
+      <DTS:ForEachEnumerator
+        DTS:CreationName="Microsoft.ForEachADOEnumerator"
+        DTS:DTSID="{C4089137-DE9B-4FF5-A864-AD66479369EE}"
+        DTS:ObjectName="{C4089137-DE9B-4FF5-A864-AD66479369EE}">
+        <DTS:ObjectData>
+          <FEEADO
+            EnumType="EnumerateRowsInFirstTable"
+            VarName="User::DBObject_Name_VObject" />
+        </DTS:ObjectData>
+      </DTS:ForEachEnumerator>
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Foreach Loop Container\Data Flow Task"
+          DTS:CreationName="Microsoft.Pipeline"
+          DTS:Description="Data Flow Task"
+          DTS:DTSID="{02D34EEB-98BB-4785-9B58-BF2DBD6BD7CD}"
+          DTS:ExecutableType="Microsoft.Pipeline"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Data Flow Task"
+          DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <pipeline
+              version="1">
+              <components>
+                <component
+                  refId="Package\Foreach Loop Container\Data Flow Task\Derived Column"
+                  componentClassID="Microsoft.DerivedColumn"
+                  contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+                  description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+                  name="Derived Column"
+                  usesDispositions="true">
+                  <inputs>
+                    <input
+                      refId="Package\Foreach Loop Container\Data Flow Task\Derived Column.Inputs[Derived Column Input]"
+                      description="Input to the Derived Column Transformation"
+                      name="Derived Column Input">
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Foreach Loop Container\Data Flow Task\Derived Column.Outputs[Derived Column Output]"
+                      description="Default Output of the Derived Column Transformation"
+                      exclusionGroup="1"
+                      name="Derived Column Output"
+                      synchronousInputId="Package\Foreach Loop Container\Data Flow Task\Derived Column.Inputs[Derived Column Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[Batch_Logging_Id]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[Batch_Logging_Id]"
+                          name="Batch_Logging_Id"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">@[User::BatchLoggingId]</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">@[User::BatchLoggingId]</property>
+                          </properties>
+                        </outputColumn>
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                    <output
+                      refId="Package\Foreach Loop Container\Data Flow Task\Derived Column.Outputs[Derived Column Error Output]"
+                      description="Error Output of the Derived Column Transformation"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="Derived Column Error Output"
+                      synchronousInputId="Package\Foreach Loop Container\Data Flow Task\Derived Column.Inputs[Derived Column Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination"
+                  componentClassID="Microsoft.OLEDBDestination"
+                  contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+                  description="OLE DB Destination"
+                  name="OLE DB Destination"
+                  usesDispositions="true"
+                  version="4">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset"></property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable">User::Stg_Metadata_Table</property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">4</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepIdentity">false</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepNulls">false</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                      name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                      name="FastLoadMaxInsertCommitSize">2147483647</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[Utility]"
+                      connectionManagerRefId="Package.ConnectionManagers[Utility]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                      errorOrTruncationOperation="Insert"
+                      errorRowDisposition="FailComponent"
+                      hasSideEffects="true"
+                      name="OLE DB Destination Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Column_Name]"
+                          cachedDataType="wstr"
+                          cachedLength="131"
+                          cachedName="Column_Name"
+                          externalMetadataColumnId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Column_Name]"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[Column_Name]" />
+                        <inputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[SchemaName]"
+                          cachedDataType="wstr"
+                          cachedLength="128"
+                          cachedName="SchemaName"
+                          externalMetadataColumnId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Schema_Name]"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[SchemaName]" />
+                        <inputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[functionName]"
+                          cachedDataType="wstr"
+                          cachedLength="128"
+                          cachedName="functionName"
+                          externalMetadataColumnId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Object_Name]"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[functionName]" />
+                        <inputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[data_type]"
+                          cachedDataType="wstr"
+                          cachedLength="141"
+                          cachedName="data_type"
+                          externalMetadataColumnId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Data_type]"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[data_type]" />
+                        <inputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Batch_Logging_Id]"
+                          cachedDataType="i4"
+                          cachedName="Batch_Logging_Id"
+                          externalMetadataColumnId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Batch_Logging_Id]"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[Batch_Logging_Id]" />
+                        <inputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[column_id]"
+                          cachedDataType="i4"
+                          cachedName="column_id"
+                          externalMetadataColumnId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Column_Id]"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[column_id]" />
+                      </inputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Object_Metadata_Key]"
+                          dataType="i4"
+                          name="Object_Metadata_Key" />
+                        <externalMetadataColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Schema_Name]"
+                          dataType="wstr"
+                          length="256"
+                          name="Schema_Name" />
+                        <externalMetadataColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Object_Name]"
+                          dataType="wstr"
+                          length="256"
+                          name="Object_Name" />
+                        <externalMetadataColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Column_Name]"
+                          dataType="wstr"
+                          length="256"
+                          name="Column_Name" />
+                        <externalMetadataColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Is_Processed]"
+                          dataType="i4"
+                          name="Is_Processed" />
+                        <externalMetadataColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Last_Update_Date]"
+                          dataType="dbTimeStamp"
+                          name="Last_Update_Date" />
+                        <externalMetadataColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Data_type]"
+                          dataType="wstr"
+                          length="256"
+                          name="Data_type" />
+                        <externalMetadataColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Batch_Logging_Id]"
+                          dataType="i4"
+                          name="Batch_Logging_Id" />
+                        <externalMetadataColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Column_Id]"
+                          dataType="i4"
+                          name="Column_Id" />
+                      </externalMetadataColumns>
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="OLE DB Destination Error Output"
+                      synchronousInputId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source"
+                  componentClassID="Microsoft.OLEDBSource"
+                  contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+                  description="OLE DB Source"
+                  name="OLE DB Source"
+                  usesDispositions="true"
+                  version="7">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset"></property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                    <property
+                      dataType="System.String"
+                      description="The variable that contains the SQL command to be executed."
+                      name="SqlCommandVariable">User::DB_Object_Metadata_Query</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">3</property>
+                    <property
+                      dataType="System.String"
+                      description="The mappings between the parameters in the SQL command and variables."
+                      name="ParameterMapping"></property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[Source]"
+                      connectionManagerRefId="Package.ConnectionManagers[Source]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <outputs>
+                    <output
+                      refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output]"
+                      name="OLE DB Source Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[Column_Name]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Column_Name]"
+                          length="131"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[Column_Name]"
+                          name="Column_Name"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[data_type]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[data_type]"
+                          length="141"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[data_type]"
+                          name="data_type"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[functionName]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[functionName]"
+                          length="128"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[functionName]"
+                          name="functionName"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[SchemaName]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[SchemaName]"
+                          length="128"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[SchemaName]"
+                          name="SchemaName"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[functionnamefull]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[functionnamefull]"
+                          length="257"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[functionnamefull]"
+                          name="functionnamefull"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[column_id]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[column_id]"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[column_id]"
+                          name="column_id"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Column_Name]"
+                          dataType="wstr"
+                          length="131"
+                          name="Column_Name" />
+                        <externalMetadataColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[data_type]"
+                          dataType="wstr"
+                          length="141"
+                          name="data_type" />
+                        <externalMetadataColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[functionName]"
+                          dataType="wstr"
+                          length="128"
+                          name="functionName" />
+                        <externalMetadataColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[SchemaName]"
+                          dataType="wstr"
+                          length="128"
+                          name="SchemaName" />
+                        <externalMetadataColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[functionnamefull]"
+                          dataType="wstr"
+                          length="257"
+                          name="functionnamefull" />
+                        <externalMetadataColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[column_id]"
+                          dataType="i4"
+                          name="column_id" />
+                      </externalMetadataColumns>
+                    </output>
+                    <output
+                      refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output]"
+                      isErrorOut="true"
+                      name="OLE DB Source Error Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[functionName]"
+                          dataType="wstr"
+                          length="128"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[functionName]"
+                          name="functionName" />
+                        <outputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[SchemaName]"
+                          dataType="wstr"
+                          length="128"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[SchemaName]"
+                          name="SchemaName" />
+                        <outputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[functionnamefull]"
+                          dataType="wstr"
+                          length="257"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[functionnamefull]"
+                          name="functionnamefull" />
+                        <outputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Column_Name]"
+                          dataType="wstr"
+                          length="131"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Column_Name]"
+                          name="Column_Name" />
+                        <outputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[data_type]"
+                          dataType="wstr"
+                          length="141"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[data_type]"
+                          name="data_type" />
+                        <outputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[column_id]"
+                          dataType="i4"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[column_id]"
+                          name="column_id" />
+                        <outputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+              </components>
+              <paths>
+                <path
+                  refId="Package\Foreach Loop Container\Data Flow Task.Paths[Derived Column Output]"
+                  endId="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  name="Derived Column Output"
+                  startId="Package\Foreach Loop Container\Data Flow Task\Derived Column.Outputs[Derived Column Output]" />
+                <path
+                  refId="Package\Foreach Loop Container\Data Flow Task.Paths[OLE DB Source Output]"
+                  endId="Package\Foreach Loop Container\Data Flow Task\Derived Column.Inputs[Derived Column Input]"
+                  name="OLE DB Source Output"
+                  startId="Package\Foreach Loop Container\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output]" />
+              </paths>
+            </pipeline>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:ForEachVariableMappings>
+        <DTS:ForEachVariableMapping
+          DTS:CreationName=""
+          DTS:DTSID="{AEA11F5C-7CA9-4944-A3FF-156C27BBD7A2}"
+          DTS:ObjectName="{AEA11F5C-7CA9-4944-A3FF-156C27BBD7A2}"
+          DTS:ValueIndex="0"
+          DTS:VariableName="User::DBObject_Name" />
+      </DTS:ForEachVariableMappings>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Get Table Creation Scripts"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{7723BA92-9B26-4CCB-AEA0-F1234BBBF538}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Get Table Creation Scripts"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Get Table Creation Scripts\Candidate FN"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="Candidate FN"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable">User::Candidate_FN_Destination</property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">4</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Get Table Creation Scripts\Candidate FN.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[Utility]"
+                  connectionManagerRefId="Package.ConnectionManagers[Utility]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].Columns[Object_Name_Orginal]"
+                      cachedDataType="wstr"
+                      cachedLength="256"
+                      cachedName="Object_Name_Orginal"
+                      externalMetadataColumnId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[Object_Name_Orginal]"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Object_Name_Orginal]" />
+                    <inputColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].Columns[Destination_Table_Name]"
+                      cachedDataType="wstr"
+                      cachedLength="613"
+                      cachedName="Destination_Table_Name"
+                      externalMetadataColumnId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[Destination_Table_Name]"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Destination_Table_Name]" />
+                    <inputColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].Columns[Create_Stg_Table_SQL_Statement]"
+                      cachedDataType="nText"
+                      cachedName="Create_Stg_Table_SQL_Statement"
+                      externalMetadataColumnId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[Create_Stg_Table_SQL_Statement]"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Create_Stg_Table_SQL_Statement]" />
+                    <inputColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].Columns[Create_Temporal_Table_SQL_Statement]"
+                      cachedDataType="nText"
+                      cachedName="Create_Temporal_Table_SQL_Statement"
+                      externalMetadataColumnId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[Create_Temporal_Table_SQL_Statement]"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Create_Temporal_Table_SQL_Statement]" />
+                    <inputColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].Columns[Controller_Package_Group]"
+                      cachedDataType="wstr"
+                      cachedLength="100"
+                      cachedName="Controller_Package_Group"
+                      externalMetadataColumnId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[Controller_Package_Group]"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Controller_Package_Group]" />
+                    <inputColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].Columns[Source_Query]"
+                      cachedDataType="wstr"
+                      cachedLength="1000"
+                      cachedName="Source_Query"
+                      externalMetadataColumnId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[Source_Query]"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Source_Query]" />
+                    <inputColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].Columns[BatchLoggingId]"
+                      cachedDataType="i4"
+                      cachedName="BatchLoggingId"
+                      externalMetadataColumnId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[Batch_Logging_Id]"
+                      lineageId="Package\Get Table Creation Scripts\Derived Column.Outputs[Derived Column Output].Columns[BatchLoggingId]" />
+                    <inputColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].Columns[Create_View_SQL_Statement]"
+                      cachedDataType="wstr"
+                      cachedLength="4000"
+                      cachedName="Create_View_SQL_Statement"
+                      externalMetadataColumnId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[Create_View_SQL_Statement]"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Create_View_SQL_Statement]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[Candidate_FN_List_Key]"
+                      dataType="i4"
+                      name="Candidate_FN_List_Key" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[Object_Name_Orginal]"
+                      dataType="wstr"
+                      length="256"
+                      name="Object_Name_Orginal" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[Destination_Table_Name]"
+                      dataType="wstr"
+                      length="256"
+                      name="Destination_Table_Name" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[Create_Stg_Table_SQL_Statement]"
+                      dataType="nText"
+                      name="Create_Stg_Table_SQL_Statement" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[Create_Temporal_Table_SQL_Statement]"
+                      dataType="nText"
+                      name="Create_Temporal_Table_SQL_Statement" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[Controller_Package_Group]"
+                      dataType="wstr"
+                      length="2000"
+                      name="Controller_Package_Group" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[Source_Query]"
+                      dataType="wstr"
+                      length="1000"
+                      name="Source_Query" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[IS_Processed]"
+                      dataType="i4"
+                      name="IS_Processed" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[ETL_Last_Update]"
+                      dataType="dbTimeStamp"
+                      name="ETL_Last_Update" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[Batch_Logging_Id]"
+                      dataType="i4"
+                      name="Batch_Logging_Id" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[IS_Stg_Table_Created]"
+                      dataType="i4"
+                      name="IS_Stg_Table_Created" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[IS_Temporal_Table_Created]"
+                      dataType="i4"
+                      name="IS_Temporal_Table_Created" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[IS_Valid]"
+                      dataType="i4"
+                      name="IS_Valid" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[Create_View_SQL_Statement]"
+                      dataType="nText"
+                      name="Create_View_SQL_Statement" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[IS_View_Created]"
+                      dataType="i4"
+                      name="IS_View_Created" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[IS_New]"
+                      dataType="bool"
+                      name="IS_New" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input].ExternalColumns[Create_DB_Objects]"
+                      dataType="bool"
+                      name="Create_DB_Objects" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Get Table Creation Scripts\Candidate FN.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Get Table Creation Scripts\Candidate FN.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\Candidate FN.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Get Table Creation Scripts\Candidate FN.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Get Table Creation Scripts\Derived Column"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\Get Table Creation Scripts\Derived Column.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Get Table Creation Scripts\Derived Column.Inputs[Derived Column Input].Columns[Destination_Table_Name]"
+                      cachedDataType="wstr"
+                      cachedLength="613"
+                      cachedName="Destination_Table_Name"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Destination_Table_Name]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Get Table Creation Scripts\Derived Column.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\Get Table Creation Scripts\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\Derived Column.Outputs[Derived Column Output].Columns[BatchLoggingId]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Get Table Creation Scripts\Derived Column.Outputs[Derived Column Output].Columns[BatchLoggingId]"
+                      name="BatchLoggingId"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">@[User::BatchLoggingId]</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">@[User::BatchLoggingId]</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\Derived Column.Outputs[Derived Column Output].Columns[Logging_Step_Code]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="519"
+                      lineageId="Package\Get Table Creation Scripts\Derived Column.Outputs[Derived Column Output].Columns[Logging_Step_Code]"
+                      name="Logging_Step_Code"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">"Create" + #{Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Destination_Table_Name]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">"Create" + Destination_Table_Name</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\Derived Column.Outputs[Derived Column Output].Columns[Logging_Step_Details]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="565"
+                      lineageId="Package\Get Table Creation Scripts\Derived Column.Outputs[Derived Column Output].Columns[Logging_Step_Details]"
+                      name="Logging_Step_Details"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">"Ignored  Create Table For " + #{Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Destination_Table_Name]} + " as it is already created."</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">"Ignored  Create Table For " + Destination_Table_Name + " as it is already created."</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\Get Table Creation Scripts\Derived Column.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\Get Table Creation Scripts\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Get Table Creation Scripts\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Get Table Creation Scripts\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Get Table Creation Scripts\Log Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="Log Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable">User::Log_Table</property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">4</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Get Table Creation Scripts\Log Destination.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[Utility]"
+                  connectionManagerRefId="Package.ConnectionManagers[Utility]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Get Table Creation Scripts\Log Destination.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Get Table Creation Scripts\Log Destination.Inputs[OLE DB Destination Input].Columns[Logging_Step_Code]"
+                      cachedDataType="wstr"
+                      cachedLength="522"
+                      cachedName="Logging_Step_Code"
+                      externalMetadataColumnId="Package\Get Table Creation Scripts\Log Destination.Inputs[OLE DB Destination Input].ExternalColumns[Logging_Step_Code]"
+                      lineageId="Package\Get Table Creation Scripts\Derived Column.Outputs[Derived Column Output].Columns[Logging_Step_Code]" />
+                    <inputColumn
+                      refId="Package\Get Table Creation Scripts\Log Destination.Inputs[OLE DB Destination Input].Columns[Logging_Step_Details]"
+                      cachedDataType="wstr"
+                      cachedLength="568"
+                      cachedName="Logging_Step_Details"
+                      externalMetadataColumnId="Package\Get Table Creation Scripts\Log Destination.Inputs[OLE DB Destination Input].ExternalColumns[Logging_Step_Details]"
+                      lineageId="Package\Get Table Creation Scripts\Derived Column.Outputs[Derived Column Output].Columns[Logging_Step_Details]" />
+                    <inputColumn
+                      refId="Package\Get Table Creation Scripts\Log Destination.Inputs[OLE DB Destination Input].Columns[BatchLoggingId]"
+                      cachedDataType="i4"
+                      cachedName="BatchLoggingId"
+                      externalMetadataColumnId="Package\Get Table Creation Scripts\Log Destination.Inputs[OLE DB Destination Input].ExternalColumns[Batch_Logging_Id]"
+                      lineageId="Package\Get Table Creation Scripts\Derived Column.Outputs[Derived Column Output].Columns[BatchLoggingId]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Log Destination.Inputs[OLE DB Destination Input].ExternalColumns[Batch_Logging_Id]"
+                      dataType="i4"
+                      name="Batch_Logging_Id" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Log Destination.Inputs[OLE DB Destination Input].ExternalColumns[Metadata_Processing_LogId]"
+                      dataType="i4"
+                      name="Metadata_Processing_LogId" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Log Destination.Inputs[OLE DB Destination Input].ExternalColumns[Logging_Step_Code]"
+                      dataType="wstr"
+                      length="35"
+                      name="Logging_Step_Code" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Log Destination.Inputs[OLE DB Destination Input].ExternalColumns[Logging_Step_Details]"
+                      dataType="wstr"
+                      length="250"
+                      name="Logging_Step_Details" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Log Destination.Inputs[OLE DB Destination Input].ExternalColumns[Logging_Step_Error_Description]"
+                      codePage="1252"
+                      dataType="text"
+                      name="Logging_Step_Error_Description" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\Log Destination.Inputs[OLE DB Destination Input].ExternalColumns[ETL_Date_Created]"
+                      dataType="dbTimeStamp"
+                      name="ETL_Date_Created" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Get Table Creation Scripts\Log Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\Get Table Creation Scripts\Log Destination.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\Log Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Get Table Creation Scripts\Log Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\Log Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Get Table Creation Scripts\Log Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Get Table Creation Scripts\Lookup"
+              componentClassID="Microsoft.Lookup"
+              contactInfo="Lookup;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;6"
+              description="Joins additional columns to the data flow by looking up values in a table. For example, join to the 'employee id' column the employees table to get 'hire date' and 'employee name'. We recommend this transformation when the lookup table can fit into memory."
+              name="Lookup"
+              usesDispositions="true"
+              version="6">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="Specifies the SQL statement that generates the lookup table."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">Select * from [ETL].[Candidate_FN_List] 
+Where  IS_Processed
+=1</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies a SQL statement that uses parameters to generate the lookup table."
+                  expressionType="Notify"
+                  name="SqlCommandParam"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">select * from (Select * from [ETL].[Candidate_FN_List] 
+Where  IS_Processed
+=1) [refTable]
+where [refTable].[Object_Name_Orginal] = ? and [refTable].[Batch_Logging_Id] = ?</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the type of connection used to access the reference dataset."
+                  name="ConnectionType"
+                  typeConverter="LookupConnectionType">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the cache type of the lookup table."
+                  name="CacheType"
+                  typeConverter="CacheType">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies how the Lookup transformation handles rows without matching entries in the reference data set."
+                  name="NoMatchBehavior"
+                  typeConverter="LookupNoMatchBehavior">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the percentage of the cache that is allocated for rows with no matching entries in the reference dataset."
+                  name="NoMatchCachePercentage">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Maximum Memory Usage for Reference Cache on a 32 bit platform."
+                  name="MaxMemoryUsage">25</property>
+                <property
+                  dataType="System.Int64"
+                  description="Maximum Memory Usage for Reference Cache on a 64 bit platform."
+                  name="MaxMemoryUsage64">25</property>
+                <property
+                  dataType="System.String"
+                  description="Indicates whether to reference metadata in an XML format."
+                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="Candidate_FN_List_Key" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="Object_Name_Orginal" dataType="DT_WSTR" length="256" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="Destination_Table_Name" dataType="DT_WSTR" length="256" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="Create_Stg_Table_SQL_Statement" dataType="DT_NTEXT" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="Create_Temporal_Table_SQL_Statement" dataType="DT_NTEXT" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="Create_View_SQL_Statement" dataType="DT_NTEXT" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="Controller_Package_Group" dataType="DT_WSTR" length="2000" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="Source_Query" dataType="DT_WSTR" length="1000" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="Batch_Logging_Id" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="IS_Stg_Table_Created" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="IS_Temporal_Table_Created" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="IS_View_Created" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="IS_Processed" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="IS_Valid" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ETL_Last_Update" dataType="DT_DBTIMESTAMP" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="IS_New" dataType="DT_BOOL" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
+                <property
+                  containsID="true"
+                  dataType="System.String"
+                  description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
+                  name="ParameterMap">#{Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Object_Name_Orginal]};#{Package\Get Table Creation Scripts\Derived Column.Outputs[Derived Column Output].Columns[BatchLoggingId]};</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines whether duplicate keys in the reference data should be treated as errors when full cache mode is used."
+                  name="TreatDuplicateKeysAsError">false</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Get Table Creation Scripts\Lookup.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[Utility]"
+                  connectionManagerRefId="Package.ConnectionManagers[Utility]"
+                  description="Connection manager used to access lookup data."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Get Table Creation Scripts\Lookup.Inputs[Lookup Input]"
+                  name="Lookup Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Get Table Creation Scripts\Lookup.Inputs[Lookup Input].Columns[Object_Name_Orginal]"
+                      cachedDataType="wstr"
+                      cachedLength="256"
+                      cachedName="Object_Name_Orginal"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Object_Name_Orginal]">
+                      <properties>
+                        <property
+                          dataType="System.String"
+                          description="Specifies the column in the reference table that a column joins."
+                          name="JoinToReferenceColumn">Object_Name_Orginal</property>
+                        <property
+                          dataType="System.Null"
+                          description="Specifies the column in the reference table from which a column is copied."
+                          name="CopyFromReferenceColumn" />
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\Get Table Creation Scripts\Lookup.Inputs[Lookup Input].Columns[BatchLoggingId]"
+                      cachedDataType="i4"
+                      cachedName="BatchLoggingId"
+                      lineageId="Package\Get Table Creation Scripts\Derived Column.Outputs[Derived Column Output].Columns[BatchLoggingId]">
+                      <properties>
+                        <property
+                          dataType="System.String"
+                          description="Specifies the column in the reference table that a column joins."
+                          name="JoinToReferenceColumn">Batch_Logging_Id</property>
+                        <property
+                          dataType="System.Null"
+                          description="Specifies the column in the reference table from which a column is copied."
+                          name="CopyFromReferenceColumn" />
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Get Table Creation Scripts\Lookup.Outputs[Lookup Match Output]"
+                  errorOrTruncationOperation="Lookup"
+                  exclusionGroup="1"
+                  name="Lookup Match Output"
+                  synchronousInputId="Package\Get Table Creation Scripts\Lookup.Inputs[Lookup Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\Get Table Creation Scripts\Lookup.Outputs[Lookup No Match Output]"
+                  description="The Lookup output that handles rows with no matching entries in the reference dataset. Use this output when the NoMatchBehavior property is set to &quot;Send rows with no matching entries to the no match output.&quot;"
+                  exclusionGroup="1"
+                  name="Lookup No Match Output"
+                  synchronousInputId="Package\Get Table Creation Scripts\Lookup.Inputs[Lookup Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\Get Table Creation Scripts\Lookup.Outputs[Lookup Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Lookup Error Output"
+                  synchronousInputId="Package\Get Table Creation Scripts\Lookup.Inputs[Lookup Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\Lookup.Outputs[Lookup Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Get Table Creation Scripts\Lookup.Outputs[Lookup Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\Lookup.Outputs[Lookup Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Get Table Creation Scripts\Lookup.Outputs[Lookup Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Get Table Creation Scripts\OLE DB Source"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="OLE DB Source"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable">User::Table_List</property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable">User::Candidate_FN_List</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Get Table Creation Scripts\OLE DB Source.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[Utility]"
+                  connectionManagerRefId="Package.ConnectionManagers[Utility]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Schema_Name]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Schema_Name]"
+                      length="256"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Schema_Name]"
+                      name="Schema_Name"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Object_Name_Orginal]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Object_Name_Orginal]"
+                      length="256"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Object_Name_Orginal]"
+                      name="Object_Name_Orginal"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Destination_Table_Name]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Destination_Table_Name]"
+                      length="613"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Destination_Table_Name]"
+                      name="Destination_Table_Name"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Create_Stg_Table_SQL_Statement]"
+                      dataType="nText"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Create_Stg_Table_SQL_Statement]"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Create_Stg_Table_SQL_Statement]"
+                      name="Create_Stg_Table_SQL_Statement"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Create_Temporal_Table_SQL_Statement]"
+                      dataType="nText"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Create_Temporal_Table_SQL_Statement]"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Create_Temporal_Table_SQL_Statement]"
+                      name="Create_Temporal_Table_SQL_Statement"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Function_Name]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Function_Name]"
+                      length="250"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Function_Name]"
+                      name="Function_Name"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Controller_Package_Group]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Controller_Package_Group]"
+                      length="100"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Controller_Package_Group]"
+                      name="Controller_Package_Group"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Source_Query]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Source_Query]"
+                      length="1000"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Source_Query]"
+                      name="Source_Query"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Create_View_SQL_Statement]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Create_View_SQL_Statement]"
+                      length="4000"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].Columns[Create_View_SQL_Statement]"
+                      name="Create_View_SQL_Statement"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Schema_Name]"
+                      dataType="wstr"
+                      length="256"
+                      name="Schema_Name" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Object_Name_Orginal]"
+                      dataType="wstr"
+                      length="256"
+                      name="Object_Name_Orginal" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Destination_Table_Name]"
+                      dataType="wstr"
+                      length="613"
+                      name="Destination_Table_Name" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Create_Stg_Table_SQL_Statement]"
+                      dataType="nText"
+                      name="Create_Stg_Table_SQL_Statement" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Create_Temporal_Table_SQL_Statement]"
+                      dataType="nText"
+                      name="Create_Temporal_Table_SQL_Statement" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Function_Name]"
+                      dataType="wstr"
+                      length="250"
+                      name="Function_Name" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Controller_Package_Group]"
+                      dataType="wstr"
+                      length="100"
+                      name="Controller_Package_Group" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Source_Query]"
+                      dataType="wstr"
+                      length="1000"
+                      name="Source_Query" />
+                    <externalMetadataColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Create_View_SQL_Statement]"
+                      dataType="wstr"
+                      length="1303"
+                      name="Create_View_SQL_Statement" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Schema_Name]"
+                      dataType="wstr"
+                      length="256"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Schema_Name]"
+                      name="Schema_Name" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Object_Name_Orginal]"
+                      dataType="wstr"
+                      length="256"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Object_Name_Orginal]"
+                      name="Object_Name_Orginal" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Destination_Table_Name]"
+                      dataType="wstr"
+                      length="613"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Destination_Table_Name]"
+                      name="Destination_Table_Name" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Create_Stg_Table_SQL_Statement]"
+                      dataType="nText"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Create_Stg_Table_SQL_Statement]"
+                      name="Create_Stg_Table_SQL_Statement" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Create_Temporal_Table_SQL_Statement]"
+                      dataType="nText"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Create_Temporal_Table_SQL_Statement]"
+                      name="Create_Temporal_Table_SQL_Statement" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Create_View_SQL_Statement]"
+                      dataType="wstr"
+                      length="1303"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Create_View_SQL_Statement]"
+                      name="Create_View_SQL_Statement" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Function_Name]"
+                      dataType="wstr"
+                      length="250"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Function_Name]"
+                      name="Function_Name" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Controller_Package_Group]"
+                      dataType="wstr"
+                      length="100"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Controller_Package_Group]"
+                      name="Controller_Package_Group" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Source_Query]"
+                      dataType="wstr"
+                      length="1000"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Source_Query]"
+                      name="Source_Query" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Get Table Creation Scripts.Paths[Derived Column Output]"
+              endId="Package\Get Table Creation Scripts\Lookup.Inputs[Lookup Input]"
+              name="Derived Column Output"
+              startId="Package\Get Table Creation Scripts\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\Get Table Creation Scripts.Paths[Lookup Match Output]"
+              endId="Package\Get Table Creation Scripts\Log Destination.Inputs[OLE DB Destination Input]"
+              name="Lookup Match Output"
+              startId="Package\Get Table Creation Scripts\Lookup.Outputs[Lookup Match Output]" />
+            <path
+              refId="Package\Get Table Creation Scripts.Paths[Lookup No Match Output]"
+              endId="Package\Get Table Creation Scripts\Candidate FN.Inputs[OLE DB Destination Input]"
+              name="Lookup No Match Output"
+              startId="Package\Get Table Creation Scripts\Lookup.Outputs[Lookup No Match Output]" />
+            <path
+              refId="Package\Get Table Creation Scripts.Paths[OLE DB Source Output]"
+              endId="Package\Get Table Creation Scripts\Derived Column.Inputs[Derived Column Input]"
+              name="OLE DB Source Output"
+              startId="Package\Get Table Creation Scripts\OLE DB Source.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Get_FunctionNames"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{F2E6F114-96B6-4F02-A733-B5CD9BE0CE7C}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Get_FunctionNames"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{33524136-16B3-4324-9A7C-042B8D568C2B}"
+          SQLTask:SqlStmtSourceType="Variable"
+          SQLTask:SqlStatementSource="User::Source_Function_Query"
+          SQLTask:ResultType="ResultSetType_Rowset" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="0"
+            SQLTask:DtsVariableName="User::DBObject_Name_VObject" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Log Metadata for new Tables"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:Disabled="True"
+      DTS:DTSID="{31FE3BE4-80BD-4027-B12A-0758F71C9078}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Log Metadata for new Tables"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Log Metadata for new Tables\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable">User::History_Metadata_Table</property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">4</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Log Metadata for new Tables\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[Utility]"
+                  connectionManagerRefId="Package.ConnectionManagers[Utility]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Log Metadata for new Tables\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Schema_Name]"
+                      cachedDataType="wstr"
+                      cachedLength="256"
+                      cachedName="Schema_Name"
+                      externalMetadataColumnId="Package\Log Metadata for new Tables\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Schema_Name]"
+                      lineageId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].Columns[Schema_Name]" />
+                    <inputColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Object_Name]"
+                      cachedDataType="wstr"
+                      cachedLength="256"
+                      cachedName="Object_Name"
+                      externalMetadataColumnId="Package\Log Metadata for new Tables\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Object_Name]"
+                      lineageId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].Columns[Object_Name]" />
+                    <inputColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Column_Name]"
+                      cachedDataType="wstr"
+                      cachedLength="256"
+                      cachedName="Column_Name"
+                      externalMetadataColumnId="Package\Log Metadata for new Tables\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Column_Name]"
+                      lineageId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].Columns[Column_Name]" />
+                    <inputColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Batch_Logging_Id]"
+                      cachedDataType="wstr"
+                      cachedLength="256"
+                      cachedName="Batch_Logging_Id"
+                      externalMetadataColumnId="Package\Log Metadata for new Tables\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Batch_Logging_Id]"
+                      lineageId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].Columns[Batch_Logging_Id]" />
+                    <inputColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Data_type]"
+                      cachedDataType="wstr"
+                      cachedLength="256"
+                      cachedName="Data_type"
+                      externalMetadataColumnId="Package\Log Metadata for new Tables\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Data_type]"
+                      lineageId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].Columns[Data_type]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Object_Metadata_History_Key]"
+                      dataType="i4"
+                      name="Object_Metadata_History_Key" />
+                    <externalMetadataColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Schema_Name]"
+                      dataType="wstr"
+                      length="256"
+                      name="Schema_Name" />
+                    <externalMetadataColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Object_Name]"
+                      dataType="wstr"
+                      length="256"
+                      name="Object_Name" />
+                    <externalMetadataColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Column_Name]"
+                      dataType="wstr"
+                      length="256"
+                      name="Column_Name" />
+                    <externalMetadataColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Data_type]"
+                      dataType="wstr"
+                      length="256"
+                      name="Data_type" />
+                    <externalMetadataColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Batch_Logging_Id]"
+                      dataType="i4"
+                      name="Batch_Logging_Id" />
+                    <externalMetadataColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Last_Update_Date]"
+                      dataType="dbTimeStamp"
+                      name="Last_Update_Date" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Log Metadata for new Tables\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\Log Metadata for new Tables\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Log Metadata for new Tables\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Log Metadata for new Tables\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Log Metadata for new Tables\OLE DB Source"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="OLE DB Source"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT Schema_Name, 
+       Object_Name, 
+       Column_Name, 
+       Data_type,
+	   Batch_Logging_Id
+FROM [ETL].[FN_Metadata] F
+WHERE EXISTS
+(
+    SELECT 'x'
+    FROM [ETL].[Candidate_FN_List] C
+    WHERE C.Object_Name_Orginal = F.Object_Name
+          AND c.Batch_Logging_Id = F.Batch_Logging_Id
+          AND [IS_Processed] = 1
+)
+and Batch_Logging_Id =?</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable">User::Processed_Tables_Columns</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping">"Parameter0:Input",{23E18DFC-EBF5-40F4-A7E3-0E6180EC6CBE};</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Log Metadata for new Tables\OLE DB Source.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[Utility]"
+                  connectionManagerRefId="Package.ConnectionManagers[Utility]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].Columns[Schema_Name]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Schema_Name]"
+                      length="256"
+                      lineageId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].Columns[Schema_Name]"
+                      name="Schema_Name"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].Columns[Object_Name]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Object_Name]"
+                      length="256"
+                      lineageId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].Columns[Object_Name]"
+                      name="Object_Name"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].Columns[Column_Name]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Column_Name]"
+                      length="256"
+                      lineageId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].Columns[Column_Name]"
+                      name="Column_Name"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].Columns[Batch_Logging_Id]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Batch_Logging_Id]"
+                      length="256"
+                      lineageId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].Columns[Batch_Logging_Id]"
+                      name="Batch_Logging_Id"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].Columns[Data_type]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Data_type]"
+                      length="256"
+                      lineageId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].Columns[Data_type]"
+                      name="Data_type"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Schema_Name]"
+                      dataType="wstr"
+                      length="256"
+                      name="Schema_Name" />
+                    <externalMetadataColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Object_Name]"
+                      dataType="wstr"
+                      length="256"
+                      name="Object_Name" />
+                    <externalMetadataColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Column_Name]"
+                      dataType="wstr"
+                      length="256"
+                      name="Column_Name" />
+                    <externalMetadataColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Batch_Logging_Id]"
+                      dataType="i4"
+                      name="Batch_Logging_Id" />
+                    <externalMetadataColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Data_type]"
+                      dataType="wstr"
+                      length="256"
+                      name="Data_type" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Schema_Name]"
+                      dataType="wstr"
+                      length="256"
+                      lineageId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Schema_Name]"
+                      name="Schema_Name" />
+                    <outputColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Object_Name]"
+                      dataType="wstr"
+                      length="256"
+                      lineageId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Object_Name]"
+                      name="Object_Name" />
+                    <outputColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Column_Name]"
+                      dataType="wstr"
+                      length="256"
+                      lineageId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Column_Name]"
+                      name="Column_Name" />
+                    <outputColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Data_type]"
+                      dataType="wstr"
+                      length="256"
+                      lineageId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Data_type]"
+                      name="Data_type" />
+                    <outputColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Batch_Logging_Id]"
+                      dataType="i4"
+                      lineageId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Batch_Logging_Id]"
+                      name="Batch_Logging_Id" />
+                    <outputColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Log Metadata for new Tables.Paths[OLE DB Source Output]"
+              endId="Package\Log Metadata for new Tables\OLE DB Destination.Inputs[OLE DB Destination Input]"
+              name="OLE DB Source Output"
+              startId="Package\Log Metadata for new Tables\OLE DB Source.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Resets IS_New flag to 0 for Candidate_FN_List"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{910F4D50-6CFF-4300-B4F3-1DEBBE0AD2B6}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Resets IS_New flag to 0 for Candidate_FN_List"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{8FA8C553-5C1A-4621-97DB-EC5D822A8424}"
+          SQLTask:SqlStatementSource="&#xA;Update &#xA; [ETL].[Candidate_FN_List] Set IS_New =0&#xA; Where IS_New =1&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Truncate_Staging_Table"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{099E877D-32B3-4B85-B3D0-7A3B15489119}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Truncate_Staging_Table"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{8FA8C553-5C1A-4621-97DB-EC5D822A8424}"
+          SQLTask:SqlStmtSourceType="Variable"
+          SQLTask:SqlStatementSource="User::Truncate_Stg" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Write Logging Record for Creating Metadata"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:Disabled="True"
+      DTS:DTSID="{7f52a10a-b2f2-4b95-b513-88c000779d3d}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Write Logging Record for Creating Metadata"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{8FA8C553-5C1A-4621-97DB-EC5D822A8424}"
+          SQLTask:SqlStatementSource="EXEC [etl].[Save_Meta_Processing_Log_Record] ?, 'SCD Create Table Script','Successfully loaded Create Table Scripts',NULL" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="User::BatchLoggingId"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Write Logging Record for pulling EDM Function Data"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:Disabled="True"
+      DTS:DTSID="{b98fc722-f1e3-48ad-8728-00e85f430abf}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Write Logging Record for pulling EDM Function Data"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{8FA8C553-5C1A-4621-97DB-EC5D822A8424}"
+          SQLTask:SqlStatementSource="EXEC [etl].[Save_Meta_Processing_Log_Record] ?, 'SCD FN Metadata Load','Successfully Loaded  EDM Function Metadata',NULL" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="User::BatchLoggingId"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{383CB25A-A964-420D-90E9-14BF7B3ECE0A}"
+      DTS:From="Package\Truncate_Staging_Table"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Resets IS_New flag to 0 for Candidate_FN_List" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{D590DFB7-08D0-4A96-B182-BD619EBB93B1}"
+      DTS:From="Package\Foreach Loop Container"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Write Logging Record for pulling EDM Function Data" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 10]"
+      DTS:CreationName=""
+      DTS:DTSID="{CEC1C712-2468-45C8-B8B7-6FA83B85B66D}"
+      DTS:From="Package\Get_FunctionNames"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 10"
+      DTS:To="Package\Foreach Loop Container" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 11]"
+      DTS:CreationName=""
+      DTS:DTSID="{04428393-21AE-4BB8-8AC5-72031156938E}"
+      DTS:From="Package\Disable_Sytem_Versioning"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 11"
+      DTS:To="Package\Create Temporal Tables Will fail if table already exists" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{D3E3B865-A481-41CA-ABE7-B6DAA8140D38}"
+      DTS:From="Package\Resets IS_New flag to 0 for Candidate_FN_List"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\Get_FunctionNames" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{3EBD8145-2718-45D9-A233-A883AE6CC0A0}"
+      DTS:From="Package\Create Staing Tables"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 3"
+      DTS:To="Package\Disable_Sytem_Versioning" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
+      DTS:CreationName=""
+      DTS:DTSID="{76DAD1A4-95BC-4EA4-9881-5BF88CD502D6}"
+      DTS:From="Package\Get Table Creation Scripts"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 4"
+      DTS:To="Package\Write Logging Record for Creating Metadata" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 5]"
+      DTS:CreationName=""
+      DTS:DTSID="{56A671B6-45D5-4E9D-A3E5-9B29371E8255}"
+      DTS:From="Package\BatchLoggingId"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 5"
+      DTS:To="Package\Truncate_Staging_Table" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 6]"
+      DTS:CreationName=""
+      DTS:DTSID="{79177506-6D58-4F77-9FC0-15CBE870964F}"
+      DTS:From="Package\Write Logging Record for pulling EDM Function Data"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 6"
+      DTS:To="Package\Get Table Creation Scripts" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 7]"
+      DTS:CreationName=""
+      DTS:DTSID="{8FC1E146-600B-4EBB-9046-F92227D257F0}"
+      DTS:From="Package\Write Logging Record for Creating Metadata"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 7"
+      DTS:To="Package\Create Staing Tables" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 8]"
+      DTS:CreationName=""
+      DTS:DTSID="{39632061-C057-4596-8CB2-9D9CFAADCC2E}"
+      DTS:From="Package\Create Temporal Tables Will fail if table already exists"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 8"
+      DTS:To="Package\Create SCD Views" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 9]"
+      DTS:CreationName=""
+      DTS:DTSID="{9CFDF26F-12DD-4D4C-B206-C7833AEB36FB}"
+      DTS:From="Package\Create SCD Views"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 9"
+      DTS:To="Package\Log Metadata for new Tables" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="154,42"
+          Id="Package\BatchLoggingId"
+          TopLeft="94.5,5.5" />
+        <NodeLayout
+          Size="162.666666666667,42"
+          Id="Package\Create SCD Views"
+          TopLeft="90.0000000000001,1231.5" />
+        <NodeLayout
+          Size="176,42"
+          Id="Package\Create Staing Tables"
+          TopLeft="83.5000000000001,925.5" />
+        <NodeLayout
+          Size="332,42"
+          Id="Package\Create Temporal Tables Will fail if table already exists"
+          TopLeft="5.50000000000014,1129.5" />
+        <NodeLayout
+          Size="202.666666666667,42"
+          Id="Package\Disable_Sytem_Versioning"
+          TopLeft="70.0000000000001,1027.5" />
+        <NodeLayout
+          Size="150.666666666667,42"
+          Id="Package\Foreach Loop Container\Data Flow Task"
+          TopLeft="5.5,5.5" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="162,102.666666666667"
+          Size="162,146"
+          Id="Package\Foreach Loop Container"
+          TopLeft="90.5000000000001,413.5" />
+        <NodeLayout
+          Size="202,42"
+          Id="Package\Get Table Creation Scripts"
+          TopLeft="70.5000000000001,721.5" />
+        <NodeLayout
+          Size="173.333333333334,42"
+          Id="Package\Get_FunctionNames"
+          TopLeft="85,311.5" />
+        <NodeLayout
+          Size="216,42"
+          Id="Package\Log Metadata for new Tables"
+          TopLeft="63.5000000000002,1333.5" />
+        <NodeLayout
+          Size="298.666666666667,42"
+          Id="Package\Resets IS_New flag to 0 for Candidate_FN_List"
+          TopLeft="22,209.5" />
+        <NodeLayout
+          Size="193.333333333334,42"
+          Id="Package\Truncate_Staging_Table"
+          TopLeft="75,107.5" />
+        <NodeLayout
+          Size="286.666666666667,42"
+          Id="Package\Write Logging Record for Creating Metadata"
+          TopLeft="28.0000000000001,823.5" />
+        <NodeLayout
+          Size="325.333333333334,42"
+          Id="Package\Write Logging Record for pulling EDM Function Data"
+          TopLeft="9.00000000000009,619.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="171.5,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="171.5,559.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 10]"
+          TopLeft="171.5,353.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 11]"
+          TopLeft="171.5,1069.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="171.5,251.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="171.5,967.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 4]"
+          TopLeft="171.5,763.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 5]"
+          TopLeft="171.5,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 6]"
+          TopLeft="171.5,661.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 7]"
+          TopLeft="171.5,865.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 8]"
+          TopLeft="171.5,1171.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 9]"
+          TopLeft="171.5,1273.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Foreach Loop Container\Data Flow Task">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="170.666666666667,42"
+          Id="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination"
+          TopLeft="5.50000000000003,209.5" />
+        <NodeLayout
+          Size="154,42"
+          Id="Package\Foreach Loop Container\Data Flow Task\Derived Column"
+          TopLeft="14,107.5" />
+        <NodeLayout
+          Size="150,42"
+          Id="Package\Foreach Loop Container\Data Flow Task\OLE DB Source"
+          TopLeft="16,5.5" />
+        <EdgeLayout
+          Id="Package\Foreach Loop Container\Data Flow Task.Paths[Derived Column Output]"
+          TopLeft="91,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Foreach Loop Container\Data Flow Task.Paths[OLE DB Source Output]"
+          TopLeft="91,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Foreach Loop Container\Data Flow Task\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Foreach Loop Container\Data Flow Task\OLE DB Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\Get Table Creation Scripts">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="150,42"
+          Id="Package\Get Table Creation Scripts\OLE DB Source"
+          TopLeft="209.5,4.5" />
+        <NodeLayout
+          Size="154,42"
+          Id="Package\Get Table Creation Scripts\Derived Column"
+          TopLeft="207.5,107.5" />
+        <NodeLayout
+          Size="152,42"
+          Id="Package\Get Table Creation Scripts\Log Destination"
+          TopLeft="208.5,311.5" />
+        <NodeLayout
+          Size="142,42"
+          Id="Package\Get Table Creation Scripts\Candidate FN"
+          TopLeft="5.50000000000006,311.5" />
+        <NodeLayout
+          Size="113.333333333334,42"
+          Id="Package\Get Table Creation Scripts\Lookup"
+          TopLeft="228,209.5" />
+        <EdgeLayout
+          Id="Package\Get Table Creation Scripts.Paths[OLE DB Source Output]"
+          TopLeft="284.5,46.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,61"
+              Start="0,0"
+              End="0,53.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,53.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Get Table Creation Scripts.Paths[Lookup No Match Output]"
+          TopLeft="267,251.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-190.5,60"
+              Start="0,0"
+              End="-190.5,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,20.5026178010471" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,20.5026178010471"
+                    Point2="0,24.5026178010471"
+                    Point3="-4,24.5026178010471" />
+                  <mssgle:LineSegment
+                    End="-186.5,24.5026178010471" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-186.5,24.5026178010471"
+                    Point2="-190.5,24.5026178010471"
+                    Point3="-190.5,28.5026178010471" />
+                  <mssgle:LineSegment
+                    End="-190.5,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-151.05638671875,29.5026178010471,111.6127734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Get Table Creation Scripts.Paths[Lookup Match Output]"
+          TopLeft="302,251.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-17.5,60"
+              Start="0,0"
+              End="-17.5,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,20.5026178010471" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,20.5026178010471"
+                    Point2="0,24.5026178010471"
+                    Point3="-4,24.5026178010471" />
+                  <mssgle:LineSegment
+                    End="-13.5,24.5026178010471" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-13.5,24.5026178010471"
+                    Point2="-17.5,24.5026178010471"
+                    Point3="-17.5,28.5026178010471" />
+                  <mssgle:LineSegment
+                    End="-17.5,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-56.94138671875,29.5026178010471,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Get Table Creation Scripts.Paths[Derived Column Output]"
+          TopLeft="284.5,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Get Table Creation Scripts\Lookup">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:string">false</Value>
+      </Property>
+      <Property>
+        <Name>UsedTableName</Name>
+        <Value
+          type="q3:string"></Value>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q4:string">0</Value>
+      </Property>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Get Table Creation Scripts\Log Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Get Table Creation Scripts\OLE DB Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Get Table Creation Scripts\Candidate FN">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\Log Metadata for new Tables">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="150,42"
+          Id="Package\Log Metadata for new Tables\OLE DB Source"
+          TopLeft="16,5.5" />
+        <NodeLayout
+          Size="171,42"
+          Id="Package\Log Metadata for new Tables\OLE DB Destination"
+          TopLeft="5.50000000000001,107.5" />
+        <EdgeLayout
+          Id="Package\Log Metadata for new Tables.Paths[OLE DB Source Output]"
+          TopLeft="91,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Log Metadata for new Tables\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Log Metadata for new Tables\OLE DB Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

@@ -1,0 +1,8 @@
+[submodule "_Deploy/submodule_psScript"]
+	path = _Deploy/submodule_psScript
+	url = http://pagoda:8080/tfs/IRSR/InsightG/_git/module_psScript
+	branch = develop
+[submodule "_Deploy/submodule_build"]
+	path = _Deploy/submodule_build
+	url = http://pagoda:8080/tfs/IRSR/InsightG/_git/module_build
+	branch = develop

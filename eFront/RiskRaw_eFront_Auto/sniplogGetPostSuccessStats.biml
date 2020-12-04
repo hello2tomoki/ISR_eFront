@@ -1,0 +1,7 @@
+﻿<ExecutePackage Name="GetPostSuccessStats">
+    <ParameterBindings>
+        <ParameterBinding Name="HistoricalTableName" VariableName="User.HistoricalTableName" />
+        <ParameterBinding Name="HistoricalTableKeyField" VariableName="User.HistoricalTableKeyField" />
+    </ParameterBindings>
+    <ExternalProjectPackage Package="chGetPostProcessStats.dtsx" />
+</ExecutePackage>

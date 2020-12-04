@@ -1,0 +1,68 @@
+﻿
+            <Events>
+                <Event Name="OnError" ConstraintMode="LinearOnSuccess" EventType="OnError">
+                    <Tasks>
+                        
+                        <Container Name="AuditLog" ConstraintMode="LinearOnSuccess">
+                            <Tasks>
+                                
+                                <Expression Name="set ExecStatus" Expression="@[User::ExecAuditlog_Exec_Status] = &quot;Error&quot;" />
+                                
+                                <Expression Name="setExecInfoMsg" Expression="@[User::ExecAuditlog_Exec_Info_Msg]   = &quot;ERROR : &quot; +  (DT_WSTR, 11)@[System::ErrorCode]  + &quot; &quot;+  @[System::ErrorDescription]" />
+                                
+                                <ExecuteSQL Name="LogCreateErrorEntry" ConnectionName="Utility">
+                                    <Parameters>
+                                        <Parameter Name="0" VariableName="User.ExecAuditlog_ExecID" Length="-1" DataType="Int32" />
+                                        <Parameter Name="1" VariableName="User.ErrorCode" Length="-1" DataType="AnsiString" />
+                                        <Parameter Name="2" VariableName="System.ErrorDescription" Length="-1" DataType="AnsiString" />
+                                    </Parameters>
+                                    <VariableInput VariableName="User.cmdExecErrorLog_CreateErrorEntry" />
+                                </ExecuteSQL>
+                                
+                                <ExecuteSQL Name="ExecAuditlog_UpdateEntry" ConnectionName="Utility">
+                                    <Parameters>
+                                        <Parameter Name="0" VariableName="User.ExecAuditlog_ExecID" Length="-1" DataType="Int32" />
+                                        <Parameter Name="1" VariableName="User.ExecAuditlog_Exec_Status" Length="-1" DataType="AnsiString" />
+                                        <Parameter Name="2" VariableName="User.ExecAuditlog_Exec_Info_Msg" Length="-1" DataType="AnsiString" />
+                                    </Parameters>
+                                    <VariableInput VariableName="User.cmdExecAuditlog_UpdateEntry" />
+                                </ExecuteSQL>
+                                    
+                            </Tasks>
+                        </Container>
+                        
+                        <ExecuteSQL Name="UpdateSSISAuditLog" ConnectionName="Utility">
+                            <Parameters>
+                                <Parameter Name="0" VariableName="Param_BatchID" Length="-1" DataType="Int32" />
+                                <Parameter Name="1" VariableName="System.ErrorDescription" Length="-1" DataType="AnsiString" />
+                                <Parameter Name="2" VariableName="System.ParentContainerGUID" Length="-1" DataType="String" />
+                                <Parameter Name="3" VariableName="User.SSISAudit_RowCountBefore" Length="-1" DataType="Int32" />
+                                <Parameter Name="4" VariableName="User.SSISAudit_RowCountProcessedTotal" Length="-1" DataType="Int32" />
+                                <Parameter Name="5" VariableName="User.SSISAudit_RowCountProcessedNew" Length="-1" DataType="Int32" />
+                                <Parameter Name="6" VariableName="User.SSISAudit_RowCountProcessedUpdated" Length="-1" DataType="Int32" />
+                                <Parameter Name="7" VariableName="User.SSISAudit_RowCountProcessedIgnored" Length="-1" DataType="Int32" />
+                                <Parameter Name="8" VariableName="User.SSISAudit_RowCountFailed" Length="-1" DataType="Int32" />
+                                <Parameter Name="9" VariableName="User.SSISAudit_RowCountAfter" Length="-1" DataType="Int32" />
+                                <Parameter Name="10" VariableName="User.SSISAudit_MaxSurrogateKey" Length="-1" DataType="Int32" />
+                                <Parameter Name="11" VariableName="User.SSISAudit_LineageID" Length="-1" DataType="Int32" />
+                            </Parameters>
+                                <DirectInput>UPDATE log.SSISAudit SET
+                                    BatchID = ?,
+                                    CompleteTMST = GetDate(),
+                                    CompletionMessage = ?,
+                                    ExecutionInstanceGUID =?,
+                                    RowCountBefore =?,
+                                    RowCountProcessedTotal = ?,
+                                    RowCountProcessedNew= ?,
+                                    RowCountProcessedUpdated=?,
+                                    RowCountProcessedIgnored = ?,
+                                    RowCountFailed = ?,
+                                    RowCountAfter =?,
+                                    TableMaxSurrogateKey = ?
+                                    WHERE SSISAuditKey = ?
+                            </DirectInput>
+                        </ExecuteSQL>
+                    </Tasks>
+                </Event>
+            </Events>
+            

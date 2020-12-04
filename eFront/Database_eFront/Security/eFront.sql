@@ -1,0 +1,2 @@
+﻿CREATE SCHEMA [eFront]
+  AUTHORIZATION [dbo];

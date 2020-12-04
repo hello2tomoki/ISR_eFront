@@ -1,0 +1,935 @@
+﻿<#@ import namespace="System.Data" #> 
+<#@ import namespace="System.Data.SqlClient" #>
+<#@ template language="C#" tier="1" #>
+
+<Biml xmlns="http://schemas.varigence.com/biml.xsd">
+
+<#
+//Declare Connection Variables
+ string strConnection = @"Data Source=Delta;Initial catalog=Sandbox3; Integrated security=SSPI;"; 
+ string connectionString =""; 
+ DataTable dtSourceConnection = new DataTable(); 
+ DataTable dtDestinationConnection = new DataTable(); 
+ DataTable dtTableMapping = new DataTable();
+ DataTable dtController_Package_Timeseries = new DataTable();
+ DataTable dtController_Package_NonTimeseries = new DataTable();
+
+
+  // Get All  Package Details
+
+ SqlDataAdapter sqldaTableMapping = new SqlDataAdapter("Select Package_Name ParamName, * from [etl].[vw_SCD_FN_AllActiveMapping]  where Package_Name = 'dbo_view_PCO_Tracking';", strConnection);
+ sqldaTableMapping.Fill(dtTableMapping);
+ DataRow rwTableMapping = dtTableMapping.Rows[0];
+ 
+   
+ #>
+ 
+    <Projects>
+        
+        <PackageProject Name="SCD_EDM_ETL_Auto" ProtectionLevel="DontSaveSensitive">
+            
+        <Parameters>
+                <Parameter DataType="String" Name="Destination_ServerName">Delta</Parameter>
+                <Parameter DataType="String" Name="Destination_InitalCatalog">Sandbox3</Parameter>
+                <Parameter DataType="String" Name="Source_InitalCatalog">eFrontPCOTracking</Parameter>
+                <Parameter DataType="String" Name="Source_ServerName">Plymouth</Parameter>
+                <Parameter DataType="String" Name="Utility_ServerName">Delta</Parameter>
+                <Parameter DataType="String" Name="Utility_InitalCatalog">Sandbox3</Parameter>                    
+                <Parameter DataType="Boolean" Name="USE_MDS_Dates">False</Parameter>
+        </Parameters>
+    
+            <Packages>     
+                <Package PackageName="Plymouth_Controller" />
+                
+            </Packages>
+                
+        </PackageProject>
+    </Projects>
+    
+    <Connections>
+
+        <Connection Name="Source" ConnectionString="Data Source=Plymouth;Initial Catalog=eFrontPCOTracking;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" >
+                 <Expressions>
+                <Expression ExternalProperty="InitialCatalog">@[$Project::Source_InitalCatalog]</Expression>  
+                <Expression ExternalProperty="ServerName">@[$Project::Source_ServerName]</Expression>                  
+               </Expressions> 
+        </Connection>
+
+        <Connection Name="Destination"  ConnectionString="Data Source=Delta;Initial Catalog=Sandbox3;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" >
+            <Expressions>
+                <Expression ExternalProperty="InitialCatalog">@[$Project::Destination_InitalCatalog]</Expression>  
+                <Expression ExternalProperty="ServerName">@[$Project::Destination_ServerName]</Expression>                  
+            </Expressions> 
+        </Connection>
+    
+        <Connection Name="Utility" ConnectionString="Data Source=Delta;Initial Catalog=Sandbox3;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;">
+                <Expressions>
+                    <Expression ExternalProperty="InitialCatalog">@[$Project::Destination_InitalCatalog]</Expression>  
+                    <Expression ExternalProperty="ServerName">@[$Project::Destination_ServerName]</Expression>         
+                </Expressions> 
+        </Connection>  
+     
+    </Connections>
+    
+    <Packages>    
+        <Package Name="Plymouth_Controller" Language="None" ConstraintMode="Parallel" ProtectionLevel="DontSaveSensitive">
+            
+        <#@ include file="sniplogEvents.biml" #>
+        
+            <Variables>
+                <Variable Name="LineageID" DataType="Int32" >0</Variable>
+                <Variable Name="LineageString" DataType="String" > "/"</Variable>
+                <Variable Name="SuccessMessage" DataType="String" EvaluateAsExpression="true">"Process Succeeded - Controller"</Variable>
+                <Variable Name="FailureMessage" DataType="String" EvaluateAsExpression="true">"Process FAILURE - Controller"</Variable>                            
+                <Variable Name="LastRunDT" DataType="DateTime" > 06/01/2016 3:29 PM</Variable>
+                <Variable Name="LastRunTMST" DataType="DateTime" > 06/01/2016 3:29 PM</Variable>
+                <Variable Name="LineageTMST" DataType="Int32" > 0</Variable>
+                    
+                <Variable Name="HistoricalTableName" DataType="String" EvaluateAsExpression="true">&quot;&quot;</Variable>            
+                <!-- ******************************************************************************************************* -->   
+                            
+                <Variable Name="cmdExecAuditlog_CreateEntry" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">&quot;exec log.LogCreateEntry ? OUTPUT, ?,?,?,?,?&quot;</Variable>
+                <Variable Name="cmdExecAuditlog_UpdateEntry" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">&quot;exec log.LogUpdateEntry ?,?,?&quot;</Variable>
+                <Variable Name="cmdExecErrorLog_CreateErrorEntry" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">&quot;exec log.LogCreateErrorEntry ?,?,?&quot;</Variable>
+                
+                <Variable Name="cmdHistoricalTableRowCount" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">&quot;SELECT Count_big(*) FROM &quot; + @[User::HistoricalTableName]  + &quot; with (nolock)&quot;</Variable>
+                
+                <Variable Name="valDate" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">""</Variable>
+                <Variable Name="DateOfReportExecution" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">""</Variable>
+                
+                <Variable Name="cmdSourceDataLoadRegister_Insert" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">&quot;&quot;</Variable>
+                
+                <Variable Name="ExecAuditDetailLog_INFO_MSG" DataType="String" IncludeInDebugDump="Exclude"></Variable>
+                <Variable Name="ExecAuditlog_ExecID" DataType="Int32" IncludeInDebugDump="Include">0</Variable>
+                <Variable Name="ExecAuditlog_Exec_Description" DataType="String" IncludeInDebugDump="Exclude"></Variable>
+                <Variable Name="ExecAuditlog_Exec_Info_Msg" DataType="String" IncludeInDebugDump="Exclude"></Variable>
+                <Variable Name="ExecAuditlog_Exec_Parent_Id" DataType="Int32" IncludeInDebugDump="Include">0</Variable>
+                <Variable Name="ExecAuditlog_Exec_Status" DataType="String" IncludeInDebugDump="Exclude"></Variable>
+                <Variable Name="ExecAuditlog_Params" DataType="String" IncludeInDebugDump="Exclude"></Variable>
+                
+                <Variable Name="FileContent" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">&quot;&quot;</Variable>
+                <Variable Name="FileContentSubType" DataType="String" IncludeInDebugDump="Exclude"></Variable>
+                <Variable Name="FileContentType" DataType="String" IncludeInDebugDump="Exclude"></Variable>
+                
+                <Variable Name="SSISAudit_BatchId" DataType="Int32" IncludeInDebugDump="Include">0</Variable>
+                <Variable Name="SSISAudit_LineageID" DataType="Int32" IncludeInDebugDump="Include">0</Variable>
+                <Variable Name="SSISAudit_LineageTMST" DataType="DateTime" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">@[System::StartTime]</Variable>
+                <Variable Name="SSISAudit_MaxSurrogateKey" DataType="Int32" IncludeInDebugDump="Exclude">0</Variable>
+                <Variable Name="SSISAudit_RowCountAfter" DataType="Int32" IncludeInDebugDump="Include">0</Variable>
+                <Variable Name="SSISAudit_RowCountBefore" DataType="Int32" IncludeInDebugDump="Include">0</Variable>
+                <Variable Name="SSISAudit_RowCountFailed" DataType="Int32" IncludeInDebugDump="Include">0</Variable>
+                <Variable Name="SSISAudit_RowCountProcessedIgnored" DataType="Int32" IncludeInDebugDump="Include">0</Variable>
+                <Variable Name="SSISAudit_RowCountProcessedNew" DataType="Int32" IncludeInDebugDump="Include">0</Variable>
+                <Variable Name="SSISAudit_RowCountProcessedTotal" DataType="Int32" IncludeInDebugDump="Include">0</Variable>
+                <Variable Name="SSISAudit_RowCountProcessedUpdated" DataType="Int32" IncludeInDebugDump="Include">0</Variable>
+                
+                <Variable Name="DeleteRecordCount" DataType="Int32" >0</Variable>
+                     	    
+                <Variable Name="VerbosAuditInfo" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">&quot;&quot;</Variable>
+                <Variable Name="ErrorCode" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">&quot;1234&quot;</Variable>
+                    
+                <Variable Name="HistoricalTableKeyField" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">&quot;&quot;</Variable>
+                            
+                <Variable Name="cmdNonTimeseries_Effective_Dates_To_Load" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">&quot;SELECT NonTimeseries_Effective_Date_To_Load FROM MDS_ISR.MDM.SCD_EDM_ETL_Dates WHERE NonTimeseries_Effective_Date_To_Load IS NOT NULL;&quot;</Variable>
+                <Variable Name="objNonTimeseries_Effective_Dates_To_Load" DataType="Object" IncludeInDebugDump="Include"></Variable>
+                
+                <Variable Name="strEffective_Dates_To_Load" DataType="String" IncludeInDebugDump="Exclude">1800-01-01</Variable>
+
+             </Variables>
+
+            <Parameters>
+                <!-- Generate the package parameters  to enable disable Packages -->
+                <#    foreach(DataRow Packagerow in dtTableMapping.Rows) {#>
+                
+                <Parameter DataType="Boolean" Name="<#=Packagerow["ParamName"]#>_Disable">False</Parameter>
+            
+                <# } #> 
+                
+                <Parameter DataType="Int32" Name="Param_BatchID">0</Parameter>
+                <Parameter Name="EXEC_PARENT_ID" DataType="Int32">0</Parameter>
+                <Parameter DataType="Boolean" Name="eFront_Dates_Disable">False</Parameter>
+                <Parameter DataType="Boolean" Name="MDS_Dates_Disable">True</Parameter>
+                  
+            </Parameters>
+
+            <Connections>
+				<Connection ConnectionName="Destination">
+					<Expressions>
+						<Expression ExternalProperty="InitialCatalog">@[$Project::Destination_InitalCatalog]</Expression>  
+                <Expression ExternalProperty="ServerName">@[$Project::Destination_ServerName]</Expression>    
+                    </Expressions>
+                </Connection>
+                <Connection ConnectionName="Utility">
+					<Expressions>
+    					<Expression ExternalProperty="InitialCatalog">@[$Project::Utility_InitalCatalog]</Expression>  
+                        <Expression ExternalProperty="ServerName">@[$Project::Utility_ServerName]</Expression>     
+                    </Expressions>
+                </Connection>                    
+            </Connections>
+
+            <Tasks>
+            
+                <!-- Set up Container -->
+                <Container Name="SetUp" >
+                    <Tasks>
+                        <#@ include file="sniplogSetupLogProcesses.biml" #>
+                    </Tasks>                        
+                </Container> 
+
+    
+
+                <!-- NonTimeseries  Effective Date-->
+                <Container Name="NonTimeseries_Effective_Date" ConstraintMode="Linear"   >
+                    <PrecedenceConstraints LogicalType="Or"> 
+                        <Inputs>
+                            <Input EvaluationOperation="Constraint" EvaluationValue="Success" OutputPathName="SetUp.Output" />
+                        </Inputs>
+                    </PrecedenceConstraints> 
+
+                    <Tasks>
+                        
+                        <Container Name="LookEffectiveDatesFromMDS" ConstraintMode="Linear">
+                            <Expressions> 
+                                <Expression ExternalProperty="Disable">@[$Package::MDS_Dates_Disable]</Expression> 
+                            </Expressions>
+                            
+                            <Tasks>
+                                
+                                <ExecuteSQL Name="Get NonTimeseries_Effective_Dates_To_Load" Disabled="false" ConnectionName="Destination" ResultSet="Full">
+                                     <Expressions> 
+                                        <Expression ExternalProperty="Disable">@[$Package::MDS_Dates_Disable]</Expression> 
+                                    </Expressions>
+                                    <Results>
+                                        <Result Name="0" VariableName="User.objNonTimeseries_Effective_Dates_To_Load" />
+                                    </Results>
+                                    <VariableInput VariableName="User.cmdNonTimeseries_Effective_Dates_To_Load" />
+                                </ExecuteSQL>
+                        
+                                <ForEachAdoLoop Name="Foreach Loop on Effective_Dates_To_Load"  ConstraintMode="LinearOnSuccess" SourceVariableName="User.objNonTimeseries_Effective_Dates_To_Load">
+        
+                                        <Tasks >
+                                            <#foreach(DataRow Packagerow in dtTableMapping.Rows) 
+                                                {#>
+                                                    <#if(Packagerow["Controller_Package_Group"].ToString() =="eFront")
+                                                        {#>
+                                                            <ExecutePackage Name="<#=Packagerow["Package_Name"]#>">
+                                                                <Expressions>         
+                                                                    <Expression ExternalProperty="Disable">@[$Package::<#=Packagerow["ParamName"]#>_Disable]</Expression>
+                                                                </Expressions>    
+                                                                <ParameterBindings>
+                                                                    <ParameterBinding Name="EXEC_PARENT_ID" VariableName="User.ExecAuditlog_ExecID" />
+                                                                    <ParameterBinding Name="Param_BatchID" VariableName="User.SSISAudit_BatchId" />
+                                                                    <ParameterBinding Name="Assign_NonTimeseries_Effective_Date" VariableName="User.strEffective_Dates_To_Load" />
+                                                                </ParameterBindings>
+                                                                <ExternalProjectPackage Package="<#=Packagerow["Package_Name"]#>.dtsx" />
+                                                            </ExecutePackage>
+                                                        <#}#>
+                                                <#}#> 
+                                        </Tasks>
+                                    
+                                    <VariableMappings>
+                                        <VariableMapping Name="0" VariableName="User.strEffective_Dates_To_Load"/>
+                                    </VariableMappings>
+                                </ForEachAdoLoop>
+                            </Tasks>
+                        </Container>
+
+                        <Container Name="LoadForCurrentDateByDefaultFromEDM" ConstraintMode="Linear">
+                            <Expressions> 
+                                <Expression ExternalProperty="Disable">@[$Package::eFront_Dates_Disable]</Expression> 
+                            </Expressions>
+                            <Tasks>
+
+                                <#foreach(DataRow Packagerow in dtTableMapping.Rows) 
+                                        {#>
+                                            <#if(Packagerow["Controller_Package_Group"].ToString() =="eFront")
+                                                {#>
+                                                    <ExecutePackage Name="<#=Packagerow["Package_Name"]#>">
+                                                        <Expressions>         
+                                                            <Expression ExternalProperty="Disable">@[$Package::<#=Packagerow["ParamName"]#>_Disable]</Expression>
+                                                        </Expressions>    
+                                                        <ParameterBindings>
+                                                            <ParameterBinding Name="EXEC_PARENT_ID" VariableName="User.ExecAuditlog_ExecID" />
+                                                            <ParameterBinding Name="Param_BatchID" VariableName="User.SSISAudit_BatchId" />
+                                                            <ParameterBinding Name="Assign_NonTimeseries_Effective_Date" VariableName="User.strEffective_Dates_To_Load" />
+                                                        </ParameterBindings>
+                                                        <ExternalProjectPackage Package="<#=Packagerow["Package_Name"]#>.dtsx" />
+                                                    </ExecutePackage>
+                                                <#}#>
+                                        <#}#> 
+                                
+                            </Tasks>
+                                
+                        </Container>
+                                                    
+                    </Tasks>
+                </Container>  
+                  <!--NonTimeseries  Effective Date--> 
+                  
+
+                <!-- Close -->                
+                <Container Name="Close" ConstraintMode="Linear"   >
+                    <PrecedenceConstraints LogicalType="And"> 
+                        <Inputs>
+                            <Input EvaluationOperation="Constraint" EvaluationValue="Success" OutputPathName="NonTimeseries_Effective_Date.Output" />
+                        </Inputs>
+                    </PrecedenceConstraints> 
+
+                    <Tasks>
+                        <#@ include file="sniplogSuccessfulCompletionCloseout.biml" #>
+                    </Tasks>
+                </Container>
+                <!-- Close -->      
+                
+               </Tasks>                     
+        </Package>
+    </Packages>
+
+<ScriptProjects>
+
+        <!-- **************************************Row Number ******************************************************** -->
+        <ScriptComponentProject ProjectCoreName="sc_c253bef215bf4d6b85dbe3919c35c167.csproj" Name="SCR - Rownumber">
+            <AssemblyReferences>
+            <AssemblyReference AssemblyPath="Microsoft.SqlServer.DTSPipelineWrap" />
+            <AssemblyReference AssemblyPath="Microsoft.SqlServer.DTSRuntimeWrap" />
+            <AssemblyReference AssemblyPath="Microsoft.SqlServer.PipelineHost" />
+            <AssemblyReference AssemblyPath="Microsoft.SqlServer.TxScript" />
+            <AssemblyReference AssemblyPath="System.dll" />
+            <AssemblyReference AssemblyPath="System.AddIn.dll" />
+            <AssemblyReference AssemblyPath="System.Data.dll" />
+            <AssemblyReference AssemblyPath="System.Xml.dll" />
+            </AssemblyReferences>
+
+            <Files>
+                <!-- Left alignment of .Net script to get a neat layout in package-->
+                           <File Path="AssemblyInfo.cs">
+using System.Reflection;
+using System.Runtime.CompilerServices;
+  
+//
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+//
+[assembly: AssemblyTitle("SC_977e21e288ea4faaaa4e6b2ad2cd125d")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("SSISJoost")]
+[assembly: AssemblyProduct("SC_977e21e288ea4faaaa4e6b2ad2cd125d")]
+[assembly: AssemblyCopyright("Copyright @ SSISJoost 2015")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+//
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Build Number
+//      Revision
+//
+// You can specify all the values or you can default the Revision and Build Numbers 
+// by using the '*' as shown below:
+  
+[assembly: AssemblyVersion("1.0.*")]
+                           </File>
+       <!-- Replaced greater/less than by &gt; and &lt; -->
+                           <File Path="main.cs">#region Namespaces
+using System;
+using System.Data;
+using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
+using Microsoft.SqlServer.Dts.Runtime.Wrapper;
+#endregion
+  
+/// &lt;summary&gt;
+/// Rownumber transformation to create an identity column
+/// &lt;/summary&gt;
+[Microsoft.SqlServer.Dts.Pipeline.SSISScriptComponentEntryPointAttribute]
+public class ScriptMain : UserComponent
+{
+
+ private int m_rowNumber;
+  
+ /// &lt;summary&gt;
+ /// Get max rownumber from variable
+ /// &lt;/summary&gt;
+ public override void PreExecute()
+ {
+  m_rowNumber = 0;
+ }
+   
+public override void PostExecute()
+{
+base.PostExecute();
+}   
+ /// &lt;summary&gt;
+ /// Increase rownumber and fill rownumber column
+ /// &lt;/summary&gt;
+ /// &lt;param name="Row"&gt;The row that is currently passing through the component&lt;/param&gt;
+ public override void Input0_ProcessInputRow(Input0Buffer Row)
+ {
+    m_rowNumber++;
+    Row.TransactionID = m_rowNumber;
+ }
+}
+                           </File>
+                    </Files>
+                    <InputBuffer Name="Input0">
+                           <Columns>
+                           </Columns>
+                    </InputBuffer>
+                    <OutputBuffers>
+                           <OutputBuffer Name="Output0">
+                                  <Columns>
+                                        <Column Name="TransactionID" DataType="Int32"></Column>
+                                  </Columns> 
+                           </OutputBuffer>
+                    </OutputBuffers>
+             </ScriptComponentProject>
+
+
+
+        <ScriptTaskProject Name="ST_d8bc57ceb0f243ab9d50013e635875c6" ProjectCoreName="ST_d8bc57ceb0f243ab9d50013e635875c6" VstaMajorVersion="0">
+            <AssemblyReferences>
+                <AssemblyReference AssemblyPath="System" />
+                <AssemblyReference AssemblyPath="System.Data" />
+                <AssemblyReference AssemblyPath="System.Windows.Forms" />
+                <AssemblyReference AssemblyPath="System.Xml" />
+                <AssemblyReference AssemblyPath="Microsoft.SqlServer.ManagedDTS.dll" />
+                <AssemblyReference AssemblyPath="Microsoft.SqlServer.ScriptTask.dll" />
+            </AssemblyReferences>
+            <Files>
+                <File Path="ScriptMain.cs">#region Help:  Introduction to the script task
+/* The Script Task allows you to perform virtually any operation that can be accomplished in
+ * a .Net application within the context of an Integration Services control flow. 
+ * 
+ * Expand the other regions which have &quot;Help&quot; prefixes for examples of specific ways to use
+ * Integration Services features within this script task. */
+#endregion
+
+
+#region Namespaces
+using System;
+using System.Data;
+using Microsoft.SqlServer.Dts.Runtime;
+using System.Windows.Forms;
+#endregion
+
+namespace ST_d8bc57ceb0f243ab9d50013e635875c6
+{
+    /// &lt;summary&gt;
+    /// ScriptMain is the entry point class of the script.  Do not change the name, attributes,
+    /// or parent of this class.
+    /// &lt;/summary&gt;
+	[Microsoft.SqlServer.Dts.Tasks.ScriptTask.SSISScriptTaskEntryPointAttribute]
+	public partial class ScriptMain : Microsoft.SqlServer.Dts.Tasks.ScriptTask.VSTARTScriptObjectModelBase
+	{
+        #region Help:  Using Integration Services variables and parameters in a script
+        /* To use a variable in this script, first ensure that the variable has been added to 
+         * either the list contained in the ReadOnlyVariables property or the list contained in 
+         * the ReadWriteVariables property of this script task, according to whether or not your
+         * code needs to write to the variable.  To add the variable, save this script, close this instance of
+         * Visual Studio, and update the ReadOnlyVariables and 
+         * ReadWriteVariables properties in the Script Transformation Editor window.
+         * To use a parameter in this script, follow the same steps. Parameters are always read-only.
+         * 
+         * Example of reading from a variable:
+         *  DateTime startTime = (DateTime) Dts.Variables[&quot;System::StartTime&quot;].Value;
+         * 
+         * Example of writing to a variable:
+         *  Dts.Variables[&quot;User::myStringVariable&quot;].Value = &quot;new value&quot;;
+         * 
+         * Example of reading from a package parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Package::batchId&quot;].Value;
+         *  
+         * Example of reading from a project parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Project::batchId&quot;].Value;
+         * 
+         * Example of reading from a sensitive project parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Project::batchId&quot;].GetSensitiveValue();
+         * */
+
+        #endregion
+
+        #region Help:  Firing Integration Services events from a script
+        /* This script task can fire events for logging purposes.
+         * 
+         * Example of firing an error event:
+         *  Dts.Events.FireError(18, &quot;Process Values&quot;, &quot;Bad value&quot;, &quot;&quot;, 0);
+         * 
+         * Example of firing an information event:
+         *  Dts.Events.FireInformation(3, &quot;Process Values&quot;, &quot;Processing has started&quot;, &quot;&quot;, 0, ref fireAgain)
+         * 
+         * Example of firing a warning event:
+         *  Dts.Events.FireWarning(14, &quot;Process Values&quot;, &quot;No values received for input&quot;, &quot;&quot;, 0);
+         * */
+        #endregion
+
+        #region Help:  Using Integration Services connection managers in a script
+        /* Some types of connection managers can be used in this script task.  See the topic 
+         * &quot;Working with Connection Managers Programatically&quot; for details.
+         * 
+         * Example of using an ADO.Net connection manager:
+         *  object rawConnection = Dts.Connections[&quot;Sales DB&quot;].AcquireConnection(Dts.Transaction);
+         *  SqlConnection myADONETConnection = (SqlConnection)rawConnection;
+         *  //Use the connection in some code here, then release the connection
+         *  Dts.Connections[&quot;Sales DB&quot;].ReleaseConnection(rawConnection);
+         *
+         * Example of using a File connection manager
+         *  object rawConnection = Dts.Connections[&quot;Prices.zip&quot;].AcquireConnection(Dts.Transaction);
+         *  string filePath = (string)rawConnection;
+         *  //Use the connection in some code here, then release the connection
+         *  Dts.Connections[&quot;Prices.zip&quot;].ReleaseConnection(rawConnection);
+         * */
+        #endregion
+
+
+		/// &lt;summary&gt;
+        /// This method is called when this script task executes in the control flow.
+        /// Before returning from this method, set the value of Dts.TaskResult to indicate success or failure.
+        /// To open Help, press F1.
+        /// &lt;/summary&gt;
+		public void Main()
+		{
+            // TODO: Add your code here
+
+            // Populate collection of variables.
+            // This will include parent package variables.
+            Variables vars = null;
+            Dts.VariableDispenser.GetVariables(ref vars);
+
+            // Lock the to and from variables. 
+            Dts.VariableDispenser.LockForWrite(&quot;User::SSISAudit_LineageID&quot;);
+            Dts.VariableDispenser.LockForRead(&quot;User::LocalSSISAudit_LineageID&quot;);
+
+            Dts.VariableDispenser.LockForWrite(&quot;User::LastRunTMST&quot;);
+            Dts.VariableDispenser.LockForRead(&quot;User::LocalLastRunTMST&quot;);
+
+            Dts.VariableDispenser.LockForWrite(&quot;User::LastRunDT&quot;);
+            Dts.VariableDispenser.LockForRead(&quot;User::LocalLastRunDT&quot;);
+
+            Dts.VariableDispenser.LockForWrite(&quot;User::SSISAudit_RowCountBefore&quot;);
+            Dts.VariableDispenser.LockForRead(&quot;User::LocalSSISAudit_RowCountBefore&quot;);
+
+            // Apparently need to call GetVariables again after locking them.
+            // Not sure why - perhaps to get a clean post-lock set of values.
+            Dts.VariableDispenser.GetVariables(ref vars);
+
+            //Pass values to parent package
+            vars[&quot;User::SSISAudit_LineageID&quot;].Value = vars[&quot;User::LocalSSISAudit_LineageID&quot;].Value;
+            vars[&quot;User::LastRunTMST&quot;].Value = vars[&quot;User::LocalLastRunTMST&quot;].Value;
+            vars[&quot;User::LastRunDT&quot;].Value = vars[&quot;User::LocalLastRunDT&quot;].Value;
+
+            vars[&quot;User::SSISAudit_RowCountBefore&quot;].Value = vars[&quot;User::LocalSSISAudit_RowCountBefore&quot;].Value;
+            
+
+            vars.Unlock();
+
+            Dts.TaskResult = (int)ScriptResults.Success;
+		}
+
+        #region ScriptResults declaration
+        /// &lt;summary&gt;
+        /// This enum provides a convenient shorthand within the scope of this class for setting the
+        /// result of the script.
+        /// 
+        /// This code was generated automatically.
+        /// &lt;/summary&gt;
+        enum ScriptResults
+        {
+            Success = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Success,
+            Failure = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Failure
+        };
+        #endregion
+
+	}
+}</File>
+                <File Path="Properties\AssemblyInfo.cs">using System.Reflection;
+using System.Runtime.CompilerServices;
+
+//
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+//
+[assembly: AssemblyTitle(&quot;ST_d8bc57ceb0f243ab9d50013e635875c6&quot;)]
+[assembly: AssemblyDescription(&quot;&quot;)]
+[assembly: AssemblyConfiguration(&quot;&quot;)]
+[assembly: AssemblyCompany(&quot;&quot;)]
+[assembly: AssemblyProduct(&quot;ST_d8bc57ceb0f243ab9d50013e635875c6&quot;)]
+[assembly: AssemblyCopyright(&quot;Copyright @  2019&quot;)]
+[assembly: AssemblyTrademark(&quot;&quot;)]
+[assembly: AssemblyCulture(&quot;&quot;)]
+//
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Build Number
+//      Revision
+//
+// You can specify all the values or you can default the Revision and Build Numbers 
+// by using the &apos;*&apos; as shown below:
+
+[assembly: AssemblyVersion(&quot;1.0.*&quot;)]</File>
+            </Files>
+        </ScriptTaskProject>
+
+        <ScriptTaskProject Name="ST_fe227e82bfaa4b2282ae0f34c943b07b" ProjectCoreName="ST_fe227e82bfaa4b2282ae0f34c943b07b" VstaMajorVersion="0">
+            <AssemblyReferences>
+                <AssemblyReference AssemblyPath="System" />
+                <AssemblyReference AssemblyPath="System.Data" />
+                <AssemblyReference AssemblyPath="System.Windows.Forms" />
+                <AssemblyReference AssemblyPath="System.Xml" />
+                <AssemblyReference AssemblyPath="Microsoft.SqlServer.ManagedDTS.dll" />
+                <AssemblyReference AssemblyPath="Microsoft.SqlServer.ScriptTask.dll" />
+            </AssemblyReferences>
+            <Files>
+                <File Path="ScriptMain.cs">#region Help:  Introduction to the script task
+/* The Script Task allows you to perform virtually any operation that can be accomplished in
+ * a .Net application within the context of an Integration Services control flow. 
+ * 
+ * Expand the other regions which have &quot;Help&quot; prefixes for examples of specific ways to use
+ * Integration Services features within this script task. */
+#endregion
+
+
+#region Namespaces
+using System;
+using System.Data;
+using Microsoft.SqlServer.Dts.Runtime;
+using System.Windows.Forms;
+#endregion
+
+namespace ST_d8bc57ceb0f243ab9d50013e635875c6
+{
+    /// &lt;summary&gt;
+    /// ScriptMain is the entry point class of the script.  Do not change the name, attributes,
+    /// or parent of this class.
+    /// &lt;/summary&gt;
+	[Microsoft.SqlServer.Dts.Tasks.ScriptTask.SSISScriptTaskEntryPointAttribute]
+	public partial class ScriptMain : Microsoft.SqlServer.Dts.Tasks.ScriptTask.VSTARTScriptObjectModelBase
+	{
+        #region Help:  Using Integration Services variables and parameters in a script
+        /* To use a variable in this script, first ensure that the variable has been added to 
+         * either the list contained in the ReadOnlyVariables property or the list contained in 
+         * the ReadWriteVariables property of this script task, according to whether or not your
+         * code needs to write to the variable.  To add the variable, save this script, close this instance of
+         * Visual Studio, and update the ReadOnlyVariables and 
+         * ReadWriteVariables properties in the Script Transformation Editor window.
+         * To use a parameter in this script, follow the same steps. Parameters are always read-only.
+         * 
+         * Example of reading from a variable:
+         *  DateTime startTime = (DateTime) Dts.Variables[&quot;System::StartTime&quot;].Value;
+         * 
+         * Example of writing to a variable:
+         *  Dts.Variables[&quot;User::myStringVariable&quot;].Value = &quot;new value&quot;;
+         * 
+         * Example of reading from a package parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Package::batchId&quot;].Value;
+         *  
+         * Example of reading from a project parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Project::batchId&quot;].Value;
+         * 
+         * Example of reading from a sensitive project parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Project::batchId&quot;].GetSensitiveValue();
+         * */
+
+        #endregion
+
+        #region Help:  Firing Integration Services events from a script
+        /* This script task can fire events for logging purposes.
+         * 
+         * Example of firing an error event:
+         *  Dts.Events.FireError(18, &quot;Process Values&quot;, &quot;Bad value&quot;, &quot;&quot;, 0);
+         * 
+         * Example of firing an information event:
+         *  Dts.Events.FireInformation(3, &quot;Process Values&quot;, &quot;Processing has started&quot;, &quot;&quot;, 0, ref fireAgain)
+         * 
+         * Example of firing a warning event:
+         *  Dts.Events.FireWarning(14, &quot;Process Values&quot;, &quot;No values received for input&quot;, &quot;&quot;, 0);
+         * */
+        #endregion
+
+        #region Help:  Using Integration Services connection managers in a script
+        /* Some types of connection managers can be used in this script task.  See the topic 
+         * &quot;Working with Connection Managers Programatically&quot; for details.
+         * 
+         * Example of using an ADO.Net connection manager:
+         *  object rawConnection = Dts.Connections[&quot;Sales DB&quot;].AcquireConnection(Dts.Transaction);
+         *  SqlConnection myADONETConnection = (SqlConnection)rawConnection;
+         *  //Use the connection in some code here, then release the connection
+         *  Dts.Connections[&quot;Sales DB&quot;].ReleaseConnection(rawConnection);
+         *
+         * Example of using a File connection manager
+         *  object rawConnection = Dts.Connections[&quot;Prices.zip&quot;].AcquireConnection(Dts.Transaction);
+         *  string filePath = (string)rawConnection;
+         *  //Use the connection in some code here, then release the connection
+         *  Dts.Connections[&quot;Prices.zip&quot;].ReleaseConnection(rawConnection);
+         * */
+        #endregion
+
+
+		/// &lt;summary&gt;
+        /// This method is called when this script task executes in the control flow.
+        /// Before returning from this method, set the value of Dts.TaskResult to indicate success or failure.
+        /// To open Help, press F1.
+        /// &lt;/summary&gt;
+		public void Main()
+		{
+            // TODO: Add your code here
+
+            // Populate collection of variables.
+            // This will include parent package variables.
+            Variables vars = null;
+            Dts.VariableDispenser.GetVariables(ref vars);
+
+            // Lock the to and from variables. 
+            Dts.VariableDispenser.LockForWrite(&quot;User::ExecAuditlog_ExecID&quot;);
+            Dts.VariableDispenser.LockForRead(&quot;User::LocalExecAuditlog_ExecID&quot;);
+
+
+            // Apparently need to call GetVariables again after locking them.
+            // Not sure why - perhaps to get a clean post-lock set of values.
+            Dts.VariableDispenser.GetVariables(ref vars);
+
+            //Pass values to parent package
+            vars[&quot;User::ExecAuditlog_ExecID&quot;].Value = vars[&quot;User::LocalExecAuditlog_ExecID&quot;].Value;
+
+            vars.Unlock();
+
+            Dts.TaskResult = (int)ScriptResults.Success;
+		}
+
+        #region ScriptResults declaration
+        /// &lt;summary&gt;
+        /// This enum provides a convenient shorthand within the scope of this class for setting the
+        /// result of the script.
+        /// 
+        /// This code was generated automatically.
+        /// &lt;/summary&gt;
+        enum ScriptResults
+        {
+            Success = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Success,
+            Failure = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Failure
+        };
+        #endregion
+
+	}
+}</File>
+                <File Path="Properties\AssemblyInfo.cs">using System.Reflection;
+using System.Runtime.CompilerServices;
+
+//
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+//
+[assembly: AssemblyTitle(&quot;ST_d8bc57ceb0f243ab9d50013e635875c6&quot;)]
+[assembly: AssemblyDescription(&quot;&quot;)]
+[assembly: AssemblyConfiguration(&quot;&quot;)]
+[assembly: AssemblyCompany(&quot;&quot;)]
+[assembly: AssemblyProduct(&quot;ST_d8bc57ceb0f243ab9d50013e635875c6&quot;)]
+[assembly: AssemblyCopyright(&quot;Copyright @  2019&quot;)]
+[assembly: AssemblyTrademark(&quot;&quot;)]
+[assembly: AssemblyCulture(&quot;&quot;)]
+//
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Build Number
+//      Revision
+//
+// You can specify all the values or you can default the Revision and Build Numbers 
+// by using the &apos;*&apos; as shown below:
+
+[assembly: AssemblyVersion(&quot;1.0.*&quot;)]</File>
+            </Files>
+        </ScriptTaskProject>
+
+        <ScriptTaskProject Name="ST_d65b928154b74d77a9bf8b685d60ec26" ProjectCoreName="" VstaMajorVersion="0">
+            <AssemblyReferences>
+                <AssemblyReference AssemblyPath="System" />
+                <AssemblyReference AssemblyPath="System.Data" />
+                <AssemblyReference AssemblyPath="System.Windows.Forms" />
+                <AssemblyReference AssemblyPath="System.Xml" />
+                <AssemblyReference AssemblyPath="Microsoft.SqlServer.ManagedDTS.dll" />
+                <AssemblyReference AssemblyPath="Microsoft.SqlServer.ScriptTask.dll" />
+            </AssemblyReferences>
+            <Files>
+                <File Path="ScriptMain.cs">#region Help:  Introduction to the script task
+/* The Script Task allows you to perform virtually any operation that can be accomplished in
+ * a .Net application within the context of an Integration Services control flow. 
+ * 
+ * Expand the other regions which have &quot;Help&quot; prefixes for examples of specific ways to use
+ * Integration Services features within this script task. */
+#endregion
+
+
+#region Namespaces
+using System;
+using System.Data;
+using Microsoft.SqlServer.Dts.Runtime;
+using System.Windows.Forms;
+#endregion
+
+namespace ST_d8bc57ceb0f243ab9d50013e635875c6
+{
+    /// &lt;summary&gt;
+    /// ScriptMain is the entry point class of the script.  Do not change the name, attributes,
+    /// or parent of this class.
+    /// &lt;/summary&gt;
+	[Microsoft.SqlServer.Dts.Tasks.ScriptTask.SSISScriptTaskEntryPointAttribute]
+	public partial class ScriptMain : Microsoft.SqlServer.Dts.Tasks.ScriptTask.VSTARTScriptObjectModelBase
+	{
+        #region Help:  Using Integration Services variables and parameters in a script
+        /* To use a variable in this script, first ensure that the variable has been added to 
+         * either the list contained in the ReadOnlyVariables property or the list contained in 
+         * the ReadWriteVariables property of this script task, according to whether or not your
+         * code needs to write to the variable.  To add the variable, save this script, close this instance of
+         * Visual Studio, and update the ReadOnlyVariables and 
+         * ReadWriteVariables properties in the Script Transformation Editor window.
+         * To use a parameter in this script, follow the same steps. Parameters are always read-only.
+         * 
+         * Example of reading from a variable:
+         *  DateTime startTime = (DateTime) Dts.Variables[&quot;System::StartTime&quot;].Value;
+         * 
+         * Example of writing to a variable:
+         *  Dts.Variables[&quot;User::myStringVariable&quot;].Value = &quot;new value&quot;;
+         * 
+         * Example of reading from a package parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Package::batchId&quot;].Value;
+         *  
+         * Example of reading from a project parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Project::batchId&quot;].Value;
+         * 
+         * Example of reading from a sensitive project parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Project::batchId&quot;].GetSensitiveValue();
+         * */
+
+        #endregion
+
+        #region Help:  Firing Integration Services events from a script
+        /* This script task can fire events for logging purposes.
+         * 
+         * Example of firing an error event:
+         *  Dts.Events.FireError(18, &quot;Process Values&quot;, &quot;Bad value&quot;, &quot;&quot;, 0);
+         * 
+         * Example of firing an information event:
+         *  Dts.Events.FireInformation(3, &quot;Process Values&quot;, &quot;Processing has started&quot;, &quot;&quot;, 0, ref fireAgain)
+         * 
+         * Example of firing a warning event:
+         *  Dts.Events.FireWarning(14, &quot;Process Values&quot;, &quot;No values received for input&quot;, &quot;&quot;, 0);
+         * */
+        #endregion
+
+        #region Help:  Using Integration Services connection managers in a script
+        /* Some types of connection managers can be used in this script task.  See the topic 
+         * &quot;Working with Connection Managers Programatically&quot; for details.
+         * 
+         * Example of using an ADO.Net connection manager:
+         *  object rawConnection = Dts.Connections[&quot;Sales DB&quot;].AcquireConnection(Dts.Transaction);
+         *  SqlConnection myADONETConnection = (SqlConnection)rawConnection;
+         *  //Use the connection in some code here, then release the connection
+         *  Dts.Connections[&quot;Sales DB&quot;].ReleaseConnection(rawConnection);
+         *
+         * Example of using a File connection manager
+         *  object rawConnection = Dts.Connections[&quot;Prices.zip&quot;].AcquireConnection(Dts.Transaction);
+         *  string filePath = (string)rawConnection;
+         *  //Use the connection in some code here, then release the connection
+         *  Dts.Connections[&quot;Prices.zip&quot;].ReleaseConnection(rawConnection);
+         * */
+        #endregion
+
+
+		/// &lt;summary&gt;
+        /// This method is called when this script task executes in the control flow.
+        /// Before returning from this method, set the value of Dts.TaskResult to indicate success or failure.
+        /// To open Help, press F1.
+        /// &lt;/summary&gt;
+		public void Main()
+		{
+
+            // Populate collection of variables.
+            // This will include parent package variables.
+
+            
+            Variables vars = null;
+            Dts.VariableDispenser.GetVariables(ref vars);
+
+            // Lock the to and from variables. 
+
+            Dts.VariableDispenser.LockForWrite(&quot;User::SSISAudit_RowCountAfter&quot;);
+            Dts.VariableDispenser.LockForRead(&quot;User::LocalSSISAudit_RowCountAfter&quot;);
+
+            Dts.VariableDispenser.LockForWrite(&quot;User::SSISAudit_MaxSurrogateKey&quot;);
+            Dts.VariableDispenser.LockForRead(&quot;User::LocalSSISAudit_MaxSurrogateKey&quot;);
+
+            // Apparently need to call GetVariables again after locking them.
+
+            Dts.VariableDispenser.GetVariables(ref vars);
+
+            //Pass values to parent package
+
+            vars[&quot;User::SSISAudit_RowCountAfter&quot;].Value = vars[&quot;User::LocalSSISAudit_RowCountAfter&quot;].Value;
+            vars[&quot;User::SSISAudit_MaxSurrogateKey&quot;].Value = vars[&quot;User::LocalSSISAudit_MaxSurrogateKey&quot;].Value;
+
+            vars.Unlock();
+        
+
+            Dts.TaskResult = (int)ScriptResults.Success;
+		}
+
+        #region ScriptResults declaration
+        /// &lt;summary&gt;
+        /// This enum provides a convenient shorthand within the scope of this class for setting the
+        /// result of the script.
+        /// 
+        /// This code was generated automatically.
+        /// &lt;/summary&gt;
+        enum ScriptResults
+        {
+            Success = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Success,
+            Failure = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Failure
+        };
+        #endregion
+
+	}
+}</File>
+                <File Path="Properties\AssemblyInfo.cs">using System.Reflection;
+using System.Runtime.CompilerServices;
+
+//
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+//
+[assembly: AssemblyTitle(&quot;ST_d8bc57ceb0f243ab9d50013e635875c6&quot;)]
+[assembly: AssemblyDescription(&quot;&quot;)]
+[assembly: AssemblyConfiguration(&quot;&quot;)]
+[assembly: AssemblyCompany(&quot;&quot;)]
+[assembly: AssemblyProduct(&quot;ST_d8bc57ceb0f243ab9d50013e635875c6&quot;)]
+[assembly: AssemblyCopyright(&quot;Copyright @  2019&quot;)]
+[assembly: AssemblyTrademark(&quot;&quot;)]
+[assembly: AssemblyCulture(&quot;&quot;)]
+//
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Build Number
+//      Revision
+//
+// You can specify all the values or you can default the Revision and Build Numbers 
+// by using the &apos;*&apos; as shown below:
+
+[assembly: AssemblyVersion(&quot;1.0.*&quot;)]</File>
+            </Files>
+        </ScriptTaskProject>
+
+
+
+    </ScriptProjects>
+        
+        
+</Biml>

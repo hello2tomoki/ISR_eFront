@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<environments>
+    <environment>
+        <name>SCD</name>
+        <description>SCD</description>
+        <ReferenceOnProjects>
+            <Project Name="SCD_EDM_ETL"/>
+        </ReferenceOnProjects>
+        <variables>
+            <variable>
+                <name>Destination_InitalCatalog</name>
+                <type>String</type>
+                <value>RiskRaw</value>
+                <sensitive>false</sensitive>
+                <description>Enter Destination_InitalCatalog</description>
+            </variable>
+            <variable>
+                <name>Destination_ServerName</name>
+                <type>String</type>
+                <value>Delta</value>
+                <sensitive>false</sensitive>
+                <description>Enter Destination_ServerName</description>
+            </variable>
+            <variable>
+                <name>Source_InitalCatalog</name>
+                <type>String</type>
+                <value>EDM_PROD_DATASTORE</value>
+                <sensitive>false</sensitive>
+                <description>Enter Source_InitalCatalog</description>
+            </variable>
+            <variable>
+                <name>Source_ServerName</name>
+                <type>String</type>
+                <value>EDMDBP</value>
+                <sensitive>false</sensitive>
+                <description>Enter Source_ServerName</description>
+            </variable>
+            <variable>
+                <name>USE_EDM_Dates</name>
+                <type>Boolean</type>
+                <value>False</value>
+                <sensitive>false</sensitive>
+                <description>Enter USE_EDM_Dates True or False. Default is False</description>
+            </variable>
+            <variable>
+                <name>USE_MDS_Dates</name>
+                <type>Boolean</type>
+                <value>True</value>
+                <sensitive>false</sensitive>
+                <description>USE_MDS_Dates True or False. Default is True</description>
+            </variable>
+            <variable>
+                <name>Utility_InitalCatalog</name>
+                <type>String</type>
+                <value>RiskRaw</value>
+                <sensitive>false</sensitive>
+                <description>Enter Utility_InitalCatalog</description>
+            </variable>
+            <variable>
+                <name>Utility_ServerName</name>
+                <type>String</type>
+                <value>Delta</value>
+                <sensitive>false</sensitive>
+                <description>Enter Utility_ServerName</description>
+            </variable>
+        </variables>
+    </environment>
+</environments>

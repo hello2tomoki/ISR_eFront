@@ -1,0 +1,1 @@
+﻿Execute SCD.sp_refreshViews_Schema  'rpt_SCD'

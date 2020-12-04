@@ -1,0 +1,9 @@
+﻿GRANT SELECT, INSERT, ALTER, UPDATE, DELETE, EXECUTE ON SCHEMA :: [eFront] TO [Role_Service_Account];
+Go
+GRANT SELECT, INSERT, ALTER, UPDATE, DELETE, EXECUTE ON SCHEMA :: [stg_eFront] TO [Role_Service_Account];
+Go
+GRANT SELECT, INSERT, ALTER, UPDATE, DELETE, EXECUTE ON SCHEMA :: [history_eFront] TO [Role_Service_Account];
+Go
+GRANT SELECT, INSERT, ALTER, UPDATE, DELETE, EXECUTE ON SCHEMA :: [rpt_eFront] TO [Role_Service_Account];
+
+--ALTER ROLE [Role_ServiceAccount] ADD MEMBER [BCIMC\RISK_ETL_DEV_SRV];

@@ -1,0 +1,2592 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="12/2/2020 5:41:07 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="WIN10VM060"
+  DTS:CreatorName="malam"
+  DTS:DTSID="{FCE3EBDE-F831-49E1-ACDD-210EF7F97B29}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="15.0.2000.128"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="dbo_view_PCO_Tracking"
+  DTS:ProtectionLevel="0"
+  DTS:VersionBuild="6"
+  DTS:VersionGUID="{5B3C8653-2AF0-41B1-BA91-63A8BB047CA4}"
+  DTS:VersionMajor="0">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Destination]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{2BCFEDCA-2D92-4082-AF7E-04D0D24334A1}"
+      DTS:ObjectName="Destination">
+      <DTS:PropertyExpression
+        DTS:Name="InitialCatalog">@[$Project::Destination_InitalCatalog]</DTS:PropertyExpression>
+      <DTS:PropertyExpression
+        DTS:Name="ServerName">@[$Project::Destination_ServerName]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="data source=Delta;initial catalog=Sandbox3;provider=SQLNCLI11.1;integrated security=SSPI;auto translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Source]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{64DCADDA-05B4-45A5-B5CE-512FC4EE44FC}"
+      DTS:ObjectName="Source">
+      <DTS:PropertyExpression
+        DTS:Name="InitialCatalog">@[$Project::Source_InitalCatalog]</DTS:PropertyExpression>
+      <DTS:PropertyExpression
+        DTS:Name="ServerName">@[$Project::Source_ServerName]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="data source=Plymouth;initial catalog=eFrontPCOTracking;provider=SQLNCLI11.1;integrated security=SSPI;auto translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Utility]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{11403194-A011-44CA-A22B-E977E921ABED}"
+      DTS:ObjectName="Utility">
+      <DTS:PropertyExpression
+        DTS:Name="InitialCatalog">@[$Project::Utility_InitalCatalog]</DTS:PropertyExpression>
+      <DTS:PropertyExpression
+        DTS:Name="ServerName">@[$Project::Utility_ServerName]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="data source=Delta;initial catalog=Sandbox3;provider=SQLNCLI11.1;integrated security=SSPI;auto translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:PackageParameters>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="8"
+      DTS:DTSID="{5FE69B4D-1175-4F72-BE9A-354954417553}"
+      DTS:ObjectName="Assign_NonTimeseries_Effective_Date">
+      <DTS:Property
+        DTS:DataType="8"
+        DTS:Name="ParameterValue">1800-01-01</DTS:Property>
+    </DTS:PackageParameter>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="3"
+      DTS:DTSID="{A1D5E9F1-EE3F-4E52-8BFC-B70E9B60CD89}"
+      DTS:ObjectName="EXEC_PARENT_ID">
+      <DTS:Property
+        DTS:DataType="3"
+        DTS:Name="ParameterValue">0</DTS:Property>
+    </DTS:PackageParameter>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="3"
+      DTS:DTSID="{EE3CBF71-B708-48DC-B2BB-2EF3B29FCECF}"
+      DTS:ObjectName="Param_BatchID">
+      <DTS:Property
+        DTS:DataType="3"
+        DTS:Name="ParameterValue">0</DTS:Property>
+    </DTS:PackageParameter>
+  </DTS:PackageParameters>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{2D3A429A-E3C8-4D01-8812-DD81BFE6448B}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;exec log.LogCreateEntry ? OUTPUT, ?,?,?,?,?&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="cmdExecAuditlog_CreateEntry">
+      <DTS:VariableValue
+        DTS:DataType="8">exec log.LogCreateEntry ? OUTPUT, ?,?,?,?,?</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{E50D3DC9-1649-4E52-9116-06571F9E3FF6}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;exec log.LogUpdateEntry ?,?,?&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="cmdExecAuditlog_UpdateEntry">
+      <DTS:VariableValue
+        DTS:DataType="8">exec log.LogUpdateEntry ?,?,?</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{20059E56-9913-4D9B-B82E-A9D62DDD6C80}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;exec log.LogCreateErrorEntry ?,?,?&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="cmdExecErrorLog_CreateErrorEntry">
+      <DTS:VariableValue
+        DTS:DataType="8">exec log.LogCreateErrorEntry ?,?,?</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{A0418403-4035-4404-8D96-6F42706DC679}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;SELECT Count_big(*) FROM &quot; + @[User::HistoricalTableName]  + &quot; with(nolock)&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="cmdHistoricalTableRowCount">
+      <DTS:VariableValue
+        DTS:DataType="8">SELECT Count_big(*) FROM  with(nolock)</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{DCC21CAA-F964-47FD-A90A-218657DFB159}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;exec eFront.MergeSourceToDestination &quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="cmdMergeSourceToTarget">
+      <DTS:VariableValue
+        DTS:DataType="8">exec eFront.MergeSourceToDestination </DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{D201CDAB-A08C-45E6-B399-4F45EA2228DC}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;Execute log.InsertSourceDataLoadRegister @id ='&quot; +  (DT_WSTR, 25)  @[User::SSISAudit_LineageID]  + &quot;', @Filename ='&quot; +  @[$Project::Source_ServerName]  + &quot;.&quot; +  @[$Project::Source_InitalCatalog]  + &quot;.&quot; + @[User::Source_TableName]    + &quot;', @PopulationCount ='&quot; + (DT_WSTR, 25) @[User::SSISAudit_RowCountProcessedTotal]  +&quot;' ,@Content = '&quot; + @[User::FileContent]  +&quot;' ,@ContentType = '&quot; + @[User::FileContentType] + &quot;', @ContentSubType = '&quot; + @[User::FileContentSubType]  + &quot;' , @SourceLoadDate = '&quot; + (DT_WSTR,50) @[User::SSISAudit_LineageTMST] +&quot;', @FileDate ='&quot; +  (DT_WSTR,50) @[User::DateOfReportExecution] +&quot;', @RiskDate ='&quot; +  (DT_WSTR,50)  @[User::valDate]  + &quot;', @RegisteredTableName = '&quot; +  @[User::HistoricalTableName]  + &quot;'&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="cmdSourceDataLoadRegister_Insert">
+      <DTS:VariableValue
+        DTS:DataType="8">Execute log.InsertSourceDataLoadRegister @id ='0', @Filename ='Plymouth.eFrontPCOTracking.', @PopulationCount ='0' ,@Content = '' ,@ContentType = '', @ContentSubType = '' , @SourceLoadDate = '12/3/2020 6:34:51 PM', @FileDate ='', @RiskDate ='', @RegisteredTableName = ''</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{59959995-8F25-4BD6-8DE1-AB8118D17F24}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DateOfReportExecution">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{EC621A0C-C311-4880-BF2B-792140CB8A40}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="Deleted_Rows">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{EFFFE147-0CDE-46A3-9139-E8A07D7438C6}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="DeleteRecordCount">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{7BC76337-DBDC-4529-AA8F-8FF7B3C56340}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&#xA;                  &quot;&#xA;                    DECLARE @Stg_Table_Count INT= 0;&#xA;                    SELECT @Stg_Table_Count = COUNT(*)&#xA;                    FROM &quot; + @[User::StagingTableName] + &quot;;&#xA;                    IF @Stg_Table_Count &gt; 0&#xA;                    BEGIN&#xA;                    DELETE  &quot;+ @[User::Historical_Table_Name]  +&quot;&#xA;                    WHERE EXISTS&#xA;                    (&#xA;                    SELECT 'x'&#xA;                    FROM &quot;+ @[User::StagingTableName] +&quot; stg_IC&#xA;                    WHERE DATEDIFF(d, '1990',  &quot;+ @[User::Historical_Table_Name]+&quot;.EFFECTIVE_DATE) = DATEDIFF(d, '1990', stg_IC.EFFECTIVE_DATE)&#xA;                    AND &quot;+@[User::Historical_Table_Name] +&quot;.EDM_INDEX_ID = stg_IC.EDM_INDEX_ID&#xA;                    );&#xA;                    END;&#xA;                    SELECT @@rowcount AS Deleted_Rows;&#xA;                  &#xA;                              &quot;&#xA;                "
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Delete_All_Previous_Data">
+      <DTS:VariableValue
+        DTS:DataType="8">
+                    DECLARE @Stg_Table_Count INT= 0;
+                    SELECT @Stg_Table_Count = COUNT(*)
+                    FROM stg_eFront.dbo_view_PCO_Tracking;
+                    IF @Stg_Table_Count &gt; 0
+                    BEGIN
+                    DELETE  eFront.dbo_view_PCO_Tracking
+                    WHERE EXISTS
+                    (
+                    SELECT 'x'
+                    FROM stg_eFront.dbo_view_PCO_Tracking stg_IC
+                    WHERE DATEDIFF(d, '1990',  eFront.dbo_view_PCO_Tracking.EFFECTIVE_DATE) = DATEDIFF(d, '1990', stg_IC.EFFECTIVE_DATE)
+                    AND eFront.dbo_view_PCO_Tracking.EDM_INDEX_ID = stg_IC.EDM_INDEX_ID
+                    );
+                    END;
+                    SELECT @@rowcount AS Deleted_Rows;
+                  
+                              </DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{5C2EE13B-8DAE-42B2-9B32-CEC1DDFE9C98}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&#xA;                  &quot;&#xA;                  Delete   eFront.dbo_view_PCO_Tracking &quot;&#xA;                "
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Delete_From_Hist_Table">
+      <DTS:VariableValue
+        DTS:DataType="8">
+                  Delete   eFront.dbo_view_PCO_Tracking </DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{6F131BAC-F6C6-4458-9B46-86B75137951F}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;1234&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="ErrorCode">
+      <DTS:VariableValue
+        DTS:DataType="8">1234</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{7ECAAD12-9204-4BD6-AB5B-CAEF4E567361}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="ExecAuditDetailLog_INFO_MSG">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{A5891B08-5015-45CE-AFF0-49036FAD8F67}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="ExecAuditlog_ExecID">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{D8586B47-09A8-4DE5-B3CA-60AF9F804D01}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="ExecAuditlog_Exec_Description">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{BF60C3CE-39DC-4DF5-8624-0E268D02A2DB}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="ExecAuditlog_Exec_Info_Msg">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{45D55897-AD6F-4152-9EB4-7981F10E9B93}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="ExecAuditlog_Exec_Parent_Id">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{C4C15CD1-D673-44EF-ACD6-63F7F3288A89}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="ExecAuditlog_Exec_Status">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{9A47A7DF-407F-4B52-BC49-78637D495319}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="ExecAuditlog_Params">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{C26E12C0-EE1F-4B0D-98EC-1D054990CA7F}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;Process FAILED - &quot;  +  @[User::Source_Query] + &quot; - &quot; +  (DT_STR, 10, 1252) @[User::SSISAudit_RowCountProcessedTotal]  + &quot; records processed.&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="FailureMessage">
+      <DTS:VariableValue
+        DTS:DataType="8">Process FAILED - SELECT * FROM [dbo].[view_PCO_Tracking] with (nolock)     - 0 records processed.</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{F6216BA7-02BF-4730-BBA2-1E191903350A}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="FileContent">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{67CEE476-99D0-4FEF-8078-FE86B00D7AD7}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="FileContentSubType">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{24C64DDA-0777-43E2-974B-97293E55AB1F}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="FileContentType">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{B2064234-8BE4-4A62-8FEA-5375C886658B}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="HistoricalTableKeyField">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{ED0DC9D0-195E-44AA-BB15-CA54F4652270}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[User::Source_TableName]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="HistoricalTableName">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{DCBA3303-F626-424C-9694-6D930361A75C}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Historical_Table_Name">
+      <DTS:VariableValue
+        DTS:DataType="8">eFront.dbo_view_PCO_Tracking</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{EABC74AB-4A8E-4539-9A4B-36572C85872D}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="Inserted_Rows">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{C8097805-475C-4AE6-AA52-7540C1B0CC8A}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="LastRunDT">
+      <DTS:VariableValue
+        DTS:DataType="7">6/1/2016 3:29:00 PM</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{3422213B-DD7D-4013-85B3-9B47F5BBC801}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="LastRunTMST">
+      <DTS:VariableValue
+        DTS:DataType="7">6/1/2016 3:29:00 PM</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{CCD36ED1-4C2F-4ABB-A9BF-ECE277DC66DD}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="LineageID">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{070A835C-3701-4817-9DDE-C88716F58ED4}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="LineageString">
+      <DTS:VariableValue
+        DTS:DataType="8"> /</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{D796009D-C109-4B28-9878-F01880D5432D}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[System::StartTime]"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="LineageTMST">
+      <DTS:VariableValue
+        DTS:DataType="7">12/3/2020 6:34:51 PM</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{23EA9C37-0E40-4C98-ACC4-D441BD5EC683}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;SELECT * FROM [dbo].[view_PCO_Tracking] with (nolock)    &quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Source_Query">
+      <DTS:VariableValue
+        DTS:DataType="8">SELECT * FROM [dbo].[view_PCO_Tracking] with (nolock)    </DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{FAB484FB-CC79-4B81-92DB-92E0993128EF}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[$Package::Assign_NonTimeseries_Effective_Date] == &quot;1800-01-01&quot;?  @[User::Source_Query]:   @[User::Source_Query] + &quot; Where [effectiveDate] = '&quot;+  @[$Package::Assign_NonTimeseries_Effective_Date] + &quot;'&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Source_Query_Override">
+      <DTS:VariableValue
+        DTS:DataType="8">SELECT * FROM [dbo].[view_PCO_Tracking] with (nolock)    </DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{691B3D48-3214-4D4B-BFC4-A462AE2F3BC7}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Source_TableName">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{842DCDC0-66A6-4501-B66F-10F35EAAD832}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="SSISAudit_BatchId">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{2B2E33FF-C5AB-4C9B-AB28-05C14DC1E002}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="SSISAudit_LineageID">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{95B2A0DE-2121-4F59-99A6-ECC1F308178B}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[System::StartTime]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SSISAudit_LineageTMST">
+      <DTS:VariableValue
+        DTS:DataType="7">12/3/2020 6:34:51 PM</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{ED113263-DC51-499C-979C-B5C7A34BBAF8}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SSISAudit_MaxSurrogateKey">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{1D7911BD-E1D5-41E9-A7FC-7C2DDA7830A8}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="SSISAudit_RowCountAfter">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{16EE8151-9C71-4EAA-82BD-E0DB8B7466AD}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="SSISAudit_RowCountBefore">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{72B059F1-5BE6-43EE-9F1B-E4F9224B59C3}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="SSISAudit_RowCountFailed">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{DD37BD7F-F882-489D-BF5A-CD0530344F5C}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="SSISAudit_RowCountProcessedIgnored">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{20503313-6E2B-45A8-981A-279B85EBC5D6}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="SSISAudit_RowCountProcessedNew">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{36303A6C-6BEC-46A5-98AD-C3416BFDDEE3}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="SSISAudit_RowCountProcessedTotal">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{50882207-5026-4504-BC04-5001740D6FC9}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="SSISAudit_RowCountProcessedUpdated">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{BBDD0AA8-FD12-45AC-A37A-58C914E61454}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[User::Stg_Table_Name]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="StagingTableName">
+      <DTS:VariableValue
+        DTS:DataType="8">stg_eFront.dbo_view_PCO_Tracking</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{E660ACC1-A2BF-405C-A5A6-988D11400009}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Stg_Table_Name">
+      <DTS:VariableValue
+        DTS:DataType="8">stg_eFront.dbo_view_PCO_Tracking</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{A5988B7A-DAC8-42E0-92B0-601503313113}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;Process Succeeded - &quot; +    @[User::HistoricalTableName]  + &quot; - &quot; +  (DT_STR, 10, 1252) @[User::SSISAudit_RowCountProcessedTotal]  + &quot; records processed.&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SuccessMessage">
+      <DTS:VariableValue
+        DTS:DataType="8">Process Succeeded -  - 0 records processed.</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{0CCB90C2-2255-4ED6-9269-08F8D3A419BD}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;Truncate Table &quot;+  @[User::Stg_Table_Name]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Truncate_Table">
+      <DTS:VariableValue
+        DTS:DataType="8">Truncate Table stg_eFront.dbo_view_PCO_Tracking</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{3170E225-3C9A-49EB-9739-3FAD19D25E0B}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="valDate">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{DFB51E21-0E3B-4040-B225-14B01D249B09}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Valuation_Date_Loop">
+      <DTS:VariableValue
+        DTS:DataType="8">1999-01-01 00:00:00.000</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{4F39C75F-2A8D-4965-B1F0-AB16DFE9EB2B}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="VerbosAuditInfo">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Closeout"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:DTSID="{ADDDE7E6-31E8-43B0-82EC-5EC684E8E10E}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Closeout">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Closeout\Successful Completion Closeout"
+          DTS:CreationName="STOCK:SEQUENCE"
+          DTS:DTSID="{7A271881-9EA8-4CDE-9C9D-3B5C88E9190A}"
+          DTS:ExecutableType="STOCK:SEQUENCE"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Successful Completion Closeout">
+          <DTS:Variables />
+          <DTS:Executables>
+            <DTS:Executable
+              DTS:refId="Package\Closeout\Successful Completion Closeout\chSuccessfulCompletionCloseout"
+              DTS:CreationName="Microsoft.ExecutePackageTask"
+              DTS:DTSID="{145BB591-AE1E-43CF-ADC6-70EC97C0B3F3}"
+              DTS:ExecutableType="Microsoft.ExecutePackageTask"
+              DTS:LocaleID="-1"
+              DTS:ObjectName="chSuccessfulCompletionCloseout"
+              DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+              <DTS:Variables />
+              <DTS:ObjectData>
+                <ExecutePackageTask>
+                  <UseProjectReference>True</UseProjectReference>
+                  <PackageName>chSuccessfulCompletionCloseout.dtsx</PackageName>
+                  <ParameterAssignment>
+                    <ParameterName>Param_BatchID</ParameterName>
+                    <BindedVariableOrParameterName>$Package::Param_BatchID</BindedVariableOrParameterName>
+                  </ParameterAssignment>
+                  <ParameterAssignment>
+                    <ParameterName>SuccessMessage</ParameterName>
+                    <BindedVariableOrParameterName>User::SuccessMessage</BindedVariableOrParameterName>
+                  </ParameterAssignment>
+                  <ParameterAssignment>
+                    <ParameterName>ExecutionInstanceGUID</ParameterName>
+                    <BindedVariableOrParameterName>System::ExecutionInstanceGUID</BindedVariableOrParameterName>
+                  </ParameterAssignment>
+                  <ParameterAssignment>
+                    <ParameterName>SSISAudit_RowCountBefore</ParameterName>
+                    <BindedVariableOrParameterName>User::SSISAudit_RowCountBefore</BindedVariableOrParameterName>
+                  </ParameterAssignment>
+                  <ParameterAssignment>
+                    <ParameterName>SSISAudit_RowCountProcessedNew</ParameterName>
+                    <BindedVariableOrParameterName>User::SSISAudit_RowCountProcessedNew</BindedVariableOrParameterName>
+                  </ParameterAssignment>
+                  <ParameterAssignment>
+                    <ParameterName>SSISAudit_RowCountProcessedUpdated</ParameterName>
+                    <BindedVariableOrParameterName>User::SSISAudit_RowCountProcessedUpdated</BindedVariableOrParameterName>
+                  </ParameterAssignment>
+                  <ParameterAssignment>
+                    <ParameterName>SSISAudit_RowCountProcessedIgnored</ParameterName>
+                    <BindedVariableOrParameterName>User::SSISAudit_RowCountProcessedIgnored</BindedVariableOrParameterName>
+                  </ParameterAssignment>
+                  <ParameterAssignment>
+                    <ParameterName>SSISAudit_RowCountFailed</ParameterName>
+                    <BindedVariableOrParameterName>User::SSISAudit_RowCountFailed</BindedVariableOrParameterName>
+                  </ParameterAssignment>
+                  <ParameterAssignment>
+                    <ParameterName>SSISAudit_RowCountAfter</ParameterName>
+                    <BindedVariableOrParameterName>User::SSISAudit_RowCountAfter</BindedVariableOrParameterName>
+                  </ParameterAssignment>
+                  <ParameterAssignment>
+                    <ParameterName>SSISAudit_MaxSurrogateKey</ParameterName>
+                    <BindedVariableOrParameterName>User::SSISAudit_MaxSurrogateKey</BindedVariableOrParameterName>
+                  </ParameterAssignment>
+                  <ParameterAssignment>
+                    <ParameterName>SSISAudit_LineageID</ParameterName>
+                    <BindedVariableOrParameterName>User::SSISAudit_LineageID</BindedVariableOrParameterName>
+                  </ParameterAssignment>
+                  <ParameterAssignment>
+                    <ParameterName>ParentPackageName</ParameterName>
+                    <BindedVariableOrParameterName>System::PackageName</BindedVariableOrParameterName>
+                  </ParameterAssignment>
+                  <ParameterAssignment>
+                    <ParameterName>cmdSourceDataLoadRegister_Insert</ParameterName>
+                    <BindedVariableOrParameterName>User::cmdSourceDataLoadRegister_Insert</BindedVariableOrParameterName>
+                  </ParameterAssignment>
+                  <ParameterAssignment>
+                    <ParameterName>SSISAudit_RowCountProcessedTotal</ParameterName>
+                    <BindedVariableOrParameterName>User::SSISAudit_RowCountProcessedTotal</BindedVariableOrParameterName>
+                  </ParameterAssignment>
+                </ExecutePackageTask>
+              </DTS:ObjectData>
+            </DTS:Executable>
+            <DTS:Executable
+              DTS:refId="Package\Closeout\Successful Completion Closeout\CompleteExecAuditLog"
+              DTS:CreationName="Microsoft.ExecutePackageTask"
+              DTS:DTSID="{A84C1D0B-34DA-43DC-B4A4-44124662614D}"
+              DTS:ExecutableType="Microsoft.ExecutePackageTask"
+              DTS:LocaleID="-1"
+              DTS:ObjectName="CompleteExecAuditLog"
+              DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+              <DTS:Variables />
+              <DTS:ObjectData>
+                <ExecutePackageTask>
+                  <UseProjectReference>True</UseProjectReference>
+                  <PackageName>chCompleteExecAuditLog.dtsx</PackageName>
+                  <ParameterAssignment>
+                    <ParameterName>ExecAuditlog_Exec_Id</ParameterName>
+                    <BindedVariableOrParameterName>User::ExecAuditlog_ExecID</BindedVariableOrParameterName>
+                  </ParameterAssignment>
+                  <ParameterAssignment>
+                    <ParameterName>ExecAuditlog_Exec_Info_Msg</ParameterName>
+                    <BindedVariableOrParameterName>User::ExecAuditlog_Exec_Info_Msg</BindedVariableOrParameterName>
+                  </ParameterAssignment>
+                </ExecutePackageTask>
+              </DTS:ObjectData>
+            </DTS:Executable>
+            <DTS:Executable
+              DTS:refId="Package\Closeout\Successful Completion Closeout\ExecAuditlogEndOfWorkFlow"
+              DTS:CreationName="Microsoft.ExpressionTask"
+              DTS:DTSID="{8A1A8B47-83E4-481B-9E9B-93D14E4D229A}"
+              DTS:ExecutableType="Microsoft.ExpressionTask"
+              DTS:LocaleID="-1"
+              DTS:ObjectName="ExecAuditlogEndOfWorkFlow"
+              DTS:TaskContact="Expression Task;Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+              DTS:ThreadHint="0">
+              <DTS:Variables />
+              <DTS:EventHandlers>
+                <DTS:EventHandler
+                  DTS:refId="Package\Closeout\Successful Completion Closeout\ExecAuditlogEndOfWorkFlow.EventHandlers[OnPostExecute]"
+                  DTS:CreationName="OnPostExecute"
+                  DTS:DTSID="{FD742732-1DC4-435B-9B69-1D39E416E9B7}"
+                  DTS:EventID="0"
+                  DTS:EventName="OnPostExecute"
+                  DTS:LocaleID="-1">
+                  <DTS:Variables>
+                    <DTS:Variable
+                      DTS:CreationName=""
+                      DTS:Description="The propagate property of the event"
+                      DTS:DTSID="{1D82FABF-F0B6-423B-8FE8-915DBD43AB35}"
+                      DTS:IncludeInDebugDump="6789"
+                      DTS:Namespace="System"
+                      DTS:ObjectName="Propagate">
+                      <DTS:VariableValue
+                        DTS:DataType="11">-1</DTS:VariableValue>
+                    </DTS:Variable>
+                  </DTS:Variables>
+                  <DTS:Executables />
+                </DTS:EventHandler>
+              </DTS:EventHandlers>
+              <DTS:ObjectData>
+                <ExpressionTask
+                  Expression="@[User::ExecAuditlog_Exec_Info_Msg] = &quot;Done full workflow. Complete &quot;" />
+              </DTS:ObjectData>
+            </DTS:Executable>
+          </DTS:Executables>
+          <DTS:PrecedenceConstraints>
+            <DTS:PrecedenceConstraint
+              DTS:refId="Package\Closeout\Successful Completion Closeout.PrecedenceConstraints[Constraint_chSuccessfulCompletionCloseout_To_ExecAuditlogEndOfWorkFlow]"
+              DTS:CreationName=""
+              DTS:DTSID="{8D81871C-2E5C-47A5-A71A-A38401F1C650}"
+              DTS:From="Package\Closeout\Successful Completion Closeout\chSuccessfulCompletionCloseout"
+              DTS:LogicalAnd="True"
+              DTS:ObjectName="Constraint_chSuccessfulCompletionCloseout_To_ExecAuditlogEndOfWorkFlow"
+              DTS:To="Package\Closeout\Successful Completion Closeout\ExecAuditlogEndOfWorkFlow" />
+            <DTS:PrecedenceConstraint
+              DTS:refId="Package\Closeout\Successful Completion Closeout.PrecedenceConstraints[Constraint_ExecAuditlogEndOfWorkFlow_To_CompleteExecAuditLog]"
+              DTS:CreationName=""
+              DTS:DTSID="{16D3C254-A130-4052-ABF4-08DC9A3460F7}"
+              DTS:From="Package\Closeout\Successful Completion Closeout\ExecAuditlogEndOfWorkFlow"
+              DTS:LogicalAnd="True"
+              DTS:ObjectName="Constraint_ExecAuditlogEndOfWorkFlow_To_CompleteExecAuditLog"
+              DTS:To="Package\Closeout\Successful Completion Closeout\CompleteExecAuditLog" />
+          </DTS:PrecedenceConstraints>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Data_Processing"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:DTSID="{97264072-A7E0-4072-8E09-3C3EECD0423D}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Data_Processing">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Data_Processing\Sequence Container"
+          DTS:CreationName="STOCK:SEQUENCE"
+          DTS:DTSID="{B1BA9C4F-106F-4313-A990-5CA8630D96D6}"
+          DTS:ExecutableType="STOCK:SEQUENCE"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Sequence Container">
+          <DTS:Variables />
+          <DTS:Executables>
+            <DTS:Executable
+              DTS:refId="Package\Data_Processing\Sequence Container\MergeSourceToTarget"
+              DTS:CreationName="Microsoft.ExecuteSQLTask"
+              DTS:DTSID="{4C4CD5F8-631F-4BE3-83AF-8ACC965855E1}"
+              DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+              DTS:LocaleID="-1"
+              DTS:ObjectName="MergeSourceToTarget"
+              DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+              DTS:ThreadHint="0">
+              <DTS:Variables />
+              <DTS:ObjectData>
+                <SQLTask:SqlTaskData
+                  SQLTask:Connection="{2BCFEDCA-2D92-4082-AF7E-04D0D24334A1}"
+                  SQLTask:SqlStmtSourceType="Variable"
+                  SQLTask:SqlStatementSource="User::cmdMergeSourceToTarget" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              </DTS:ObjectData>
+            </DTS:Executable>
+            <DTS:Executable
+              DTS:refId="Package\Data_Processing\Sequence Container\Source to Stg"
+              DTS:CreationName="Microsoft.Pipeline"
+              DTS:DTSID="{6996EBFE-57B6-4BC1-B18C-DD4ADB821B90}"
+              DTS:ExecutableType="Microsoft.Pipeline"
+              DTS:LocaleID="-1"
+              DTS:ObjectName="Source to Stg"
+              DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+              <DTS:Variables />
+              <DTS:ObjectData>
+                <pipeline
+                  BLOBTempStoragePath=""
+                  bufferTempStoragePath=""
+                  version="1">
+                  <components>
+                    <component
+                      refId="Package\Data_Processing\Sequence Container\Source to Stg\Derived Column"
+                      componentClassID="Microsoft.DerivedColumn"
+                      contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+                      name="Derived Column"
+                      usesDispositions="true">
+                      <inputs>
+                        <input
+                          refId="Package\Data_Processing\Sequence Container\Source to Stg\Derived Column.Inputs[OLE DB Source_Output_Derived Column]"
+                          name="OLE DB Source_Output_Derived Column">
+                          <externalMetadataColumns />
+                        </input>
+                      </inputs>
+                      <outputs>
+                        <output
+                          refId="Package\Data_Processing\Sequence Container\Source to Stg\Derived Column.Outputs[Output]"
+                          exclusionGroup="1"
+                          name="Output"
+                          synchronousInputId="Package\Data_Processing\Sequence Container\Source to Stg\Derived Column.Inputs[OLE DB Source_Output_Derived Column]">
+                          <outputColumns>
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\Derived Column.Outputs[Output].Columns[TransactionID]"
+                              dataType="i4"
+                              errorOrTruncationOperation="Computation"
+                              errorRowDisposition="FailComponent"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\Derived Column.Outputs[Output].Columns[TransactionID]"
+                              name="TransactionID"
+                              truncationRowDisposition="FailComponent">
+                              <properties>
+                                <property
+                                  dataType="System.String"
+                                  description="Derived Column Expression"
+                                  name="Expression">@[$Package::EXEC_PARENT_ID]</property>
+                                <property
+                                  dataType="System.String"
+                                  description="Derived Column Friendly Expression"
+                                  expressionType="Notify"
+                                  name="FriendlyExpression">@[$Package::EXEC_PARENT_ID]</property>
+                              </properties>
+                            </outputColumn>
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\Derived Column.Outputs[Output].Columns[LineageID]"
+                              dataType="i4"
+                              errorOrTruncationOperation="Computation"
+                              errorRowDisposition="FailComponent"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\Derived Column.Outputs[Output].Columns[LineageID]"
+                              name="LineageID"
+                              truncationRowDisposition="FailComponent">
+                              <properties>
+                                <property
+                                  dataType="System.String"
+                                  description="Derived Column Expression"
+                                  name="Expression">@[User::ExecAuditlog_ExecID]</property>
+                                <property
+                                  dataType="System.String"
+                                  description="Derived Column Friendly Expression"
+                                  expressionType="Notify"
+                                  name="FriendlyExpression">@[User::ExecAuditlog_ExecID]</property>
+                              </properties>
+                            </outputColumn>
+                          </outputColumns>
+                          <externalMetadataColumns />
+                        </output>
+                        <output
+                          refId="Package\Data_Processing\Sequence Container\Source to Stg\Derived Column.Outputs[Error]"
+                          exclusionGroup="1"
+                          isErrorOut="true"
+                          name="Error"
+                          synchronousInputId="Package\Data_Processing\Sequence Container\Source to Stg\Derived Column.Inputs[OLE DB Source_Output_Derived Column]">
+                          <outputColumns>
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\Derived Column.Outputs[Error].Columns[ErrorCode]"
+                              dataType="i4"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\Derived Column.Outputs[Error].Columns[ErrorCode]"
+                              name="ErrorCode"
+                              specialFlags="1" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\Derived Column.Outputs[Error].Columns[ErrorColumn]"
+                              dataType="i4"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\Derived Column.Outputs[Error].Columns[ErrorColumn]"
+                              name="ErrorColumn"
+                              specialFlags="2" />
+                          </outputColumns>
+                          <externalMetadataColumns />
+                        </output>
+                      </outputs>
+                    </component>
+                    <component
+                      refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination"
+                      componentClassID="Microsoft.OLEDBDestination"
+                      contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+                      name="OLE DB Destination"
+                      usesDispositions="true"
+                      version="4">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                          name="CommandTimeout">0</property>
+                        <property
+                          dataType="System.String"
+                          description="Specifies the name of the database object used to open a rowset."
+                          name="OpenRowset"></property>
+                        <property
+                          dataType="System.String"
+                          description="Specifies the variable that contains the name of the database object used to open a rowset."
+                          name="OpenRowsetVariable">User::Stg_Table_Name</property>
+                        <property
+                          dataType="System.String"
+                          description="The SQL command to be executed."
+                          name="SqlCommand"
+                          UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the column code page to use when code page information is unavailable from the data source."
+                          name="DefaultCodePage">1252</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Forces the use of the DefaultCodePage property value when describing character data."
+                          name="AlwaysUseDefaultCodePage">false</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the mode used to access the database."
+                          name="AccessMode">4</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                          name="FastLoadKeepIdentity">false</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                          name="FastLoadKeepNulls">false</property>
+                        <property
+                          dataType="System.String"
+                          description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                          name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                          name="FastLoadMaxInsertCommitSize">2147483647</property>
+                      </properties>
+                      <connections>
+                        <connection
+                          refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Connections[OleDbConnection]"
+                          connectionManagerID="Package.ConnectionManagers[Destination]"
+                          connectionManagerRefId="Package.ConnectionManagers[Destination]"
+                          description="The OLE DB runtime connection used to access the database."
+                          name="OleDbConnection" />
+                      </connections>
+                      <inputs>
+                        <input
+                          refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination]"
+                          errorOrTruncationOperation="Insert"
+                          errorRowDisposition="FailComponent"
+                          hasSideEffects="true"
+                          name="Derived Column_Output_OLE DB Destination">
+                          <inputColumns>
+                            <inputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].Columns[TransactionID]"
+                              cachedDataType="i4"
+                              cachedName="TransactionID"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[TransactionID]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\Derived Column.Outputs[Output].Columns[TransactionID]" />
+                            <inputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].Columns[LineageID]"
+                              cachedDataType="i4"
+                              cachedName="LineageID"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[LineageID]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\Derived Column.Outputs[Output].Columns[LineageID]" />
+                            <inputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].Columns[Program]"
+                              cachedDataType="wstr"
+                              cachedLength="255"
+                              cachedName="Program"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Program]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Program]" />
+                            <inputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].Columns[Investment Type]"
+                              cachedDataType="wstr"
+                              cachedLength="255"
+                              cachedName="Investment Type"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Investment Type]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Investment Type]" />
+                            <inputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].Columns[Fund]"
+                              cachedDataType="wstr"
+                              cachedLength="255"
+                              cachedName="Fund"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Fund]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Fund]" />
+                            <inputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].Columns[Company]"
+                              cachedDataType="wstr"
+                              cachedLength="255"
+                              cachedName="Company"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Company]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Company]" />
+                            <inputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].Columns[Industry]"
+                              cachedDataType="wstr"
+                              cachedLength="255"
+                              cachedName="Industry"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Industry]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Industry]" />
+                            <inputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].Columns[Industry GICS]"
+                              cachedDataType="wstr"
+                              cachedLength="255"
+                              cachedName="Industry GICS"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Industry GICS]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Industry GICS]" />
+                            <inputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].Columns[Geography]"
+                              cachedDataType="wstr"
+                              cachedLength="255"
+                              cachedName="Geography"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Geography]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Geography]" />
+                            <inputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].Columns[Original country]"
+                              cachedDataType="wstr"
+                              cachedLength="255"
+                              cachedName="Original country"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Original country]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Original country]" />
+                            <inputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].Columns[Fund Currency]"
+                              cachedDataType="wstr"
+                              cachedLength="255"
+                              cachedName="Fund Currency"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Fund Currency]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Fund Currency]" />
+                            <inputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].Columns[Company Currency]"
+                              cachedDataType="wstr"
+                              cachedLength="255"
+                              cachedName="Company Currency"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Company Currency]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Company Currency]" />
+                            <inputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].Columns[Current Valuation]"
+                              cachedDataType="r8"
+                              cachedName="Current Valuation"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Current Valuation]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Current Valuation]" />
+                            <inputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].Columns[BCI CAD Ownership]"
+                              cachedDataType="r8"
+                              cachedName="BCI CAD Ownership"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[BCI CAD Ownership]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[BCI CAD Ownership]" />
+                            <inputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].Columns[BCI Ownership %]"
+                              cachedDataType="r8"
+                              cachedName="BCI Ownership %"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[BCI Ownership %]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[BCI Ownership %]" />
+                            <inputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].Columns[ID]"
+                              cachedDataType="wstr"
+                              cachedLength="255"
+                              cachedName="ID"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[ID]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[ID]" />
+                            <inputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].Columns[BCI Vehicle Size]"
+                              cachedDataType="r8"
+                              cachedName="BCI Vehicle Size"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[BCI Vehicle Size]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[BCI Vehicle Size]" />
+                            <inputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].Columns[Aggregate Size]"
+                              cachedDataType="r8"
+                              cachedName="Aggregate Size"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Aggregate Size]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Aggregate Size]" />
+                            <inputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].Columns[effectiveDate]"
+                              cachedDataType="dbDate"
+                              cachedName="effectiveDate"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[effectiveDate]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[effectiveDate]" />
+                          </inputColumns>
+                          <externalMetadataColumns
+                            isUsed="True">
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Program]"
+                              dataType="wstr"
+                              length="510"
+                              name="Program" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Investment Type]"
+                              dataType="wstr"
+                              length="510"
+                              name="Investment Type" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Fund]"
+                              dataType="wstr"
+                              length="510"
+                              name="Fund" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Company]"
+                              dataType="wstr"
+                              length="510"
+                              name="Company" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Industry]"
+                              dataType="wstr"
+                              length="510"
+                              name="Industry" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Industry GICS]"
+                              dataType="wstr"
+                              length="510"
+                              name="Industry GICS" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Geography]"
+                              dataType="wstr"
+                              length="510"
+                              name="Geography" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Original country]"
+                              dataType="wstr"
+                              length="510"
+                              name="Original country" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Fund Currency]"
+                              dataType="wstr"
+                              length="510"
+                              name="Fund Currency" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Company Currency]"
+                              dataType="wstr"
+                              length="510"
+                              name="Company Currency" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Current Valuation]"
+                              dataType="r8"
+                              name="Current Valuation" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[BCI CAD Ownership]"
+                              dataType="r8"
+                              name="BCI CAD Ownership" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[BCI Ownership %]"
+                              dataType="r8"
+                              name="BCI Ownership %" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[ID]"
+                              dataType="wstr"
+                              length="510"
+                              name="ID" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[BCI Vehicle Size]"
+                              dataType="r8"
+                              name="BCI Vehicle Size" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[Aggregate Size]"
+                              dataType="r8"
+                              name="Aggregate Size" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[effectiveDate]"
+                              dataType="dbDate"
+                              name="effectiveDate" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[TransactionID]"
+                              dataType="i4"
+                              name="TransactionID" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[LineageTMST]"
+                              dataType="dbTimeStamp"
+                              name="LineageTMST" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[LineageID]"
+                              dataType="i4"
+                              name="LineageID" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[InsertTMST]"
+                              dataType="dbTimeStamp"
+                              name="InsertTMST" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination].ExternalColumns[InsertedBy]"
+                              dataType="wstr"
+                              length="128"
+                              name="InsertedBy" />
+                          </externalMetadataColumns>
+                        </input>
+                      </inputs>
+                      <outputs>
+                        <output
+                          refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Outputs[Error]"
+                          exclusionGroup="1"
+                          isErrorOut="true"
+                          name="Error"
+                          synchronousInputId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination]">
+                          <outputColumns>
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Outputs[Error].Columns[ErrorCode]"
+                              dataType="i4"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Outputs[Error].Columns[ErrorCode]"
+                              name="ErrorCode"
+                              specialFlags="1" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Outputs[Error].Columns[ErrorColumn]"
+                              dataType="i4"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Outputs[Error].Columns[ErrorColumn]"
+                              name="ErrorColumn"
+                              specialFlags="2" />
+                          </outputColumns>
+                          <externalMetadataColumns />
+                        </output>
+                      </outputs>
+                    </component>
+                    <component
+                      refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source"
+                      componentClassID="Microsoft.OLEDBSource"
+                      contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+                      name="OLE DB Source"
+                      usesDispositions="true"
+                      version="7">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                          name="CommandTimeout">0</property>
+                        <property
+                          dataType="System.String"
+                          description="Specifies the name of the database object used to open a rowset."
+                          name="OpenRowset"></property>
+                        <property
+                          dataType="System.String"
+                          description="Specifies the variable that contains the name of the database object used to open a rowset."
+                          name="OpenRowsetVariable"></property>
+                        <property
+                          dataType="System.String"
+                          description="The SQL command to be executed."
+                          name="SqlCommand"
+                          UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                        <property
+                          dataType="System.String"
+                          description="The variable that contains the SQL command to be executed."
+                          name="SqlCommandVariable">User::Source_Query_Override</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the column code page to use when code page information is unavailable from the data source."
+                          name="DefaultCodePage">1252</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Forces the use of the DefaultCodePage property value when describing character data."
+                          name="AlwaysUseDefaultCodePage">false</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the mode used to access the database."
+                          name="AccessMode"
+                          typeConverter="AccessMode">3</property>
+                        <property
+                          dataType="System.String"
+                          description="The mappings between the parameters in the SQL command and variables."
+                          name="ParameterMapping"></property>
+                      </properties>
+                      <connections>
+                        <connection
+                          refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Connections[OleDbConnection]"
+                          connectionManagerID="Package.ConnectionManagers[Source]"
+                          connectionManagerRefId="Package.ConnectionManagers[Source]"
+                          description="The OLE DB runtime connection used to access the database."
+                          name="OleDbConnection" />
+                      </connections>
+                      <outputs>
+                        <output
+                          refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output]"
+                          name="Output">
+                          <outputColumns>
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Program]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Program]"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Program]"
+                              name="Program"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Investment Type]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Investment Type]"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Investment Type]"
+                              name="Investment Type"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Fund]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Fund]"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Fund]"
+                              name="Fund"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Company]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Company]"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Company]"
+                              name="Company"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Industry]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Industry]"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Industry]"
+                              name="Industry"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Industry GICS]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Industry GICS]"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Industry GICS]"
+                              name="Industry GICS"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Geography]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Geography]"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Geography]"
+                              name="Geography"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Original country]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Original country]"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Original country]"
+                              name="Original country"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Fund Currency]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Fund Currency]"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Fund Currency]"
+                              name="Fund Currency"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Company Currency]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Company Currency]"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Company Currency]"
+                              name="Company Currency"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Current Valuation]"
+                              dataType="r8"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Current Valuation]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Current Valuation]"
+                              name="Current Valuation"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[BCI CAD Ownership]"
+                              dataType="r8"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[BCI CAD Ownership]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[BCI CAD Ownership]"
+                              name="BCI CAD Ownership"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[BCI Ownership %]"
+                              dataType="r8"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[BCI Ownership %]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[BCI Ownership %]"
+                              name="BCI Ownership %"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[ID]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[ID]"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[ID]"
+                              name="ID"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[BCI Vehicle Size]"
+                              dataType="r8"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[BCI Vehicle Size]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[BCI Vehicle Size]"
+                              name="BCI Vehicle Size"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Aggregate Size]"
+                              dataType="r8"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Aggregate Size]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[Aggregate Size]"
+                              name="Aggregate Size"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[effectiveDate]"
+                              dataType="dbDate"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[effectiveDate]"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].Columns[effectiveDate]"
+                              name="effectiveDate"
+                              truncationRowDisposition="FailComponent" />
+                          </outputColumns>
+                          <externalMetadataColumns
+                            isUsed="True">
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Program]"
+                              dataType="wstr"
+                              length="255"
+                              name="Program" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Investment Type]"
+                              dataType="wstr"
+                              length="255"
+                              name="Investment Type" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Fund]"
+                              dataType="wstr"
+                              length="255"
+                              name="Fund" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Company]"
+                              dataType="wstr"
+                              length="255"
+                              name="Company" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Industry]"
+                              dataType="wstr"
+                              length="255"
+                              name="Industry" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Industry GICS]"
+                              dataType="wstr"
+                              length="255"
+                              name="Industry GICS" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Geography]"
+                              dataType="wstr"
+                              length="255"
+                              name="Geography" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Original country]"
+                              dataType="wstr"
+                              length="255"
+                              name="Original country" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Fund Currency]"
+                              dataType="wstr"
+                              length="255"
+                              name="Fund Currency" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Company Currency]"
+                              dataType="wstr"
+                              length="255"
+                              name="Company Currency" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Current Valuation]"
+                              dataType="r8"
+                              name="Current Valuation" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[BCI CAD Ownership]"
+                              dataType="r8"
+                              name="BCI CAD Ownership" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[BCI Ownership %]"
+                              dataType="r8"
+                              name="BCI Ownership %" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[ID]"
+                              dataType="wstr"
+                              length="255"
+                              name="ID" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[BCI Vehicle Size]"
+                              dataType="r8"
+                              name="BCI Vehicle Size" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[Aggregate Size]"
+                              dataType="r8"
+                              name="Aggregate Size" />
+                            <externalMetadataColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output].ExternalColumns[effectiveDate]"
+                              dataType="dbDate"
+                              name="effectiveDate" />
+                          </externalMetadataColumns>
+                        </output>
+                        <output
+                          refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error]"
+                          isErrorOut="true"
+                          name="Error">
+                          <outputColumns>
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Program]"
+                              dataType="wstr"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Program]"
+                              name="Program" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Investment Type]"
+                              dataType="wstr"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Investment Type]"
+                              name="Investment Type" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Fund]"
+                              dataType="wstr"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Fund]"
+                              name="Fund" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Company]"
+                              dataType="wstr"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Company]"
+                              name="Company" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Industry]"
+                              dataType="wstr"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Industry]"
+                              name="Industry" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Industry GICS]"
+                              dataType="wstr"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Industry GICS]"
+                              name="Industry GICS" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Geography]"
+                              dataType="wstr"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Geography]"
+                              name="Geography" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Original country]"
+                              dataType="wstr"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Original country]"
+                              name="Original country" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Fund Currency]"
+                              dataType="wstr"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Fund Currency]"
+                              name="Fund Currency" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Company Currency]"
+                              dataType="wstr"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Company Currency]"
+                              name="Company Currency" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Current Valuation]"
+                              dataType="r8"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Current Valuation]"
+                              name="Current Valuation" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[BCI CAD Ownership]"
+                              dataType="r8"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[BCI CAD Ownership]"
+                              name="BCI CAD Ownership" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[BCI Ownership %]"
+                              dataType="r8"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[BCI Ownership %]"
+                              name="BCI Ownership %" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[ID]"
+                              dataType="wstr"
+                              length="255"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[ID]"
+                              name="ID" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[BCI Vehicle Size]"
+                              dataType="r8"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[BCI Vehicle Size]"
+                              name="BCI Vehicle Size" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Aggregate Size]"
+                              dataType="r8"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[Aggregate Size]"
+                              name="Aggregate Size" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[effectiveDate]"
+                              dataType="dbDate"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[effectiveDate]"
+                              name="effectiveDate" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[ErrorCode]"
+                              dataType="i4"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[ErrorCode]"
+                              name="ErrorCode"
+                              specialFlags="1" />
+                            <outputColumn
+                              refId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[ErrorColumn]"
+                              dataType="i4"
+                              lineageId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Error].Columns[ErrorColumn]"
+                              name="ErrorColumn"
+                              specialFlags="2" />
+                          </outputColumns>
+                          <externalMetadataColumns />
+                        </output>
+                      </outputs>
+                    </component>
+                  </components>
+                  <paths>
+                    <path
+                      refId="Package\Data_Processing\Sequence Container\Source to Stg.Paths[Derived Column_Output_OLE DB Destination]"
+                      endId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination.Inputs[Derived Column_Output_OLE DB Destination]"
+                      name="Derived Column_Output_OLE DB Destination"
+                      startId="Package\Data_Processing\Sequence Container\Source to Stg\Derived Column.Outputs[Output]" />
+                    <path
+                      refId="Package\Data_Processing\Sequence Container\Source to Stg.Paths[OLE DB Source_Output_Derived Column]"
+                      endId="Package\Data_Processing\Sequence Container\Source to Stg\Derived Column.Inputs[OLE DB Source_Output_Derived Column]"
+                      name="OLE DB Source_Output_Derived Column"
+                      startId="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source.Outputs[Output]" />
+                  </paths>
+                </pipeline>
+              </DTS:ObjectData>
+            </DTS:Executable>
+            <DTS:Executable
+              DTS:refId="Package\Data_Processing\Sequence Container\Truncate Stg Table"
+              DTS:CreationName="Microsoft.ExecuteSQLTask"
+              DTS:DTSID="{DCB16F25-E44B-4235-A778-F754787C271E}"
+              DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+              DTS:LocaleID="-1"
+              DTS:ObjectName="Truncate Stg Table"
+              DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+              DTS:ThreadHint="0">
+              <DTS:Variables />
+              <DTS:ObjectData>
+                <SQLTask:SqlTaskData
+                  SQLTask:Connection="{2BCFEDCA-2D92-4082-AF7E-04D0D24334A1}"
+                  SQLTask:SqlStmtSourceType="Variable"
+                  SQLTask:SqlStatementSource="User::Truncate_Table" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+              </DTS:ObjectData>
+            </DTS:Executable>
+          </DTS:Executables>
+          <DTS:PrecedenceConstraints>
+            <DTS:PrecedenceConstraint
+              DTS:refId="Package\Data_Processing\Sequence Container.PrecedenceConstraints[Constraint_Source to Stg_To_MergeSourceToTarget]"
+              DTS:CreationName=""
+              DTS:DTSID="{5BE1A9DA-2D9F-43B4-B304-8605A6FBAF1C}"
+              DTS:From="Package\Data_Processing\Sequence Container\Source to Stg"
+              DTS:LogicalAnd="True"
+              DTS:ObjectName="Constraint_Source to Stg_To_MergeSourceToTarget"
+              DTS:To="Package\Data_Processing\Sequence Container\MergeSourceToTarget" />
+            <DTS:PrecedenceConstraint
+              DTS:refId="Package\Data_Processing\Sequence Container.PrecedenceConstraints[Constraint_Truncate Stg Table_To_Source to Stg]"
+              DTS:CreationName=""
+              DTS:DTSID="{0C4B91E8-10B3-4EF7-93AF-81394A7D4688}"
+              DTS:From="Package\Data_Processing\Sequence Container\Truncate Stg Table"
+              DTS:LogicalAnd="True"
+              DTS:ObjectName="Constraint_Truncate Stg Table_To_Source to Stg"
+              DTS:To="Package\Data_Processing\Sequence Container\Source to Stg" />
+          </DTS:PrecedenceConstraints>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Setup Log processes"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:DTSID="{14DB9986-EB10-4D1E-8A14-313F8736CC0B}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Setup Log processes">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Setup Log processes\ExtractBatchId"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:DTSID="{95970DBE-0766-4BD8-86E3-BD63B2108950}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="ExtractBatchId"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{11403194-A011-44CA-A22B-E977E921ABED}"
+              SQLTask:SqlStatementSource="SELECT ISNULL(MAX(SSISAuditKey),0) +1 AS LastBacthId FROM [log].[SSISAudit] with (nolock)&#xA;"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="LastBacthId"
+                SQLTask:DtsVariableName="User::SSISAudit_BatchId" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Setup Log processes\SetupLog"
+          DTS:CreationName="Microsoft.ExecutePackageTask"
+          DTS:DTSID="{7B96C5DE-B589-45C6-B1BF-DD28EC3D8EC7}"
+          DTS:ExecutableType="Microsoft.ExecutePackageTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="SetupLog"
+          DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExecutePackageTask>
+              <UseProjectReference>True</UseProjectReference>
+              <PackageName>chSetupLogProcess.dtsx</PackageName>
+              <ParameterAssignment>
+                <ParameterName>ParentPackageName</ParameterName>
+                <BindedVariableOrParameterName>System::PackageName</BindedVariableOrParameterName>
+              </ParameterAssignment>
+              <ParameterAssignment>
+                <ParameterName>HistoricalTableName</ParameterName>
+                <BindedVariableOrParameterName>User::HistoricalTableName</BindedVariableOrParameterName>
+              </ParameterAssignment>
+              <ParameterAssignment>
+                <ParameterName>SSISAudit_LineageID</ParameterName>
+                <BindedVariableOrParameterName>User::SSISAudit_LineageID</BindedVariableOrParameterName>
+              </ParameterAssignment>
+              <ParameterAssignment>
+                <ParameterName>SSISAudit_BatchId</ParameterName>
+                <BindedVariableOrParameterName>User::SSISAudit_BatchId</BindedVariableOrParameterName>
+              </ParameterAssignment>
+            </ExecutePackageTask>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Setup Log processes\StartExecLog"
+          DTS:CreationName="Microsoft.ExecutePackageTask"
+          DTS:DTSID="{15749E66-BC09-4BC6-A5AB-782EAA94047C}"
+          DTS:ExecutableType="Microsoft.ExecutePackageTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="StartExecLog"
+          DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <ExecutePackageTask>
+              <UseProjectReference>True</UseProjectReference>
+              <PackageName>chStartExecAuditLog.dtsx</PackageName>
+              <ParameterAssignment>
+                <ParameterName>ExecAuditlog_Exec_Parent_Id</ParameterName>
+                <BindedVariableOrParameterName>$Package::EXEC_PARENT_ID</BindedVariableOrParameterName>
+              </ParameterAssignment>
+              <ParameterAssignment>
+                <ParameterName>ExecAuditlog_Params</ParameterName>
+                <BindedVariableOrParameterName>User::ExecAuditlog_Params</BindedVariableOrParameterName>
+              </ParameterAssignment>
+              <ParameterAssignment>
+                <ParameterName>ParentPackageName</ParameterName>
+                <BindedVariableOrParameterName>System::PackageName</BindedVariableOrParameterName>
+              </ParameterAssignment>
+            </ExecutePackageTask>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Setup Log processes.PrecedenceConstraints[Constraint_ExtractBatchId_To_SetupLog]"
+          DTS:CreationName=""
+          DTS:DTSID="{60B0BEB2-6A72-4C99-AFBF-BEF8741021C5}"
+          DTS:From="Package\Setup Log processes\ExtractBatchId"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint_ExtractBatchId_To_SetupLog"
+          DTS:To="Package\Setup Log processes\SetupLog" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Setup Log processes.PrecedenceConstraints[Constraint_SetupLog_To_StartExecLog]"
+          DTS:CreationName=""
+          DTS:DTSID="{6A301420-30A5-4B37-9A6B-85739CF833D6}"
+          DTS:From="Package\Setup Log processes\SetupLog"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint_SetupLog_To_StartExecLog"
+          DTS:To="Package\Setup Log processes\StartExecLog" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint_Data_Processing_To_Closeout]"
+      DTS:CreationName=""
+      DTS:DTSID="{AA174A6B-0D35-42C4-B31A-5DE760E28542}"
+      DTS:From="Package\Data_Processing"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint_Data_Processing_To_Closeout"
+      DTS:To="Package\Closeout" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint_Setup Log processes_To_Data_Processing]"
+      DTS:CreationName=""
+      DTS:DTSID="{69BC0B2E-A4B1-442D-9DC1-B7EF83484DEA}"
+      DTS:From="Package\Setup Log processes"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint_Setup Log processes_To_Data_Processing"
+      DTS:To="Package\Data_Processing" />
+  </DTS:PrecedenceConstraints>
+  <DTS:EventHandlers>
+    <DTS:EventHandler
+      DTS:refId="Package.EventHandlers[OnError]"
+      DTS:CreationName="OnError"
+      DTS:DTSID="{89F85C1D-87CC-41BA-8B7A-13A7A3A0BCB7}"
+      DTS:EventID="0"
+      DTS:EventName="OnError"
+      DTS:LocaleID="-1">
+      <DTS:Variables>
+        <DTS:Variable
+          DTS:CreationName=""
+          DTS:Description="The propagate property of the event"
+          DTS:DTSID="{78D41AB1-DBF9-4130-A693-E453036B6B7B}"
+          DTS:IncludeInDebugDump="6789"
+          DTS:Namespace="System"
+          DTS:ObjectName="Propagate">
+          <DTS:VariableValue
+            DTS:DataType="11">-1</DTS:VariableValue>
+        </DTS:Variable>
+      </DTS:Variables>
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package.EventHandlers[OnError]\AuditLog"
+          DTS:CreationName="STOCK:SEQUENCE"
+          DTS:DTSID="{CFFFB834-6373-4BBF-A3CA-2B73F264BA19}"
+          DTS:ExecutableType="STOCK:SEQUENCE"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="AuditLog">
+          <DTS:Variables />
+          <DTS:Executables>
+            <DTS:Executable
+              DTS:refId="Package.EventHandlers[OnError]\AuditLog\ExecAuditlog_UpdateEntry"
+              DTS:CreationName="Microsoft.ExecuteSQLTask"
+              DTS:DTSID="{2FE3A35B-FFC4-4D6D-87D7-27D4188A66BC}"
+              DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+              DTS:LocaleID="-1"
+              DTS:ObjectName="ExecAuditlog_UpdateEntry"
+              DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+              <DTS:Variables />
+              <DTS:ObjectData>
+                <SQLTask:SqlTaskData
+                  SQLTask:Connection="{11403194-A011-44CA-A22B-E977E921ABED}"
+                  SQLTask:SqlStmtSourceType="Variable"
+                  SQLTask:SqlStatementSource="User::cmdExecAuditlog_UpdateEntry" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="0"
+                    SQLTask:DtsVariableName="User::ExecAuditlog_ExecID"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="3"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="1"
+                    SQLTask:DtsVariableName="User::ExecAuditlog_Exec_Status"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="2"
+                    SQLTask:DtsVariableName="User::ExecAuditlog_Exec_Info_Msg"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                </SQLTask:SqlTaskData>
+              </DTS:ObjectData>
+            </DTS:Executable>
+            <DTS:Executable
+              DTS:refId="Package.EventHandlers[OnError]\AuditLog\LogCreateErrorEntry"
+              DTS:CreationName="Microsoft.ExecuteSQLTask"
+              DTS:DTSID="{AA05D4B1-6E19-4951-834D-1EBF6615EB07}"
+              DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+              DTS:LocaleID="-1"
+              DTS:ObjectName="LogCreateErrorEntry"
+              DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+              <DTS:Variables />
+              <DTS:ObjectData>
+                <SQLTask:SqlTaskData
+                  SQLTask:Connection="{11403194-A011-44CA-A22B-E977E921ABED}"
+                  SQLTask:SqlStmtSourceType="Variable"
+                  SQLTask:SqlStatementSource="User::cmdExecErrorLog_CreateErrorEntry" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="0"
+                    SQLTask:DtsVariableName="User::ExecAuditlog_ExecID"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="3"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="1"
+                    SQLTask:DtsVariableName="User::ErrorCode"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                  <SQLTask:ParameterBinding
+                    SQLTask:ParameterName="2"
+                    SQLTask:DtsVariableName="System::ErrorDescription"
+                    SQLTask:ParameterDirection="Input"
+                    SQLTask:DataType="129"
+                    SQLTask:ParameterSize="-1" />
+                </SQLTask:SqlTaskData>
+              </DTS:ObjectData>
+            </DTS:Executable>
+            <DTS:Executable
+              DTS:refId="Package.EventHandlers[OnError]\AuditLog\set ExecStatus"
+              DTS:CreationName="Microsoft.ExpressionTask"
+              DTS:DTSID="{3CC761CA-5DA8-4595-87E5-6B266B274C99}"
+              DTS:ExecutableType="Microsoft.ExpressionTask"
+              DTS:LocaleID="-1"
+              DTS:ObjectName="set ExecStatus"
+              DTS:TaskContact="Expression Task;Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+              <DTS:Variables />
+              <DTS:ObjectData>
+                <ExpressionTask
+                  Expression="@[User::ExecAuditlog_Exec_Status] = &quot;Error&quot;" />
+              </DTS:ObjectData>
+            </DTS:Executable>
+            <DTS:Executable
+              DTS:refId="Package.EventHandlers[OnError]\AuditLog\setExecInfoMsg"
+              DTS:CreationName="Microsoft.ExpressionTask"
+              DTS:DTSID="{90EB693C-A18A-4B5B-9347-FF14571E52B4}"
+              DTS:ExecutableType="Microsoft.ExpressionTask"
+              DTS:LocaleID="-1"
+              DTS:ObjectName="setExecInfoMsg"
+              DTS:TaskContact="Expression Task;Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+              <DTS:Variables />
+              <DTS:ObjectData>
+                <ExpressionTask
+                  Expression="@[User::ExecAuditlog_Exec_Info_Msg]   = &quot;ERROR : &quot; +  (DT_WSTR, 11)@[System::ErrorCode]  + &quot; &quot;+  @[System::ErrorDescription]" />
+              </DTS:ObjectData>
+            </DTS:Executable>
+          </DTS:Executables>
+          <DTS:PrecedenceConstraints>
+            <DTS:PrecedenceConstraint
+              DTS:refId="Package.EventHandlers[OnError]\AuditLog.PrecedenceConstraints[Constraint_LogCreateErrorEntry_To_ExecAuditlog_UpdateEntry]"
+              DTS:CreationName=""
+              DTS:DTSID="{9BB262ED-06E7-4AD2-9A4C-1F75BD5567C3}"
+              DTS:From="Package.EventHandlers[OnError]\AuditLog\LogCreateErrorEntry"
+              DTS:LogicalAnd="True"
+              DTS:ObjectName="Constraint_LogCreateErrorEntry_To_ExecAuditlog_UpdateEntry"
+              DTS:To="Package.EventHandlers[OnError]\AuditLog\ExecAuditlog_UpdateEntry" />
+            <DTS:PrecedenceConstraint
+              DTS:refId="Package.EventHandlers[OnError]\AuditLog.PrecedenceConstraints[Constraint_set ExecStatus_To_setExecInfoMsg]"
+              DTS:CreationName=""
+              DTS:DTSID="{2DCBFFCD-6947-4ED8-8BF1-FA711115184C}"
+              DTS:From="Package.EventHandlers[OnError]\AuditLog\set ExecStatus"
+              DTS:LogicalAnd="True"
+              DTS:ObjectName="Constraint_set ExecStatus_To_setExecInfoMsg"
+              DTS:To="Package.EventHandlers[OnError]\AuditLog\setExecInfoMsg" />
+            <DTS:PrecedenceConstraint
+              DTS:refId="Package.EventHandlers[OnError]\AuditLog.PrecedenceConstraints[Constraint_setExecInfoMsg_To_LogCreateErrorEntry]"
+              DTS:CreationName=""
+              DTS:DTSID="{0252394E-B025-4EFA-B1A5-C7EA60B5BC8A}"
+              DTS:From="Package.EventHandlers[OnError]\AuditLog\setExecInfoMsg"
+              DTS:LogicalAnd="True"
+              DTS:ObjectName="Constraint_setExecInfoMsg_To_LogCreateErrorEntry"
+              DTS:To="Package.EventHandlers[OnError]\AuditLog\LogCreateErrorEntry" />
+          </DTS:PrecedenceConstraints>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package.EventHandlers[OnError]\UpdateSSISAuditLog"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:DTSID="{02D6524D-7B79-4C89-97D4-CBE4AAE231A8}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="UpdateSSISAuditLog"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{11403194-A011-44CA-A22B-E977E921ABED}"
+              SQLTask:SqlStatementSource="UPDATE log.SSISAudit SET&#xA;                                    BatchID = ?,&#xA;                                    CompleteTMST = GetDate(),&#xA;                                    CompletionMessage = ?,&#xA;                                    ExecutionInstanceGUID =?,&#xA;                                    RowCountBefore =?,&#xA;                                    RowCountProcessedTotal = ?,&#xA;                                    RowCountProcessedNew= ?,&#xA;                                    RowCountProcessedUpdated=?,&#xA;                                    RowCountProcessedIgnored = ?,&#xA;                                    RowCountFailed = ?,&#xA;                                    RowCountAfter =?,&#xA;                                    TableMaxSurrogateKey = ?&#xA;                                    WHERE SSISAuditKey = ?&#xA;                            " xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="$Package::Param_BatchID"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="1"
+                SQLTask:DtsVariableName="System::ErrorDescription"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="129"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="2"
+                SQLTask:DtsVariableName="System::ParentContainerGUID"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="130"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="3"
+                SQLTask:DtsVariableName="User::SSISAudit_RowCountBefore"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="4"
+                SQLTask:DtsVariableName="User::SSISAudit_RowCountProcessedTotal"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="5"
+                SQLTask:DtsVariableName="User::SSISAudit_RowCountProcessedNew"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="6"
+                SQLTask:DtsVariableName="User::SSISAudit_RowCountProcessedUpdated"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="7"
+                SQLTask:DtsVariableName="User::SSISAudit_RowCountProcessedIgnored"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="8"
+                SQLTask:DtsVariableName="User::SSISAudit_RowCountFailed"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="9"
+                SQLTask:DtsVariableName="User::SSISAudit_RowCountAfter"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="10"
+                SQLTask:DtsVariableName="User::SSISAudit_MaxSurrogateKey"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="11"
+                SQLTask:DtsVariableName="User::SSISAudit_LineageID"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="3"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package.EventHandlers[OnError].PrecedenceConstraints[Constraint_AuditLog_To_UpdateSSISAuditLog]"
+          DTS:CreationName=""
+          DTS:DTSID="{7A844A6A-A690-45F0-86D6-F2ECCDDB5F67}"
+          DTS:From="Package.EventHandlers[OnError]\AuditLog"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint_AuditLog_To_UpdateSSISAuditLog"
+          DTS:To="Package.EventHandlers[OnError]\UpdateSSISAuditLog" />
+      </DTS:PrecedenceConstraints>
+    </DTS:EventHandler>
+  </DTS:EventHandlers>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="232,42.6666666666667"
+          Id="Package\Closeout\Successful Completion Closeout\chSuccessfulCompletionCloseout"
+          TopLeft="5.50000000000001,5.50000000000004" />
+        <NodeLayout
+          Size="186.666666666667,42.6666666666667"
+          Id="Package\Closeout\Successful Completion Closeout\CompleteExecAuditLog"
+          TopLeft="28.1666666666667,210.833333333334" />
+        <NodeLayout
+          Size="214.666666666667,42.6666666666667"
+          Id="Package\Closeout\Successful Completion Closeout\ExecAuditlogEndOfWorkFlow"
+          TopLeft="14.1666666666667,108.166666666667" />
+        <EdgeLayout
+          Id="Package\Closeout\Successful Completion Closeout.PrecedenceConstraints[Constraint_chSuccessfulCompletionCloseout_To_ExecAuditlogEndOfWorkFlow]"
+          TopLeft="121.5,48.1666666666667">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60.0000000000001"
+              Start="0,0"
+              End="0,52.5000000000001">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5000000000001" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Closeout\Successful Completion Closeout.PrecedenceConstraints[Constraint_ExecAuditlogEndOfWorkFlow_To_CompleteExecAuditLog]"
+          TopLeft="121.5,150.833333333333">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60.0000000000001"
+              Start="0,0"
+              End="0,52.5000000000001">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5000000000001" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="242.666666666667,308.666666666667"
+          Size="242.666666666667,351.333333333334"
+          Id="Package\Closeout\Successful Completion Closeout"
+          TopLeft="5.50000000000004,5.50000000000009" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="253.333333333334,412"
+          Size="253.333333333334,454.666666666667"
+          Id="Package\Closeout"
+          TopLeft="5.50000000000016,931.5" />
+        <NodeLayout
+          Size="184,42.6666666666667"
+          Id="Package\Data_Processing\Sequence Container\MergeSourceToTarget"
+          TopLeft="5.50000000000003,210.833333333334" />
+        <NodeLayout
+          Size="142.666666666667,42.6666666666667"
+          Id="Package\Data_Processing\Sequence Container\Source to Stg"
+          TopLeft="26.1666666666667,108.166666666667" />
+        <NodeLayout
+          Size="169.333333333334,42.6666666666667"
+          Id="Package\Data_Processing\Sequence Container\Truncate Stg Table"
+          TopLeft="12.8333333333333,5.50000000000004" />
+        <EdgeLayout
+          Id="Package\Data_Processing\Sequence Container.PrecedenceConstraints[Constraint_Source to Stg_To_MergeSourceToTarget]"
+          TopLeft="97.5,150.833333333333">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60.0000000000001"
+              Start="0,0"
+              End="0,52.5000000000001">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5000000000001" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data_Processing\Sequence Container.PrecedenceConstraints[Constraint_Truncate Stg Table_To_Source to Stg]"
+          TopLeft="97.5,48.1666666666667">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60.0000000000001"
+              Start="0,0"
+              End="0,52.5000000000001">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5000000000001" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="195.333333333334,308.666666666667"
+          Size="195.333333333334,351.333333333334"
+          Id="Package\Data_Processing\Sequence Container"
+          TopLeft="5.50000000000004,5.49999999999997" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="206.666666666667,412"
+          Size="206.666666666667,454.666666666667"
+          Id="Package\Data_Processing"
+          TopLeft="28.8333333333334,416.833333333333" />
+        <NodeLayout
+          Size="148,42.6666666666667"
+          Id="Package\Setup Log processes\ExtractBatchId"
+          TopLeft="5.50000000000001,5.50000000000004" />
+        <NodeLayout
+          Size="124,42.6666666666667"
+          Id="Package\Setup Log processes\SetupLog"
+          TopLeft="17.5,108.166666666667" />
+        <NodeLayout
+          Size="141.333333333334,42.6666666666667"
+          Id="Package\Setup Log processes\StartExecLog"
+          TopLeft="8.83333333333336,210.833333333334" />
+        <EdgeLayout
+          Id="Package\Setup Log processes.PrecedenceConstraints[Constraint_ExtractBatchId_To_SetupLog]"
+          TopLeft="79.5,48.1666666666667">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60.0000000000001"
+              Start="0,0"
+              End="0,52.5000000000001">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5000000000001" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Setup Log processes.PrecedenceConstraints[Constraint_SetupLog_To_StartExecLog]"
+          TopLeft="79.5,150.833333333333">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60.0000000000001"
+              Start="0,0"
+              End="0,52.5000000000001">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5000000000001" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="158.666666666667,308.666666666667"
+          Size="158.666666666667,351.333333333334"
+          Id="Package\Setup Log processes"
+          TopLeft="52.8333333333334,5.50000000000009" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint_Data_Processing_To_Closeout]"
+          TopLeft="132.166666666667,871.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60.0000000000001"
+              Start="0,0"
+              End="0,52.5000000000001">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5000000000001" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint_Setup Log processes_To_Data_Processing]"
+          TopLeft="132.166666666667,356.833333333333">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <DtsEventHandler
+    design-time-name="Package.EventHandlers[OnError]">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="NaN,NaN"
+          Id="Package.EventHandlers[OnError]\AuditLog\ExecAuditlog_UpdateEntry"
+          TopLeft="NaN,NaN" />
+        <NodeLayout
+          Size="NaN,NaN"
+          Id="Package.EventHandlers[OnError]\AuditLog\LogCreateErrorEntry"
+          TopLeft="NaN,NaN" />
+        <NodeLayout
+          Size="NaN,NaN"
+          Id="Package.EventHandlers[OnError]\AuditLog\set ExecStatus"
+          TopLeft="NaN,NaN" />
+        <NodeLayout
+          Size="NaN,NaN"
+          Id="Package.EventHandlers[OnError]\AuditLog\setExecInfoMsg"
+          TopLeft="NaN,NaN" />
+        <EdgeLayout
+          Id="Package.EventHandlers[OnError]\AuditLog.PrecedenceConstraints[Constraint_LogCreateErrorEntry_To_ExecAuditlog_UpdateEntry]"
+          TopLeft="NaN,NaN">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="{assembly:Null}"
+              Start="0,0"
+              End="0,0">
+              <mssgle:Curve.Segments>
+                <assembly:Null />
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.EventHandlers[OnError]\AuditLog.PrecedenceConstraints[Constraint_set ExecStatus_To_setExecInfoMsg]"
+          TopLeft="NaN,NaN">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="{assembly:Null}"
+              Start="0,0"
+              End="0,0">
+              <mssgle:Curve.Segments>
+                <assembly:Null />
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.EventHandlers[OnError]\AuditLog.PrecedenceConstraints[Constraint_setExecInfoMsg_To_LogCreateErrorEntry]"
+          TopLeft="NaN,NaN">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="{assembly:Null}"
+              Start="0,0"
+              End="0,0">
+              <mssgle:Curve.Segments>
+                <assembly:Null />
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="NaN,NaN"
+          Size="NaN,NaN"
+          Id="Package.EventHandlers[OnError]\AuditLog"
+          TopLeft="NaN,NaN" />
+        <NodeLayout
+          Size="NaN,NaN"
+          Id="Package.EventHandlers[OnError]\UpdateSSISAuditLog"
+          TopLeft="NaN,NaN" />
+        <EdgeLayout
+          Id="Package.EventHandlers[OnError].PrecedenceConstraints[Constraint_AuditLog_To_UpdateSSISAuditLog]"
+          TopLeft="NaN,NaN">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="{assembly:Null}"
+              Start="0,0"
+              End="0,0">
+              <mssgle:Curve.Segments>
+                <assembly:Null />
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </DtsEventHandler>
+  <TaskHost
+    design-time-name="Package\Data_Processing\Sequence Container\Source to Stg">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="NaN,NaN"
+          Id="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Source"
+          TopLeft="NaN,NaN" />
+        <NodeLayout
+          Size="NaN,NaN"
+          Id="Package\Data_Processing\Sequence Container\Source to Stg\Derived Column"
+          TopLeft="NaN,NaN" />
+        <NodeLayout
+          Size="NaN,NaN"
+          Id="Package\Data_Processing\Sequence Container\Source to Stg\OLE DB Destination"
+          TopLeft="NaN,NaN" />
+        <EdgeLayout
+          Id="Package\Data_Processing\Sequence Container\Source to Stg.Paths[OLE DB Source_Output_Derived Column]"
+          TopLeft="NaN,NaN">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="{assembly:Null}"
+              Start="0,0"
+              End="0,0">
+              <mssgle:Curve.Segments>
+                <assembly:Null />
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data_Processing\Sequence Container\Source to Stg.Paths[Derived Column_Output_OLE DB Destination]"
+          TopLeft="NaN,NaN">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="{assembly:Null}"
+              Start="0,0"
+              End="0,0">
+              <mssgle:Curve.Segments>
+                <assembly:Null />
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

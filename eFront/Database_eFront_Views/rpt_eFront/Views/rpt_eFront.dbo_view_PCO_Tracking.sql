@@ -1,0 +1,1 @@
+﻿CREATE   VIEW rpt_eFront.dbo_view_PCO_Tracking  AS  Select * from  eFront.dbo_view_PCO_Tracking   with (nolock);

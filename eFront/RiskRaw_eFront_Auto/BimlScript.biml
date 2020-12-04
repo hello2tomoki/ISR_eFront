@@ -1,0 +1,1197 @@
+﻿<Biml xmlns="http://schemas.varigence.com/biml.xsd">
+    <Connections>
+        <Connection Name="Utility1" DelayValidation="true" ConnectionString="Data Source=Delta;Initial Catalog=RiskRaw;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;">
+            <Annotations>
+                <Annotation Tag="Varigence.Biml.SsisImporter.OriginalName">Utility</Annotation>
+            </Annotations>
+        </Connection>
+    </Connections>
+    <Packages>
+        <Package Name="ESGMainController" DelayValidation="true" Language="Lcid4105" ConstraintMode="LinearOnSuccess">
+            <Events>
+                <Event Name="OnError" ConstraintMode="LinearOnSuccess" EventType="OnError">
+                    <Tasks>
+                        <Container Name="AuditLog" ConstraintMode="LinearOnSuccess">
+                            <Tasks>
+                                <Expression Name="set ExecStatus" Expression="@[User::ExecAuditlog_Exec_Status] = &quot;Error&quot;" />
+                                <Expression Name="setExecInfoMsg" Expression="@[User::ExecAuditlog_Exec_Info_Msg]   = &quot;ERROR : &quot; +  (DT_WSTR, 11)@[System::ErrorCode]  + &quot; &quot;+  @[System::ErrorDescription]" />
+                                <ExecuteSQL Name="LogError" Disabled="true" ConnectionName="Utility1">
+                                    <Parameters>
+                                        <Parameter Name="0" VariableName="User.ExecAuditlog_ExecID" Direction="Output" Length="-1" DataType="Int32" />
+                                        <Parameter Name="1" VariableName="User.ExecAuditlog_Exec_Parent_Id" Length="-1" DataType="Int32" />
+                                        <Parameter Name="2" VariableName="User.ExecAuditlog_Exec_Description" Length="-1" DataType="AnsiString" />
+                                        <Parameter Name="3" VariableName="User.ExecAuditlog_Exec_Status" Length="-1" DataType="AnsiString" />
+                                        <Parameter Name="4" VariableName="User.ExecAuditlog_Params" Length="-1" DataType="AnsiString" />
+                                        <Parameter Name="5" VariableName="User.ExecAuditlog_Exec_Info_Msg" Length="-1" DataType="AnsiString" />
+                                    </Parameters>
+                                    <VariableInput VariableName="User.cmdExecAuditlog_CreateEntry" />
+                                </ExecuteSQL>
+                                <ExecuteSQL Name="UpdateLog" ConnectionName="Utility1">
+                                    <Parameters>
+                                        <Parameter Name="0" VariableName="User.ExecAuditlog_ExecID" Length="-1" DataType="Int32" />
+                                        <Parameter Name="1" VariableName="User.ExecAuditlog_Exec_Status" Length="-1" DataType="AnsiString" />
+                                        <Parameter Name="2" VariableName="User.ExecAuditlog_Exec_Info_Msg" Length="-1" DataType="AnsiString" />
+                                    </Parameters>
+                                    <VariableInput VariableName="User.cmdExecAuditlog_UpdateEntry" />
+                                </ExecuteSQL>
+                            </Tasks>
+                        </Container>
+                        <ExecuteSQL Name="UpdateSSISAuditLog" ConnectionName="Utility1">
+                            <Parameters>
+                                <Parameter Name="0" VariableName="Param_BatchID" Length="-1" DataType="Int32" />
+                                <Parameter Name="1" VariableName="System.ErrorDescription" Length="-1" DataType="AnsiString" />
+                                <Parameter Name="2" VariableName="System.ParentContainerGUID" Length="-1" DataType="String" />
+                                <Parameter Name="3" VariableName="User.SSISAudit_RowCountBefore" Length="-1" DataType="Int32" />
+                                <Parameter Name="4" VariableName="User.SSISAudit_RowCountProcessedTotal" Length="-1" DataType="Int32" />
+                                <Parameter Name="5" VariableName="User.SSISAudit_RowCountProcessedNew" Length="-1" DataType="Int32" />
+                                <Parameter Name="6" VariableName="User.SSISAudit_RowCountProcessedUpdated" Length="-1" DataType="Int32" />
+                                <Parameter Name="7" VariableName="User.SSISAudit_RowCountProcessedIgnored" Length="-1" DataType="Int32" />
+                                <Parameter Name="8" VariableName="User.SSISAudit_RowCountFailed" Length="-1" DataType="Int32" />
+                                <Parameter Name="9" VariableName="User.SSISAudit_RowCountAfter" Length="-1" DataType="Int32" />
+                                <Parameter Name="10" VariableName="User.SSISAudit_MaxSurrogateKey" Length="-1" DataType="Int32" />
+                                <Parameter Name="11" VariableName="User.SSISAudit_LineageID" Length="-1" DataType="Int32" />
+                            </Parameters>
+                            <DirectInput>UPDATE log.SSISAudit SET
+BatchID = ?,
+CompleteTMST = GetDate(),
+CompletionMessage = ?,
+ExecutionInstanceGUID =?,
+RowCountBefore =?,
+RowCountProcessedTotal = ?,
+RowCountProcessedNew= ?,
+RowCountProcessedUpdated=?,
+RowCountProcessedIgnored = ?,
+RowCountFailed = ?,
+RowCountAfter =?,
+TableMaxSurrogateKey = ?
+WHERE SSISAuditKey = ?</DirectInput>
+                        </ExecuteSQL>
+                    </Tasks>
+                </Event>
+            </Events>
+            <Variables>
+                <Variable Name="cmdExecAuditlog_CreateEntry" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">&quot;exec log.LogCreateEntry ? OUTPUT, ?,?,?,?,?&quot;</Variable>
+                <Variable Name="cmdExecAuditlog_UpdateEntry" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">&quot;exec log.LogUpdateEntry ?,?,?&quot;</Variable>
+                <Variable Name="ErrorLogFileURI" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">@[$Project::ESGAppFolder]  +  &quot;\\&quot; +  @[User::FolderNameErrorLog] + &quot;\\error.csv&quot;</Variable>
+                <Variable Name="ExecAuditDetailLog_INFO_MSG" DataType="String" IncludeInDebugDump="Exclude"></Variable>
+                <Variable Name="ExecAuditlog_ExecID" DataType="Int32" IncludeInDebugDump="Include">0</Variable>
+                <Variable Name="ExecAuditlog_Exec_Description" DataType="String" IncludeInDebugDump="Exclude"></Variable>
+                <Variable Name="ExecAuditlog_Exec_Info_Msg" DataType="String" IncludeInDebugDump="Exclude"></Variable>
+                <Variable Name="ExecAuditlog_Exec_Parent_Id" DataType="Int32" IncludeInDebugDump="Include">0</Variable>
+                <Variable Name="ExecAuditlog_Exec_Status" DataType="String" IncludeInDebugDump="Exclude"></Variable>
+                <Variable Name="ExecAuditlog_Params" DataType="String" IncludeInDebugDump="Exclude"></Variable>
+                <Variable Name="FailureMessage" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">&quot;Process FAILED - &quot; +  @[System::PackageName]</Variable>
+                <Variable Name="FeedArchiveFolder" DataType="String" IncludeInDebugDump="Exclude"></Variable>
+                <Variable Name="FolderNameArchive" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">&quot;Archive&quot;</Variable>
+                <Variable Name="FolderNameErrorLog" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">&quot;ErrorLog&quot;</Variable>
+                <Variable Name="FolderNameReturnedFromIteration" DataType="String" IncludeInDebugDump="Exclude"></Variable>
+                <Variable Name="FolderNameSource" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">&quot;Source&quot;</Variable>
+                <Variable Name="LastRunDT" DataType="DateTime" IncludeInDebugDump="Exclude">6/13/2019 6:08:13 PM</Variable>
+                <Variable Name="LastRunTMST" DataType="DateTime" IncludeInDebugDump="Exclude">6/13/2019 6:08:07 PM</Variable>
+                <Variable Name="LineageStringDel" DataType="String" IncludeInDebugDump="Exclude">/</Variable>
+                <Variable Name="MonthInForeachIteration" DataType="String" IncludeInDebugDump="Exclude"></Variable>
+                <Variable Name="objMonthsDirectoryList" DataType="Object" IncludeInDebugDump="Include" />
+                <Variable Name="objProvidersDirectoryList" DataType="Object" IncludeInDebugDump="Include" />
+                <Variable Name="ProviderInForeachIteration" DataType="String" IncludeInDebugDump="Exclude"></Variable>
+                <Variable Name="RiskDate_DateDel" DataType="String" IncludeInDebugDump="Exclude"></Variable>
+                <Variable Name="SSISAudit_LineageID" DataType="Int32" IncludeInDebugDump="Include">0</Variable>
+                <Variable Name="SSISAudit_LineageTMST" DataType="DateTime" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">@[System::StartTime]</Variable>
+                <Variable Name="SSISAudit_MaxSurrogateKey" DataType="Int32" IncludeInDebugDump="Exclude">0</Variable>
+                <Variable Name="SSISAudit_RowCountAfter" DataType="Int32" IncludeInDebugDump="Include">0</Variable>
+                <Variable Name="SSISAudit_RowCountBefore" DataType="Int32" IncludeInDebugDump="Include">0</Variable>
+                <Variable Name="SSISAudit_RowCountFailed" DataType="Int32" IncludeInDebugDump="Include">0</Variable>
+                <Variable Name="SSISAudit_RowCountProcessedIgnored" DataType="Int32" IncludeInDebugDump="Include">0</Variable>
+                <Variable Name="SSISAudit_RowCountProcessedNew" DataType="Int32" IncludeInDebugDump="Include">0</Variable>
+                <Variable Name="SSISAudit_RowCountProcessedTotal" DataType="Int32" IncludeInDebugDump="Include">0</Variable>
+                <Variable Name="SSISAudit_RowCountProcessedUpdated" DataType="Int32" IncludeInDebugDump="Include">0</Variable>
+                <Variable Name="SuccessMessage" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">&quot;Process Succeeded - &quot; +    @[System::PackageName]</Variable>
+                <Variable Name="VerbosAuditInfo" DataType="String" IncludeInDebugDump="Exclude" EvaluateAsExpression="true">&quot;Package Name = &quot; + @[System::PackageName]</Variable>
+            </Variables>
+            <Tasks>
+                <Container Name="Setup Log processes" DelayValidation="true" ConstraintMode="LinearOnCompletion">
+                    <Tasks>
+                        <ExecutePackage Name="StartExecLog" DelayValidation="true">
+                            <ParameterBindings>
+                                <ParameterBinding Name="ExecAuditlog_Exec_Parent_Id" VariableName="User.ExecAuditlog_ExecID" />
+                                <ParameterBinding Name="ExecAuditlog_Params" VariableName="User.ExecAuditlog_Params" />
+                                <ParameterBinding Name="ParentPackageName" VariableName="System.PackageName" />
+                            </ParameterBindings>
+                            <ExternalProjectPackage Package="chStartExecAuditLog.dtsx" />
+                        </ExecutePackage>
+                    </Tasks>
+                </Container>
+                <Container Name="Process Given Source Feeds" DelayValidation="true" ConstraintMode="LinearOnSuccess">
+                    <Tasks>
+                        <Script Name="GetProviderFoldersCollection" DelayValidation="true" ProjectCoreName="ST_195939e75291439e9622201dc66516fd">
+                            <ScriptTaskProjectReference ScriptTaskProjectName="ST_195939e75291439e9622201dc66516fd" />
+                        </Script>
+                        <ForEachFromVariableLoop Name="ForeachLoop-Providers" DelayValidation="true" VariableName="User.objProvidersDirectoryList">
+                            <Tasks>
+                                <Container Name="BranchOutProviders" />
+                                <Container Name="RepRisk" ConstraintMode="LinearOnSuccess">
+                                    <Expressions>
+                                        <Expression ExternalProperty="Disable">@[$Package::Disable_0005_RepRisk]</Expression>
+                                    </Expressions>
+                                    <PrecedenceConstraints>
+                                        <Inputs>
+                                            <Input OutputPathName="BranchOutProviders.Output" EvaluationOperation="Expression" Expression="FINDSTRING(@[User::ProviderInForeachIteration], &quot;RepRisk&quot; , 1 ) &gt; 0" />
+                                        </Inputs>
+                                    </PrecedenceConstraints>
+                                    <Tasks>
+                                        <Script Name="GetMonthFoldersCollection" DelayValidation="true" ProjectCoreName="ST_79a80bc608ab468c8df5e5f6f9f272e8">
+                                            <ScriptTaskProjectReference ScriptTaskProjectName="ST_79a80bc608ab468c8df5e5f6f9f272e8" />
+                                        </Script>
+                                        <ForEachFromVariableLoop Name="ForeachLoop-Months" DelayValidation="true" ConstraintMode="LinearOnSuccess" VariableName="User.objMonthsDirectoryList">
+                                            <Tasks>
+                                                <Script Name="GetArchiveFolderName" DelayValidation="true" ProjectCoreName="ST_d0ec009941b24ccd8c27f31a28a60694">
+                                                    <ScriptTaskProjectReference ScriptTaskProjectName="ST_d0ec009941b24ccd8c27f31a28a60694" />
+                                                </Script>
+                                                <Container Name="Load RepRisk Source files" DelayValidation="true" ConstraintMode="LinearOnSuccess">
+                                                    <Tasks>
+                                                        <ExecutePackage Name="Load UNGC Principles">
+                                                            <Expressions>
+                                                                <Expression ExternalProperty="Disable">@[$Package::Disable_0010_LoadUNGCPrinciples]</Expression>
+                                                            </Expressions>
+                                                            <ParameterBindings>
+                                                                <ParameterBinding Name="EXEC_PARENT_ID" VariableName="User.ExecAuditlog_ExecID" />
+                                                                <ParameterBinding Name="SourceFeedsLocation" VariableName="User.MonthInForeachIteration" />
+                                                                <ParameterBinding Name="FeedsArchiveLocation" VariableName="User.FeedArchiveFolder" />
+                                                                <ParameterBinding Name="ErrorLogLocation" VariableName="User.ErrorLogFileURI" />
+                                                            </ParameterBindings>
+                                                            <ExternalProjectPackage Package="RepRisk_UNGCPrinciples.dtsx" />
+                                                        </ExecutePackage>
+                                                        <ExecutePackage Name="Load RRI" DelayValidation="true">
+                                                            <Expressions>
+                                                                <Expression ExternalProperty="Disable">@[$Package::Disable_0020_LoadRRI]</Expression>
+                                                            </Expressions>
+                                                            <ParameterBindings>
+                                                                <ParameterBinding Name="EXEC_PARENT_ID" VariableName="User.ExecAuditlog_ExecID" />
+                                                                <ParameterBinding Name="SourceFeedsLocation" VariableName="User.MonthInForeachIteration" />
+                                                                <ParameterBinding Name="FeedsArchiveLocation" VariableName="User.FeedArchiveFolder" />
+                                                                <ParameterBinding Name="ErrorLogLocation" VariableName="User.ErrorLogFileURI" />
+                                                            </ParameterBindings>
+                                                            <ExternalProjectPackage Package="RepRisk_RRI.dtsx" />
+                                                        </ExecutePackage>
+                                                        <ExecutePackage Name="Load Tags" DelayValidation="true">
+                                                            <Expressions>
+                                                                <Expression ExternalProperty="Disable">@[$Package::Disable_0030_LoadTags]</Expression>
+                                                            </Expressions>
+                                                            <ParameterBindings>
+                                                                <ParameterBinding Name="EXEC_PARENT_ID" VariableName="User.ExecAuditlog_ExecID" />
+                                                                <ParameterBinding Name="SourceFeedsLocation" VariableName="User.MonthInForeachIteration" />
+                                                                <ParameterBinding Name="FeedsArchiveLocation" VariableName="User.FeedArchiveFolder" />
+                                                                <ParameterBinding Name="ErrorLogLocation" VariableName="User.ErrorLogFileURI" />
+                                                            </ParameterBindings>
+                                                            <ExternalProjectPackage Package="RepRisk_Tags.dtsx" />
+                                                        </ExecutePackage>
+                                                        <ExecutePackage Name="Load Tags WithoutPlasticTags" DelayValidation="true" Disabled="true">
+                                                            <Expressions>
+                                                                <Expression ExternalProperty="Disable">@[$Package::Disable_0031_LoadTagsWithoutPlasticTag]</Expression>
+                                                            </Expressions>
+                                                            <ParameterBindings>
+                                                                <ParameterBinding Name="EXEC_PARENT_ID" VariableName="User.ExecAuditlog_ExecID" />
+                                                                <ParameterBinding Name="SourceFeedsLocation" VariableName="User.MonthInForeachIteration" />
+                                                                <ParameterBinding Name="FeedsArchiveLocation" VariableName="User.FeedArchiveFolder" />
+                                                                <ParameterBinding Name="ErrorLogLocation" VariableName="User.ErrorLogFileURI" />
+                                                            </ParameterBindings>
+                                                            <ExternalProjectPackage Package="RepRisk_TagsWithOutPlasticTag.dtsx" />
+                                                        </ExecutePackage>
+                                                        <ExecutePackage Name="Load Issues">
+                                                            <Expressions>
+                                                                <Expression ExternalProperty="Disable">@[$Package::Disable_0040_LoadIssues]</Expression>
+                                                            </Expressions>
+                                                            <ParameterBindings>
+                                                                <ParameterBinding Name="EXEC_PARENT_ID" VariableName="User.ExecAuditlog_ExecID" />
+                                                                <ParameterBinding Name="SourceFeedsLocation" VariableName="User.MonthInForeachIteration" />
+                                                                <ParameterBinding Name="FeedsArchiveLocation" VariableName="User.FeedArchiveFolder" />
+                                                                <ParameterBinding Name="ErrorLogLocation" VariableName="User.ErrorLogFileURI" />
+                                                            </ParameterBindings>
+                                                            <ExternalProjectPackage Package="RepRisk_Issues.dtsx" />
+                                                        </ExecutePackage>
+                                                        <ExecutePackage Name="Load Company Identifiers">
+                                                            <Expressions>
+                                                                <Expression ExternalProperty="Disable">@[$Package::Disable_0050_LoadCompanyIdentifiers]</Expression>
+                                                            </Expressions>
+                                                            <ParameterBindings>
+                                                                <ParameterBinding Name="EXEC_PARENT_ID" VariableName="User.ExecAuditlog_ExecID" />
+                                                                <ParameterBinding Name="SourceFeedsLocation" VariableName="User.MonthInForeachIteration" />
+                                                                <ParameterBinding Name="FeedsArchiveLocation" VariableName="User.FeedArchiveFolder" />
+                                                                <ParameterBinding Name="ErrorLogLocation" VariableName="User.ErrorLogFileURI" />
+                                                            </ParameterBindings>
+                                                            <ExternalProjectPackage Package="RepRisk_CompanyIdentifiers.dtsx" />
+                                                        </ExecutePackage>
+                                                        <ExecutePackage Name="Load Locations">
+                                                            <Expressions>
+                                                                <Expression ExternalProperty="Disable">@[$Package::Disable_0090_LoadLocations]</Expression>
+                                                            </Expressions>
+                                                            <ParameterBindings>
+                                                                <ParameterBinding Name="EXEC_PARENT_ID" VariableName="User.ExecAuditlog_ExecID" />
+                                                                <ParameterBinding Name="SourceFeedsLocation" VariableName="User.MonthInForeachIteration" />
+                                                                <ParameterBinding Name="FeedsArchiveLocation" VariableName="User.FeedArchiveFolder" />
+                                                                <ParameterBinding Name="ErrorLogLocation" VariableName="User.ErrorLogFileURI" />
+                                                            </ParameterBindings>
+                                                            <ExternalProjectPackage Package="RepRisk_Locations.dtsx" />
+                                                        </ExecutePackage>
+                                                    </Tasks>
+                                                </Container>
+                                                <FileSystem Name="Delete month folder" DelayValidation="true" Operation="DeleteDirectory">
+                                                    <VariableInput VariableName="User.MonthInForeachIteration" />
+                                                </FileSystem>
+                                            </Tasks>
+                                            <VariableMappings>
+                                                <VariableMapping Name="0" VariableName="User.MonthInForeachIteration" />
+                                            </VariableMappings>
+                                        </ForEachFromVariableLoop>
+                                    </Tasks>
+                                </Container>
+                                <Container Name="MSCI" ConstraintMode="LinearOnSuccess">
+                                    <Expressions>
+                                        <Expression ExternalProperty="Disable">@[$Package::Disable_0100_MSCI]</Expression>
+                                    </Expressions>
+                                    <PrecedenceConstraints>
+                                        <Inputs>
+                                            <Input OutputPathName="BranchOutProviders.Output" EvaluationOperation="Expression" Expression="FINDSTRING(@[User::ProviderInForeachIteration], &quot;MSCI&quot; , 1 ) &gt; 0" />
+                                        </Inputs>
+                                    </PrecedenceConstraints>
+                                    <Tasks>
+                                        <Script Name="GetMonthFoldersCollection" DelayValidation="true" ProjectCoreName="ST_fee53c266bf5488f9689115d445d4988">
+                                            <ScriptTaskProjectReference ScriptTaskProjectName="ST_fee53c266bf5488f9689115d445d4988" />
+                                        </Script>
+                                        <ForEachFromVariableLoop Name="ForeachLoop-Months" DelayValidation="true" ConstraintMode="LinearOnSuccess" VariableName="User.objMonthsDirectoryList">
+                                            <Tasks>
+                                                <Script Name="GetArchiveFolderName" DelayValidation="true" ProjectCoreName="ST_7d34098564f2446caf665ba65ebe3c70">
+                                                    <ScriptTaskProjectReference ScriptTaskProjectName="ST_7d34098564f2446caf665ba65ebe3c70" />
+                                                </Script>
+                                                <Container Name="Load MSCI Source files" DelayValidation="true" ConstraintMode="LinearOnCompletion">
+                                                    <Tasks>
+                                                        <ExecutePackage Name="Load MSCI Ratings">
+                                                            <Expressions>
+                                                                <Expression ExternalProperty="Disable">@[$Package::Disable_0110_MSCIRatings]</Expression>
+                                                            </Expressions>
+                                                            <ParameterBindings>
+                                                                <ParameterBinding Name="EXEC_PARENT_ID" VariableName="User.ExecAuditlog_ExecID" />
+                                                                <ParameterBinding Name="SourceFeedsLocation" VariableName="User.MonthInForeachIteration" />
+                                                                <ParameterBinding Name="FeedsArchiveLocation" VariableName="User.FeedArchiveFolder" />
+                                                                <ParameterBinding Name="ErrorLogLocation" VariableName="User.ErrorLogFileURI" />
+                                                            </ParameterBindings>
+                                                            <ExternalProjectPackage Package="MSCI_ESGRatings.dtsx" />
+                                                        </ExecutePackage>
+                                                    </Tasks>
+                                                </Container>
+                                                <FileSystem Name="Delete month folder" DelayValidation="true" Operation="DeleteDirectory">
+                                                    <VariableInput VariableName="User.MonthInForeachIteration" />
+                                                </FileSystem>
+                                            </Tasks>
+                                            <VariableMappings>
+                                                <VariableMapping Name="0" VariableName="User.MonthInForeachIteration" />
+                                            </VariableMappings>
+                                        </ForEachFromVariableLoop>
+                                    </Tasks>
+                                </Container>
+                            </Tasks>
+                            <VariableMappings>
+                                <VariableMapping Name="0" VariableName="User.ProviderInForeachIteration" />
+                            </VariableMappings>
+                        </ForEachFromVariableLoop>
+                    </Tasks>
+                </Container>
+                <Container Name="Successful Completion Closeout" DelayValidation="true" ConstraintMode="LinearOnSuccess">
+                    <Tasks>
+                        <Expression Name="ExecAuditlogEndOfWorkFlow" DelayValidation="true" Expression="@[User::ExecAuditlog_Exec_Info_Msg] = &quot;Done full workflow. Complete &quot;">
+                            <Events>
+                                <Event Name="OnPostExecute" EventType="OnPostExecute" />
+                            </Events>
+                        </Expression>
+                        <ExecutePackage Name="CompleteExecAuditLog" DelayValidation="true">
+                            <ParameterBindings>
+                                <ParameterBinding Name="ExecAuditlog_Exec_Id" VariableName="User.ExecAuditlog_ExecID" />
+                                <ParameterBinding Name="ExecAuditlog_Exec_Info_Msg" VariableName="User.ExecAuditlog_Exec_Info_Msg" />
+                            </ParameterBindings>
+                            <ExternalProjectPackage Package="chCompleteExecAuditLog.dtsx" />
+                        </ExecutePackage>
+                    </Tasks>
+                </Container>
+            </Tasks>
+            <Connections>
+                <Connection ConnectionName="Utility1">
+                    <Expressions>
+                        <Expression ExternalProperty="InitialCatalog">@[$Project::Utility_InitialCatalog]</Expression>
+                        <Expression ExternalProperty="ServerName">@[$Project::Utility_ServerName]</Expression>
+                    </Expressions>
+                </Connection>
+            </Connections>
+            <Parameters>
+                <Parameter Name="Disable_0005_RepRisk" DataType="Boolean">False</Parameter>
+                <Parameter Name="Disable_0010_LoadUNGCPrinciples" DataType="Boolean">False</Parameter>
+                <Parameter Name="Disable_0020_LoadRRI" DataType="Boolean">False</Parameter>
+                <Parameter Name="Disable_0030_LoadTags" DataType="Boolean">False</Parameter>
+                <Parameter Name="Disable_0031_LoadTagsWithoutPlasticTag" DataType="Boolean">True</Parameter>
+                <Parameter Name="Disable_0040_LoadIssues" DataType="Boolean">False</Parameter>
+                <Parameter Name="Disable_0050_LoadCompanyIdentifiers" DataType="Boolean">False</Parameter>
+                <Parameter Name="Disable_0090_LoadLocations" DataType="Boolean">False</Parameter>
+                <Parameter Name="Disable_0100_MSCI" DataType="Boolean">False</Parameter>
+                <Parameter Name="Disable_0110_MSCIRatings" DataType="Boolean">False</Parameter>
+                <Parameter Name="Param_BatchID" DataType="Int32">0</Parameter>
+            </Parameters>
+        </Package>
+    </Packages>
+    <ScriptProjects>
+        <ScriptTaskProject Name="ST_7d34098564f2446caf665ba65ebe3c70" ProjectCoreName="ST_7d34098564f2446caf665ba65ebe3c70">
+            <AssemblyReferences>
+                <AssemblyReference AssemblyPath="System" />
+                <AssemblyReference AssemblyPath="System.Data" />
+                <AssemblyReference AssemblyPath="System.Windows.Forms" />
+                <AssemblyReference AssemblyPath="System.Xml" />
+                <AssemblyReference AssemblyPath="Microsoft.SqlServer.ManagedDTS.dll" />
+                <AssemblyReference AssemblyPath="Microsoft.SqlServer.ScriptTask.dll" />
+            </AssemblyReferences>
+            <Files>
+                <File Path="ScriptMain.cs">#region Help:  Introduction to the script task
+/* The Script Task allows you to perform virtually any operation that can be accomplished in
+ * a .Net application within the context of an Integration Services control flow. 
+ * 
+ * Expand the other regions which have &quot;Help&quot; prefixes for examples of specific ways to use
+ * Integration Services features within this script task. */
+#endregion
+
+
+#region Namespaces
+using System;
+using System.Data;
+using Microsoft.SqlServer.Dts.Runtime;
+using System.Windows.Forms;
+#endregion
+
+namespace ST_195939e75291439e9622201dc66516fd
+{
+    /// &lt;summary&gt;
+    /// ScriptMain is the entry point class of the script.  Do not change the name, attributes,
+    /// or parent of this class.
+    /// &lt;/summary&gt;
+	[Microsoft.SqlServer.Dts.Tasks.ScriptTask.SSISScriptTaskEntryPointAttribute]
+	public partial class ScriptMain : Microsoft.SqlServer.Dts.Tasks.ScriptTask.VSTARTScriptObjectModelBase
+	{
+        #region Help:  Using Integration Services variables and parameters in a script
+        /* To use a variable in this script, first ensure that the variable has been added to 
+         * either the list contained in the ReadOnlyVariables property or the list contained in 
+         * the ReadWriteVariables property of this script task, according to whether or not your
+         * code needs to write to the variable.  To add the variable, save this script, close this instance of
+         * Visual Studio, and update the ReadOnlyVariables and 
+         * ReadWriteVariables properties in the Script Transformation Editor window.
+         * To use a parameter in this script, follow the same steps. Parameters are always read-only.
+         * 
+         * Example of reading from a variable:
+         *  DateTime startTime = (DateTime) Dts.Variables[&quot;System::StartTime&quot;].Value;
+         * 
+         * Example of writing to a variable:
+         *  Dts.Variables[&quot;User::myStringVariable&quot;].Value = &quot;new value&quot;;
+         * 
+         * Example of reading from a package parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Package::batchId&quot;].Value;
+         *  
+         * Example of reading from a project parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Project::batchId&quot;].Value;
+         * 
+         * Example of reading from a sensitive project parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Project::batchId&quot;].GetSensitiveValue();
+         * */
+
+        #endregion
+
+        #region Help:  Firing Integration Services events from a script
+        /* This script task can fire events for logging purposes.
+         * 
+         * Example of firing an error event:
+         *  Dts.Events.FireError(18, &quot;Process Values&quot;, &quot;Bad value&quot;, &quot;&quot;, 0);
+         * 
+         * Example of firing an information event:
+         *  Dts.Events.FireInformation(3, &quot;Process Values&quot;, &quot;Processing has started&quot;, &quot;&quot;, 0, ref fireAgain)
+         * 
+         * Example of firing a warning event:
+         *  Dts.Events.FireWarning(14, &quot;Process Values&quot;, &quot;No values received for input&quot;, &quot;&quot;, 0);
+         * */
+        #endregion
+
+        #region Help:  Using Integration Services connection managers in a script
+        /* Some types of connection managers can be used in this script task.  See the topic 
+         * &quot;Working with Connection Managers Programatically&quot; for details.
+         * 
+         * Example of using an ADO.Net connection manager:
+         *  object rawConnection = Dts.Connections[&quot;Sales DB&quot;].AcquireConnection(Dts.Transaction);
+         *  SqlConnection myADONETConnection = (SqlConnection)rawConnection;
+         *  //Use the connection in some code here, then release the connection
+         *  Dts.Connections[&quot;Sales DB&quot;].ReleaseConnection(rawConnection);
+         *
+         * Example of using a File connection manager
+         *  object rawConnection = Dts.Connections[&quot;Prices.zip&quot;].AcquireConnection(Dts.Transaction);
+         *  string filePath = (string)rawConnection;
+         *  //Use the connection in some code here, then release the connection
+         *  Dts.Connections[&quot;Prices.zip&quot;].ReleaseConnection(rawConnection);
+         * */
+        #endregion
+
+
+		/// &lt;summary&gt;
+        /// This method is called when this script task executes in the control flow.
+        /// Before returning from this method, set the value of Dts.TaskResult to indicate success or failure.
+        /// To open Help, press F1.
+        /// &lt;/summary&gt;
+		public void Main()
+		{
+            // TODO: Add your code here
+
+            try {
+
+                Dts.Variables[&quot;FeedArchiveFolder&quot;].Value = Dts.Variables[&quot;MonthInForeachIteration&quot;].Value.ToString().Replace(Dts.Variables[&quot;FolderNameSource&quot;].Value.ToString(), Dts.Variables[&quot;FolderNameArchive&quot;].Value.ToString());
+
+                Dts.TaskResult = (int)ScriptResults.Success;
+
+            }
+            catch (Exception ex) {
+                throw ex;
+            }
+		}
+
+        #region ScriptResults declaration
+        /// &lt;summary&gt;
+        /// This enum provides a convenient shorthand within the scope of this class for setting the
+        /// result of the script.
+        /// 
+        /// This code was generated automatically.
+        /// &lt;/summary&gt;
+        enum ScriptResults
+        {
+            Success = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Success,
+            Failure = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Failure
+        };
+        #endregion
+
+	}
+}</File>
+                <File Path="Properties\AssemblyInfo.cs">using System.Reflection;
+using System.Runtime.CompilerServices;
+
+//
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+//
+[assembly: AssemblyTitle(&quot;ST_195939e75291439e9622201dc66516fd&quot;)]
+[assembly: AssemblyDescription(&quot;&quot;)]
+[assembly: AssemblyConfiguration(&quot;&quot;)]
+[assembly: AssemblyCompany(&quot;&quot;)]
+[assembly: AssemblyProduct(&quot;ST_195939e75291439e9622201dc66516fd&quot;)]
+[assembly: AssemblyCopyright(&quot;Copyright @  2019&quot;)]
+[assembly: AssemblyTrademark(&quot;&quot;)]
+[assembly: AssemblyCulture(&quot;&quot;)]
+//
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Build Number
+//      Revision
+//
+// You can specify all the values or you can default the Revision and Build Numbers 
+// by using the &apos;*&apos; as shown below:
+
+[assembly: AssemblyVersion(&quot;1.0.*&quot;)]</File>
+            </Files>
+            <ReadOnlyVariables>
+                <Variable VariableName="FolderNameArchive" DataType="String" Namespace="User" />
+                <Variable VariableName="FolderNameSource" DataType="String" Namespace="User" />
+                <Variable VariableName="MonthInForeachIteration" DataType="String" Namespace="User" />
+            </ReadOnlyVariables>
+            <ReadWriteVariables>
+                <Variable VariableName="FeedArchiveFolder" DataType="String" Namespace="User" />
+            </ReadWriteVariables>
+        </ScriptTaskProject>
+        <ScriptTaskProject Name="ST_fee53c266bf5488f9689115d445d4988" ProjectCoreName="ST_fee53c266bf5488f9689115d445d4988">
+            <AssemblyReferences>
+                <AssemblyReference AssemblyPath="System" />
+                <AssemblyReference AssemblyPath="System.Data" />
+                <AssemblyReference AssemblyPath="System.Windows.Forms" />
+                <AssemblyReference AssemblyPath="System.Xml" />
+                <AssemblyReference AssemblyPath="Microsoft.SqlServer.ManagedDTS.dll" />
+                <AssemblyReference AssemblyPath="Microsoft.SqlServer.ScriptTask.dll" />
+            </AssemblyReferences>
+            <Files>
+                <File Path="Properties\AssemblyInfo.cs">using System.Reflection;
+using System.Runtime.CompilerServices;
+
+//
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+//
+[assembly: AssemblyTitle(&quot;ST_195939e75291439e9622201dc66516fd&quot;)]
+[assembly: AssemblyDescription(&quot;&quot;)]
+[assembly: AssemblyConfiguration(&quot;&quot;)]
+[assembly: AssemblyCompany(&quot;&quot;)]
+[assembly: AssemblyProduct(&quot;ST_195939e75291439e9622201dc66516fd&quot;)]
+[assembly: AssemblyCopyright(&quot;Copyright @  2019&quot;)]
+[assembly: AssemblyTrademark(&quot;&quot;)]
+[assembly: AssemblyCulture(&quot;&quot;)]
+//
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Build Number
+//      Revision
+//
+// You can specify all the values or you can default the Revision and Build Numbers 
+// by using the &apos;*&apos; as shown below:
+
+[assembly: AssemblyVersion(&quot;1.0.*&quot;)]</File>
+                <File Path="ScriptMain.cs">#region Help:  Introduction to the script task
+/* The Script Task allows you to perform virtually any operation that can be accomplished in
+ * a .Net application within the context of an Integration Services control flow. 
+ * 
+ * Expand the other regions which have &quot;Help&quot; prefixes for examples of specific ways to use
+ * Integration Services features within this script task. */
+#endregion
+
+
+#region Namespaces
+using System;
+using System.Data;
+using Microsoft.SqlServer.Dts.Runtime;
+using System.Windows.Forms;
+#endregion
+
+namespace ST_195939e75291439e9622201dc66516fd
+{
+    /// &lt;summary&gt;
+    /// ScriptMain is the entry point class of the script.  Do not change the name, attributes,
+    /// or parent of this class.
+    /// &lt;/summary&gt;
+	[Microsoft.SqlServer.Dts.Tasks.ScriptTask.SSISScriptTaskEntryPointAttribute]
+	public partial class ScriptMain : Microsoft.SqlServer.Dts.Tasks.ScriptTask.VSTARTScriptObjectModelBase
+	{
+        #region Help:  Using Integration Services variables and parameters in a script
+        /* To use a variable in this script, first ensure that the variable has been added to 
+         * either the list contained in the ReadOnlyVariables property or the list contained in 
+         * the ReadWriteVariables property of this script task, according to whether or not your
+         * code needs to write to the variable.  To add the variable, save this script, close this instance of
+         * Visual Studio, and update the ReadOnlyVariables and 
+         * ReadWriteVariables properties in the Script Transformation Editor window.
+         * To use a parameter in this script, follow the same steps. Parameters are always read-only.
+         * 
+         * Example of reading from a variable:
+         *  DateTime startTime = (DateTime) Dts.Variables[&quot;System::StartTime&quot;].Value;
+         * 
+         * Example of writing to a variable:
+         *  Dts.Variables[&quot;User::myStringVariable&quot;].Value = &quot;new value&quot;;
+         * 
+         * Example of reading from a package parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Package::batchId&quot;].Value;
+         *  
+         * Example of reading from a project parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Project::batchId&quot;].Value;
+         * 
+         * Example of reading from a sensitive project parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Project::batchId&quot;].GetSensitiveValue();
+         * */
+
+        #endregion
+
+        #region Help:  Firing Integration Services events from a script
+        /* This script task can fire events for logging purposes.
+         * 
+         * Example of firing an error event:
+         *  Dts.Events.FireError(18, &quot;Process Values&quot;, &quot;Bad value&quot;, &quot;&quot;, 0);
+         * 
+         * Example of firing an information event:
+         *  Dts.Events.FireInformation(3, &quot;Process Values&quot;, &quot;Processing has started&quot;, &quot;&quot;, 0, ref fireAgain)
+         * 
+         * Example of firing a warning event:
+         *  Dts.Events.FireWarning(14, &quot;Process Values&quot;, &quot;No values received for input&quot;, &quot;&quot;, 0);
+         * */
+        #endregion
+
+        #region Help:  Using Integration Services connection managers in a script
+        /* Some types of connection managers can be used in this script task.  See the topic 
+         * &quot;Working with Connection Managers Programatically&quot; for details.
+         * 
+         * Example of using an ADO.Net connection manager:
+         *  object rawConnection = Dts.Connections[&quot;Sales DB&quot;].AcquireConnection(Dts.Transaction);
+         *  SqlConnection myADONETConnection = (SqlConnection)rawConnection;
+         *  //Use the connection in some code here, then release the connection
+         *  Dts.Connections[&quot;Sales DB&quot;].ReleaseConnection(rawConnection);
+         *
+         * Example of using a File connection manager
+         *  object rawConnection = Dts.Connections[&quot;Prices.zip&quot;].AcquireConnection(Dts.Transaction);
+         *  string filePath = (string)rawConnection;
+         *  //Use the connection in some code here, then release the connection
+         *  Dts.Connections[&quot;Prices.zip&quot;].ReleaseConnection(rawConnection);
+         * */
+        #endregion
+
+
+		/// &lt;summary&gt;
+        /// This method is called when this script task executes in the control flow.
+        /// Before returning from this method, set the value of Dts.TaskResult to indicate success or failure.
+        /// To open Help, press F1.
+        /// &lt;/summary&gt;
+		public void Main()
+		{
+            // TODO: Add your code here
+
+            try {
+
+                string strPath;
+
+                strPath = @Dts.Variables[&quot;ProviderInForeachIteration&quot;].Value.ToString();
+
+                Dts.Variables[&quot;objMonthsDirectoryList&quot;].Value = System.IO.Directory.GetDirectories(strPath);
+
+                Dts.TaskResult = (int)ScriptResults.Success;
+
+            }
+            catch (Exception ex) {
+                throw ex;
+            }
+		}
+
+        #region ScriptResults declaration
+        /// &lt;summary&gt;
+        /// This enum provides a convenient shorthand within the scope of this class for setting the
+        /// result of the script.
+        /// 
+        /// This code was generated automatically.
+        /// &lt;/summary&gt;
+        enum ScriptResults
+        {
+            Success = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Success,
+            Failure = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Failure
+        };
+        #endregion
+
+	}
+}</File>
+            </Files>
+            <ReadOnlyVariables>
+                <Variable VariableName="ProviderInForeachIteration" DataType="String" Namespace="User" />
+            </ReadOnlyVariables>
+            <ReadWriteVariables>
+                <Variable VariableName="objMonthsDirectoryList" DataType="Object" Namespace="User" />
+            </ReadWriteVariables>
+        </ScriptTaskProject>
+        <ScriptTaskProject Name="ST_d0ec009941b24ccd8c27f31a28a60694" ProjectCoreName="ST_d0ec009941b24ccd8c27f31a28a60694">
+            <AssemblyReferences>
+                <AssemblyReference AssemblyPath="System" />
+                <AssemblyReference AssemblyPath="System.Data" />
+                <AssemblyReference AssemblyPath="System.Windows.Forms" />
+                <AssemblyReference AssemblyPath="System.Xml" />
+                <AssemblyReference AssemblyPath="Microsoft.SqlServer.ManagedDTS.dll" />
+                <AssemblyReference AssemblyPath="Microsoft.SqlServer.ScriptTask.dll" />
+            </AssemblyReferences>
+            <Files>
+                <File Path="Properties\AssemblyInfo.cs">using System.Reflection;
+using System.Runtime.CompilerServices;
+
+//
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+//
+[assembly: AssemblyTitle(&quot;ST_195939e75291439e9622201dc66516fd&quot;)]
+[assembly: AssemblyDescription(&quot;&quot;)]
+[assembly: AssemblyConfiguration(&quot;&quot;)]
+[assembly: AssemblyCompany(&quot;&quot;)]
+[assembly: AssemblyProduct(&quot;ST_195939e75291439e9622201dc66516fd&quot;)]
+[assembly: AssemblyCopyright(&quot;Copyright @  2019&quot;)]
+[assembly: AssemblyTrademark(&quot;&quot;)]
+[assembly: AssemblyCulture(&quot;&quot;)]
+//
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Build Number
+//      Revision
+//
+// You can specify all the values or you can default the Revision and Build Numbers 
+// by using the &apos;*&apos; as shown below:
+
+[assembly: AssemblyVersion(&quot;1.0.*&quot;)]</File>
+                <File Path="ScriptMain.cs">#region Help:  Introduction to the script task
+/* The Script Task allows you to perform virtually any operation that can be accomplished in
+ * a .Net application within the context of an Integration Services control flow. 
+ * 
+ * Expand the other regions which have &quot;Help&quot; prefixes for examples of specific ways to use
+ * Integration Services features within this script task. */
+#endregion
+
+
+#region Namespaces
+using System;
+using System.Data;
+using Microsoft.SqlServer.Dts.Runtime;
+using System.Windows.Forms;
+#endregion
+
+namespace ST_195939e75291439e9622201dc66516fd
+{
+    /// &lt;summary&gt;
+    /// ScriptMain is the entry point class of the script.  Do not change the name, attributes,
+    /// or parent of this class.
+    /// &lt;/summary&gt;
+	[Microsoft.SqlServer.Dts.Tasks.ScriptTask.SSISScriptTaskEntryPointAttribute]
+	public partial class ScriptMain : Microsoft.SqlServer.Dts.Tasks.ScriptTask.VSTARTScriptObjectModelBase
+	{
+        #region Help:  Using Integration Services variables and parameters in a script
+        /* To use a variable in this script, first ensure that the variable has been added to 
+         * either the list contained in the ReadOnlyVariables property or the list contained in 
+         * the ReadWriteVariables property of this script task, according to whether or not your
+         * code needs to write to the variable.  To add the variable, save this script, close this instance of
+         * Visual Studio, and update the ReadOnlyVariables and 
+         * ReadWriteVariables properties in the Script Transformation Editor window.
+         * To use a parameter in this script, follow the same steps. Parameters are always read-only.
+         * 
+         * Example of reading from a variable:
+         *  DateTime startTime = (DateTime) Dts.Variables[&quot;System::StartTime&quot;].Value;
+         * 
+         * Example of writing to a variable:
+         *  Dts.Variables[&quot;User::myStringVariable&quot;].Value = &quot;new value&quot;;
+         * 
+         * Example of reading from a package parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Package::batchId&quot;].Value;
+         *  
+         * Example of reading from a project parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Project::batchId&quot;].Value;
+         * 
+         * Example of reading from a sensitive project parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Project::batchId&quot;].GetSensitiveValue();
+         * */
+
+        #endregion
+
+        #region Help:  Firing Integration Services events from a script
+        /* This script task can fire events for logging purposes.
+         * 
+         * Example of firing an error event:
+         *  Dts.Events.FireError(18, &quot;Process Values&quot;, &quot;Bad value&quot;, &quot;&quot;, 0);
+         * 
+         * Example of firing an information event:
+         *  Dts.Events.FireInformation(3, &quot;Process Values&quot;, &quot;Processing has started&quot;, &quot;&quot;, 0, ref fireAgain)
+         * 
+         * Example of firing a warning event:
+         *  Dts.Events.FireWarning(14, &quot;Process Values&quot;, &quot;No values received for input&quot;, &quot;&quot;, 0);
+         * */
+        #endregion
+
+        #region Help:  Using Integration Services connection managers in a script
+        /* Some types of connection managers can be used in this script task.  See the topic 
+         * &quot;Working with Connection Managers Programatically&quot; for details.
+         * 
+         * Example of using an ADO.Net connection manager:
+         *  object rawConnection = Dts.Connections[&quot;Sales DB&quot;].AcquireConnection(Dts.Transaction);
+         *  SqlConnection myADONETConnection = (SqlConnection)rawConnection;
+         *  //Use the connection in some code here, then release the connection
+         *  Dts.Connections[&quot;Sales DB&quot;].ReleaseConnection(rawConnection);
+         *
+         * Example of using a File connection manager
+         *  object rawConnection = Dts.Connections[&quot;Prices.zip&quot;].AcquireConnection(Dts.Transaction);
+         *  string filePath = (string)rawConnection;
+         *  //Use the connection in some code here, then release the connection
+         *  Dts.Connections[&quot;Prices.zip&quot;].ReleaseConnection(rawConnection);
+         * */
+        #endregion
+
+
+		/// &lt;summary&gt;
+        /// This method is called when this script task executes in the control flow.
+        /// Before returning from this method, set the value of Dts.TaskResult to indicate success or failure.
+        /// To open Help, press F1.
+        /// &lt;/summary&gt;
+		public void Main()
+		{
+            // TODO: Add your code here
+
+            try {
+
+                Dts.Variables[&quot;FeedArchiveFolder&quot;].Value = Dts.Variables[&quot;MonthInForeachIteration&quot;].Value.ToString().Replace(Dts.Variables[&quot;FolderNameSource&quot;].Value.ToString(), Dts.Variables[&quot;FolderNameArchive&quot;].Value.ToString());
+
+                Dts.TaskResult = (int)ScriptResults.Success;
+
+            }
+            catch (Exception ex) {
+                throw ex;
+            }
+		}
+
+        #region ScriptResults declaration
+        /// &lt;summary&gt;
+        /// This enum provides a convenient shorthand within the scope of this class for setting the
+        /// result of the script.
+        /// 
+        /// This code was generated automatically.
+        /// &lt;/summary&gt;
+        enum ScriptResults
+        {
+            Success = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Success,
+            Failure = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Failure
+        };
+        #endregion
+
+	}
+}</File>
+            </Files>
+            <ReadOnlyVariables>
+                <Variable VariableName="FolderNameArchive" DataType="String" Namespace="User" />
+                <Variable VariableName="FolderNameSource" DataType="String" Namespace="User" />
+                <Variable VariableName="MonthInForeachIteration" DataType="String" Namespace="User" />
+            </ReadOnlyVariables>
+            <ReadWriteVariables>
+                <Variable VariableName="FeedArchiveFolder" DataType="String" Namespace="User" />
+            </ReadWriteVariables>
+        </ScriptTaskProject>
+        <ScriptTaskProject Name="ST_79a80bc608ab468c8df5e5f6f9f272e8" ProjectCoreName="ST_79a80bc608ab468c8df5e5f6f9f272e8">
+            <AssemblyReferences>
+                <AssemblyReference AssemblyPath="System" />
+                <AssemblyReference AssemblyPath="System.Data" />
+                <AssemblyReference AssemblyPath="System.Windows.Forms" />
+                <AssemblyReference AssemblyPath="System.Xml" />
+                <AssemblyReference AssemblyPath="Microsoft.SqlServer.ManagedDTS.dll" />
+                <AssemblyReference AssemblyPath="Microsoft.SqlServer.ScriptTask.dll" />
+            </AssemblyReferences>
+            <Files>
+                <File Path="ScriptMain.cs">#region Help:  Introduction to the script task
+/* The Script Task allows you to perform virtually any operation that can be accomplished in
+ * a .Net application within the context of an Integration Services control flow. 
+ * 
+ * Expand the other regions which have &quot;Help&quot; prefixes for examples of specific ways to use
+ * Integration Services features within this script task. */
+#endregion
+
+
+#region Namespaces
+using System;
+using System.Data;
+using Microsoft.SqlServer.Dts.Runtime;
+using System.Windows.Forms;
+#endregion
+
+namespace ST_195939e75291439e9622201dc66516fd
+{
+    /// &lt;summary&gt;
+    /// ScriptMain is the entry point class of the script.  Do not change the name, attributes,
+    /// or parent of this class.
+    /// &lt;/summary&gt;
+	[Microsoft.SqlServer.Dts.Tasks.ScriptTask.SSISScriptTaskEntryPointAttribute]
+	public partial class ScriptMain : Microsoft.SqlServer.Dts.Tasks.ScriptTask.VSTARTScriptObjectModelBase
+	{
+        #region Help:  Using Integration Services variables and parameters in a script
+        /* To use a variable in this script, first ensure that the variable has been added to 
+         * either the list contained in the ReadOnlyVariables property or the list contained in 
+         * the ReadWriteVariables property of this script task, according to whether or not your
+         * code needs to write to the variable.  To add the variable, save this script, close this instance of
+         * Visual Studio, and update the ReadOnlyVariables and 
+         * ReadWriteVariables properties in the Script Transformation Editor window.
+         * To use a parameter in this script, follow the same steps. Parameters are always read-only.
+         * 
+         * Example of reading from a variable:
+         *  DateTime startTime = (DateTime) Dts.Variables[&quot;System::StartTime&quot;].Value;
+         * 
+         * Example of writing to a variable:
+         *  Dts.Variables[&quot;User::myStringVariable&quot;].Value = &quot;new value&quot;;
+         * 
+         * Example of reading from a package parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Package::batchId&quot;].Value;
+         *  
+         * Example of reading from a project parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Project::batchId&quot;].Value;
+         * 
+         * Example of reading from a sensitive project parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Project::batchId&quot;].GetSensitiveValue();
+         * */
+
+        #endregion
+
+        #region Help:  Firing Integration Services events from a script
+        /* This script task can fire events for logging purposes.
+         * 
+         * Example of firing an error event:
+         *  Dts.Events.FireError(18, &quot;Process Values&quot;, &quot;Bad value&quot;, &quot;&quot;, 0);
+         * 
+         * Example of firing an information event:
+         *  Dts.Events.FireInformation(3, &quot;Process Values&quot;, &quot;Processing has started&quot;, &quot;&quot;, 0, ref fireAgain)
+         * 
+         * Example of firing a warning event:
+         *  Dts.Events.FireWarning(14, &quot;Process Values&quot;, &quot;No values received for input&quot;, &quot;&quot;, 0);
+         * */
+        #endregion
+
+        #region Help:  Using Integration Services connection managers in a script
+        /* Some types of connection managers can be used in this script task.  See the topic 
+         * &quot;Working with Connection Managers Programatically&quot; for details.
+         * 
+         * Example of using an ADO.Net connection manager:
+         *  object rawConnection = Dts.Connections[&quot;Sales DB&quot;].AcquireConnection(Dts.Transaction);
+         *  SqlConnection myADONETConnection = (SqlConnection)rawConnection;
+         *  //Use the connection in some code here, then release the connection
+         *  Dts.Connections[&quot;Sales DB&quot;].ReleaseConnection(rawConnection);
+         *
+         * Example of using a File connection manager
+         *  object rawConnection = Dts.Connections[&quot;Prices.zip&quot;].AcquireConnection(Dts.Transaction);
+         *  string filePath = (string)rawConnection;
+         *  //Use the connection in some code here, then release the connection
+         *  Dts.Connections[&quot;Prices.zip&quot;].ReleaseConnection(rawConnection);
+         * */
+        #endregion
+
+
+		/// &lt;summary&gt;
+        /// This method is called when this script task executes in the control flow.
+        /// Before returning from this method, set the value of Dts.TaskResult to indicate success or failure.
+        /// To open Help, press F1.
+        /// &lt;/summary&gt;
+		public void Main()
+		{
+            // TODO: Add your code here
+
+            try {
+
+                string strPath;
+
+                strPath = @Dts.Variables[&quot;ProviderInForeachIteration&quot;].Value.ToString();
+
+                Dts.Variables[&quot;objMonthsDirectoryList&quot;].Value = System.IO.Directory.GetDirectories(strPath);
+
+                Dts.TaskResult = (int)ScriptResults.Success;
+
+            }
+            catch (Exception ex) {
+                throw ex;
+            }
+		}
+
+        #region ScriptResults declaration
+        /// &lt;summary&gt;
+        /// This enum provides a convenient shorthand within the scope of this class for setting the
+        /// result of the script.
+        /// 
+        /// This code was generated automatically.
+        /// &lt;/summary&gt;
+        enum ScriptResults
+        {
+            Success = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Success,
+            Failure = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Failure
+        };
+        #endregion
+
+	}
+}</File>
+                <File Path="Properties\AssemblyInfo.cs">using System.Reflection;
+using System.Runtime.CompilerServices;
+
+//
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+//
+[assembly: AssemblyTitle(&quot;ST_195939e75291439e9622201dc66516fd&quot;)]
+[assembly: AssemblyDescription(&quot;&quot;)]
+[assembly: AssemblyConfiguration(&quot;&quot;)]
+[assembly: AssemblyCompany(&quot;&quot;)]
+[assembly: AssemblyProduct(&quot;ST_195939e75291439e9622201dc66516fd&quot;)]
+[assembly: AssemblyCopyright(&quot;Copyright @  2019&quot;)]
+[assembly: AssemblyTrademark(&quot;&quot;)]
+[assembly: AssemblyCulture(&quot;&quot;)]
+//
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Build Number
+//      Revision
+//
+// You can specify all the values or you can default the Revision and Build Numbers 
+// by using the &apos;*&apos; as shown below:
+
+[assembly: AssemblyVersion(&quot;1.0.*&quot;)]</File>
+            </Files>
+            <ReadOnlyVariables>
+                <Variable VariableName="ProviderInForeachIteration" DataType="String" Namespace="User" />
+            </ReadOnlyVariables>
+            <ReadWriteVariables>
+                <Variable VariableName="objMonthsDirectoryList" DataType="Object" Namespace="User" />
+            </ReadWriteVariables>
+        </ScriptTaskProject>
+        <ScriptTaskProject Name="ST_195939e75291439e9622201dc66516fd" ProjectCoreName="ST_195939e75291439e9622201dc66516fd">
+            <AssemblyReferences>
+                <AssemblyReference AssemblyPath="System" />
+                <AssemblyReference AssemblyPath="System.Data" />
+                <AssemblyReference AssemblyPath="System.Windows.Forms" />
+                <AssemblyReference AssemblyPath="System.Xml" />
+                <AssemblyReference AssemblyPath="Microsoft.SqlServer.ManagedDTS.dll" />
+                <AssemblyReference AssemblyPath="Microsoft.SqlServer.ScriptTask.dll" />
+            </AssemblyReferences>
+            <Files>
+                <File Path="Properties\AssemblyInfo.cs">using System.Reflection;
+using System.Runtime.CompilerServices;
+
+//
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+//
+[assembly: AssemblyTitle(&quot;ST_195939e75291439e9622201dc66516fd&quot;)]
+[assembly: AssemblyDescription(&quot;&quot;)]
+[assembly: AssemblyConfiguration(&quot;&quot;)]
+[assembly: AssemblyCompany(&quot;&quot;)]
+[assembly: AssemblyProduct(&quot;ST_195939e75291439e9622201dc66516fd&quot;)]
+[assembly: AssemblyCopyright(&quot;Copyright @  2019&quot;)]
+[assembly: AssemblyTrademark(&quot;&quot;)]
+[assembly: AssemblyCulture(&quot;&quot;)]
+//
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Build Number
+//      Revision
+//
+// You can specify all the values or you can default the Revision and Build Numbers 
+// by using the &apos;*&apos; as shown below:
+
+[assembly: AssemblyVersion(&quot;1.0.*&quot;)]</File>
+                <File Path="ScriptMain.cs">#region Help:  Introduction to the script task
+/* The Script Task allows you to perform virtually any operation that can be accomplished in
+ * a .Net application within the context of an Integration Services control flow. 
+ * 
+ * Expand the other regions which have &quot;Help&quot; prefixes for examples of specific ways to use
+ * Integration Services features within this script task. */
+#endregion
+
+
+#region Namespaces
+using System;
+using System.Data;
+using Microsoft.SqlServer.Dts.Runtime;
+using System.Windows.Forms;
+#endregion
+
+namespace ST_195939e75291439e9622201dc66516fd
+{
+    /// &lt;summary&gt;
+    /// ScriptMain is the entry point class of the script.  Do not change the name, attributes,
+    /// or parent of this class.
+    /// &lt;/summary&gt;
+	[Microsoft.SqlServer.Dts.Tasks.ScriptTask.SSISScriptTaskEntryPointAttribute]
+	public partial class ScriptMain : Microsoft.SqlServer.Dts.Tasks.ScriptTask.VSTARTScriptObjectModelBase
+	{
+        #region Help:  Using Integration Services variables and parameters in a script
+        /* To use a variable in this script, first ensure that the variable has been added to 
+         * either the list contained in the ReadOnlyVariables property or the list contained in 
+         * the ReadWriteVariables property of this script task, according to whether or not your
+         * code needs to write to the variable.  To add the variable, save this script, close this instance of
+         * Visual Studio, and update the ReadOnlyVariables and 
+         * ReadWriteVariables properties in the Script Transformation Editor window.
+         * To use a parameter in this script, follow the same steps. Parameters are always read-only.
+         * 
+         * Example of reading from a variable:
+         *  DateTime startTime = (DateTime) Dts.Variables[&quot;System::StartTime&quot;].Value;
+         * 
+         * Example of writing to a variable:
+         *  Dts.Variables[&quot;User::myStringVariable&quot;].Value = &quot;new value&quot;;
+         * 
+         * Example of reading from a package parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Package::batchId&quot;].Value;
+         *  
+         * Example of reading from a project parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Project::batchId&quot;].Value;
+         * 
+         * Example of reading from a sensitive project parameter:
+         *  int batchId = (int) Dts.Variables[&quot;$Project::batchId&quot;].GetSensitiveValue();
+         * */
+
+        #endregion
+
+        #region Help:  Firing Integration Services events from a script
+        /* This script task can fire events for logging purposes.
+         * 
+         * Example of firing an error event:
+         *  Dts.Events.FireError(18, &quot;Process Values&quot;, &quot;Bad value&quot;, &quot;&quot;, 0);
+         * 
+         * Example of firing an information event:
+         *  Dts.Events.FireInformation(3, &quot;Process Values&quot;, &quot;Processing has started&quot;, &quot;&quot;, 0, ref fireAgain)
+         * 
+         * Example of firing a warning event:
+         *  Dts.Events.FireWarning(14, &quot;Process Values&quot;, &quot;No values received for input&quot;, &quot;&quot;, 0);
+         * */
+        #endregion
+
+        #region Help:  Using Integration Services connection managers in a script
+        /* Some types of connection managers can be used in this script task.  See the topic 
+         * &quot;Working with Connection Managers Programatically&quot; for details.
+         * 
+         * Example of using an ADO.Net connection manager:
+         *  object rawConnection = Dts.Connections[&quot;Sales DB&quot;].AcquireConnection(Dts.Transaction);
+         *  SqlConnection myADONETConnection = (SqlConnection)rawConnection;
+         *  //Use the connection in some code here, then release the connection
+         *  Dts.Connections[&quot;Sales DB&quot;].ReleaseConnection(rawConnection);
+         *
+         * Example of using a File connection manager
+         *  object rawConnection = Dts.Connections[&quot;Prices.zip&quot;].AcquireConnection(Dts.Transaction);
+         *  string filePath = (string)rawConnection;
+         *  //Use the connection in some code here, then release the connection
+         *  Dts.Connections[&quot;Prices.zip&quot;].ReleaseConnection(rawConnection);
+         * */
+        #endregion
+
+
+		/// &lt;summary&gt;
+        /// This method is called when this script task executes in the control flow.
+        /// Before returning from this method, set the value of Dts.TaskResult to indicate success or failure.
+        /// To open Help, press F1.
+        /// &lt;/summary&gt;
+		public void Main()
+		{
+            // TODO: Add your code here
+
+            try {
+
+                string strPath;
+
+                strPath = @Dts.Variables[&quot;ESGAppFolder&quot;].Value.ToString() + @Dts.Variables[&quot;FolderNameSource&quot;].Value.ToString();
+
+                Dts.Variables[&quot;objProvidersDirectoryList&quot;].Value = System.IO.Directory.GetDirectories(strPath);
+
+                Dts.TaskResult = (int)ScriptResults.Success;
+
+            }
+            catch (Exception ex) {
+                throw ex;
+            }
+		}
+
+        #region ScriptResults declaration
+        /// &lt;summary&gt;
+        /// This enum provides a convenient shorthand within the scope of this class for setting the
+        /// result of the script.
+        /// 
+        /// This code was generated automatically.
+        /// &lt;/summary&gt;
+        enum ScriptResults
+        {
+            Success = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Success,
+            Failure = Microsoft.SqlServer.Dts.Runtime.DTSExecResult.Failure
+        };
+        #endregion
+
+	}
+}</File>
+            </Files>
+            <ReadOnlyVariables>
+                <Variable VariableName="FolderNameSource" DataType="String" Namespace="User" />
+                <Variable VariableName="ESGAppFolder" DataType="Empty" Namespace="$Project" />
+            </ReadOnlyVariables>
+            <ReadWriteVariables>
+                <Variable VariableName="objProvidersDirectoryList" DataType="Object" Namespace="User" />
+            </ReadWriteVariables>
+        </ScriptTaskProject>
+    </ScriptProjects>
+</Biml>

@@ -1,0 +1,330 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="12/6/2019 7:19:23 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="WIN10VM059"
+  DTS:CreatorName="spalla"
+  DTS:DTSID="{A916B0A1-647A-4CB1-B121-1F1E67D04FFE}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="15.0.2000.68"
+  DTS:LocaleID="4105"
+  DTS:ObjectName="chSuccessfulCompletionCloseout"
+  DTS:ProtectionLevel="0"
+  DTS:VersionGUID="{DF41654D-201A-42EC-814F-366A923427BA}"
+  DTS:VersionMajor="0">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Utility]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{C6F1CE40-4A2D-4F30-BE56-7253B6B70AA3}"
+      DTS:ObjectName="Utility">
+      <DTS:PropertyExpression
+        DTS:Name="InitialCatalog">@[$Project::Utility_InitalCatalog]</DTS:PropertyExpression>
+      <DTS:PropertyExpression
+        DTS:Name="ServerName">@[$Project::Utility_ServerName]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="data source=Delta;initial catalog=Sandbox2;provider=SQLNCLI11.1;integrated security=SSPI;auto translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:PackageParameters>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="8"
+      DTS:DTSID="{187C527F-509E-41C3-804D-254C0C2CD32C}"
+      DTS:ObjectName="cmdSourceDataLoadRegister_Insert">
+      <DTS:Property
+        DTS:DataType="8"
+        DTS:Name="ParameterValue"
+        xml:space="preserve"></DTS:Property>
+    </DTS:PackageParameter>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="8"
+      DTS:DTSID="{CBF27A7F-F505-4FBA-9970-73D15B179489}"
+      DTS:ObjectName="ExecutionInstanceGUID">
+      <DTS:Property
+        DTS:DataType="8"
+        DTS:Name="ParameterValue"
+        xml:space="preserve"></DTS:Property>
+    </DTS:PackageParameter>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="3"
+      DTS:DTSID="{256DFA6F-DBF5-4814-AEDD-FCF8588BA82B}"
+      DTS:ObjectName="Param_BatchID">
+      <DTS:Property
+        DTS:DataType="3"
+        DTS:Name="ParameterValue">0</DTS:Property>
+    </DTS:PackageParameter>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="8"
+      DTS:DTSID="{2FF3ED40-29F0-41D6-9030-663EEDE30932}"
+      DTS:ObjectName="ParentPackageName">
+      <DTS:Property
+        DTS:DataType="8"
+        DTS:Name="ParameterValue"
+        xml:space="preserve"></DTS:Property>
+    </DTS:PackageParameter>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="3"
+      DTS:DTSID="{BE680A7B-E2E7-4C73-AAF5-FC75F6880FB8}"
+      DTS:ObjectName="SSISAudit_LineageID">
+      <DTS:Property
+        DTS:DataType="3"
+        DTS:Name="ParameterValue">0</DTS:Property>
+    </DTS:PackageParameter>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="3"
+      DTS:DTSID="{CE1D0A58-94B1-41C4-8FBE-5CEC271A22EA}"
+      DTS:ObjectName="SSISAudit_MaxSurrogateKey">
+      <DTS:Property
+        DTS:DataType="3"
+        DTS:Name="ParameterValue">0</DTS:Property>
+    </DTS:PackageParameter>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="3"
+      DTS:DTSID="{8BB59A69-14FA-40A1-8CFE-930D1F4EEBE0}"
+      DTS:ObjectName="SSISAudit_RowCountAfter">
+      <DTS:Property
+        DTS:DataType="3"
+        DTS:Name="ParameterValue">0</DTS:Property>
+    </DTS:PackageParameter>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="3"
+      DTS:DTSID="{8878FD1B-5F4E-439F-9FB6-8CAEB657322C}"
+      DTS:ObjectName="SSISAudit_RowCountBefore">
+      <DTS:Property
+        DTS:DataType="3"
+        DTS:Name="ParameterValue">0</DTS:Property>
+    </DTS:PackageParameter>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="3"
+      DTS:DTSID="{024539EC-8F1B-43D2-A6C7-A56B0519D9A1}"
+      DTS:ObjectName="SSISAudit_RowCountFailed">
+      <DTS:Property
+        DTS:DataType="3"
+        DTS:Name="ParameterValue">0</DTS:Property>
+    </DTS:PackageParameter>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="3"
+      DTS:DTSID="{1B893E9E-4BB8-49A8-BB6D-BB6E17552064}"
+      DTS:ObjectName="SSISAudit_RowCountProcessedIgnored">
+      <DTS:Property
+        DTS:DataType="3"
+        DTS:Name="ParameterValue">0</DTS:Property>
+    </DTS:PackageParameter>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="3"
+      DTS:DTSID="{C350C7A8-55F8-4DAE-A2A2-7B2164B08248}"
+      DTS:ObjectName="SSISAudit_RowCountProcessedNew">
+      <DTS:Property
+        DTS:DataType="3"
+        DTS:Name="ParameterValue">0</DTS:Property>
+    </DTS:PackageParameter>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="3"
+      DTS:DTSID="{34E20846-5B54-489C-B8C9-0850972D4119}"
+      DTS:ObjectName="SSISAudit_RowCountProcessedTotal">
+      <DTS:Property
+        DTS:DataType="3"
+        DTS:Name="ParameterValue">0</DTS:Property>
+    </DTS:PackageParameter>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="3"
+      DTS:DTSID="{35C2B5C2-5646-4FF8-825E-FBF8B1AF71C9}"
+      DTS:ObjectName="SSISAudit_RowCountProcessedUpdated">
+      <DTS:Property
+        DTS:DataType="3"
+        DTS:Name="ParameterValue">0</DTS:Property>
+    </DTS:PackageParameter>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="8"
+      DTS:DTSID="{C4AE00BD-ACAE-4437-8399-5EA249DA9D23}"
+      DTS:ObjectName="SuccessMessage">
+      <DTS:Property
+        DTS:DataType="8"
+        DTS:Name="ParameterValue"
+        xml:space="preserve"></DTS:Property>
+    </DTS:PackageParameter>
+  </DTS:PackageParameters>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Insert SDLR"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{0C1A6AAF-7051-4A97-945B-41FA7A7133BD}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Insert SDLR"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{C6F1CE40-4A2D-4F30-BE56-7253B6B70AA3}"
+          SQLTask:SqlStmtSourceType="Variable"
+          SQLTask:SqlStatementSource="$Package::cmdSourceDataLoadRegister_Insert" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update Incremental Dates"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{B438DA01-4321-4331-826A-109A403FCF02}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update Incremental Dates"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{C6F1CE40-4A2D-4F30-BE56-7253B6B70AA3}"
+          SQLTask:SqlStatementSource=" UPDATE log.SSISIncrementalTracking SET LastRunTMST = ?, LastRunDT = ?, UpdateBy = SUSER_SNAME(), LastUpdateTMST = GETDATE() WHERE PackageName = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="System::StartTime"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="7"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="1"
+            SQLTask:DtsVariableName="System::StartTime"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="7"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="2"
+            SQLTask:DtsVariableName="$Package::ParentPackageName"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="130"
+            SQLTask:ParameterSize="-1" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update Log processes"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{4235B3E9-A0C4-4147-AD66-396D6EC24DF4}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update Log processes"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{C6F1CE40-4A2D-4F30-BE56-7253B6B70AA3}"
+          SQLTask:SqlStatementSource="UPDATE log.SSISAudit SET&#xA;                        BatchID = ?,&#xA;                        CompleteTMST = GetDate(),&#xA;                        CompletionMessage = ?,&#xA;                        ExecutionInstanceGUID =?,&#xA;                        RowCountBefore =?,&#xA;                        RowCountProcessedTotal = ?,&#xA;                        RowCountProcessedNew= ?,&#xA;                        RowCountProcessedUpdated=?,&#xA;                        RowCountProcessedIgnored = ?,&#xA;                        RowCountFailed = ?,&#xA;                        RowCountAfter =?,&#xA;                        TableMaxSurrogateKey = ?&#xA;                        WHERE SSISAuditKey = ?&#xA;                    " xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="$Package::Param_BatchID"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="1"
+            SQLTask:DtsVariableName="$Package::SuccessMessage"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="129"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="2"
+            SQLTask:DtsVariableName="$Package::ExecutionInstanceGUID"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="130"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="3"
+            SQLTask:DtsVariableName="$Package::SSISAudit_RowCountBefore"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="4"
+            SQLTask:DtsVariableName="$Package::SSISAudit_RowCountProcessedTotal"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="5"
+            SQLTask:DtsVariableName="$Package::SSISAudit_RowCountProcessedNew"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="6"
+            SQLTask:DtsVariableName="$Package::SSISAudit_RowCountProcessedUpdated"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="7"
+            SQLTask:DtsVariableName="$Package::SSISAudit_RowCountProcessedIgnored"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="8"
+            SQLTask:DtsVariableName="$Package::SSISAudit_RowCountFailed"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="9"
+            SQLTask:DtsVariableName="$Package::SSISAudit_RowCountAfter"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="10"
+            SQLTask:DtsVariableName="$Package::SSISAudit_MaxSurrogateKey"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="11"
+            SQLTask:DtsVariableName="$Package::SSISAudit_LineageID"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint_Update Incremental Dates_To_Insert SDLR]"
+      DTS:CreationName=""
+      DTS:DTSID="{4D4A9D67-167B-4786-BB00-AAD430340C98}"
+      DTS:EvalOp="1"
+      DTS:Expression="len(@[$Package::cmdSourceDataLoadRegister_Insert]) &gt; 0"
+      DTS:From="Package\Update Incremental Dates"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint_Update Incremental Dates_To_Insert SDLR"
+      DTS:To="Package\Insert SDLR" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint_Update Log processes_To_Update Incremental Dates]"
+      DTS:CreationName=""
+      DTS:DTSID="{AAAEC766-C388-4B48-B535-E0CD2EE9DAD1}"
+      DTS:From="Package\Update Log processes"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint_Update Log processes_To_Update Incremental Dates"
+      DTS:To="Package\Update Incremental Dates" />
+  </DTS:PrecedenceConstraints>
+</DTS:Executable>

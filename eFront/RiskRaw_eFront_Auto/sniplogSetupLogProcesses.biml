@@ -1,0 +1,35 @@
+﻿
+                <Container Name="Setup Log processes" ConstraintMode="LinearOnSuccess">
+                    <Tasks>
+                        
+                        <ExecuteSQL Name="ExtractBatchId" ConnectionName="Utility" ResultSet="SingleRow">
+                          <Results>
+                            <Result Name="LastBacthId" VariableName="User.SSISAudit_BatchId" />
+                          </Results>
+                          <DirectInput>SELECT ISNULL(MAX(SSISAuditKey),0) +1 AS LastBacthId FROM [log].[SSISAudit] with (nolock)
+</DirectInput>
+                        </ExecuteSQL>
+            
+                        <ExecutePackage Name="SetupLog">
+                            <ParameterBindings>
+                                
+                                <ParameterBinding Name="ParentPackageName" VariableName="System.PackageName" />
+                                <ParameterBinding Name="HistoricalTableName" VariableName="User.HistoricalTableName" />
+                                <ParameterBinding Name="SSISAudit_LineageID" VariableName="User.SSISAudit_LineageID" />
+                                <ParameterBinding Name="SSISAudit_BatchId" VariableName="User.SSISAudit_BatchId" />
+                                
+                            </ParameterBindings>
+                            <ExternalProjectPackage Package="chSetupLogProcess.dtsx" />
+                        </ExecutePackage>
+                        
+                        <ExecutePackage Name="StartExecLog">
+                            <ParameterBindings>
+                                <ParameterBinding Name="ExecAuditlog_Exec_Parent_Id" VariableName="EXEC_PARENT_ID" />
+                                <ParameterBinding Name="ExecAuditlog_Params" VariableName="User.ExecAuditlog_Params" />
+                                <ParameterBinding Name="ParentPackageName" VariableName="System.PackageName" />
+                            </ParameterBindings>
+                            <ExternalProjectPackage Package="chStartExecAuditLog.dtsx" />
+                        </ExecutePackage>
+                            
+                    </Tasks>
+                </Container>
