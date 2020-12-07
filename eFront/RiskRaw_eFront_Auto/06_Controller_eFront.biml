@@ -39,7 +39,7 @@
         </Parameters>
     
             <Packages>     
-                <Package PackageName="Plymouth_Controller" />
+                <Package PackageName="eFront_Controller" />
                 
             </Packages>
                 
@@ -72,7 +72,7 @@
     </Connections>
     
     <Packages>    
-        <Package Name="Plymouth_Controller" Language="None" ConstraintMode="Parallel" ProtectionLevel="DontSaveSensitive">
+        <Package Name="eFront_Controller" Language="None" ConstraintMode="Parallel" ProtectionLevel="DontSaveSensitive">
             
         <#@ include file="sniplogEvents.biml" #>
         

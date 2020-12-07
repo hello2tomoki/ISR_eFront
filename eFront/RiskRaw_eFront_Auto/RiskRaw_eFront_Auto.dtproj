@@ -2477,8 +2477,8 @@
       <FullPath>05_Package_PCO_Tracking.biml</FullPath>
     </ProjectItem>
     <ProjectItem>
-      <Name>06_Controller_Plymouth_Controller.biml</Name>
-      <FullPath>06_Controller_Plymouth_Controller.biml</FullPath>
+      <Name>06_Controller_eFront.biml</Name>
+      <FullPath>06_Controller_eFront.biml</FullPath>
     </ProjectItem>
     <ProjectItem>
       <Name>BimlScript1.biml</Name>

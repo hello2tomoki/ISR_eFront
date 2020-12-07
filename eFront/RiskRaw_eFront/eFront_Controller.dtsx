@@ -1,18 +1,18 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
   DTS:CreationDate="12/3/2020 6:37:26 PM"
   DTS:CreationName="Microsoft.Package"
   DTS:CreatorComputerName="WIN10VM060"
   DTS:CreatorName="malam"
-  DTS:DTSID="{B6D188ED-79D0-4A89-8B72-FFDB05CCD87C}"
+  DTS:DTSID="{45EE90B7-59E7-4A6C-8958-6A4D3529DA83}"
   DTS:ExecutableType="Microsoft.Package"
   DTS:LastModifiedProductVersion="15.0.2000.128"
   DTS:LocaleID="1033"
-  DTS:ObjectName="Plymouth_Controller"
+  DTS:ObjectName="eFront_Controller"
   DTS:ProtectionLevel="0"
-  DTS:VersionBuild="3"
-  DTS:VersionGUID="{927C9DB4-FC51-4BFD-A027-B1C654C063A4}"
+  DTS:VersionBuild="4"
+  DTS:VersionGUID="{98D7C93A-4C31-4284-90B4-148390F2DF88}"
   DTS:VersionMajor="0">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -418,7 +418,7 @@
       DTS:Namespace="User"
       DTS:ObjectName="SSISAudit_LineageTMST">
       <DTS:VariableValue
-        DTS:DataType="7">12/3/2020 6:57:42 PM</DTS:VariableValue>
+        DTS:DataType="7">12/7/2020 3:22:08 PM</DTS:VariableValue>
     </DTS:Variable>
     <DTS:Variable
       DTS:CreationName=""

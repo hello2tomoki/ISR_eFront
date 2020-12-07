@@ -37,7 +37,7 @@
           <SSIS:Package SSIS:Name="chSuccessfulCompletionCloseout.dtsx" SSIS:EntryPoint="1" />
           <SSIS:Package SSIS:Name="chUpdateSSISAudit.dtsx" SSIS:EntryPoint="1" />
           <SSIS:Package SSIS:Name="dbo_view_PCO_Tracking.dtsx" SSIS:EntryPoint="1" />
-          <SSIS:Package SSIS:Name="Plymouth_Controller.dtsx" SSIS:EntryPoint="1" />
+          <SSIS:Package SSIS:Name="eFront_Controller.dtsx" SSIS:EntryPoint="1" />
         </SSIS:Packages>
         <SSIS:ConnectionManagers />
         <SSIS:DeploymentInfo>
@@ -1948,16 +1948,16 @@
                 </SSIS:Parameter>
               </SSIS:Parameters>
             </SSIS:PackageMetaData>
-            <SSIS:PackageMetaData SSIS:Name="Plymouth_Controller.dtsx">
+            <SSIS:PackageMetaData SSIS:Name="eFront_Controller.dtsx">
               <SSIS:Properties>
-                <SSIS:Property SSIS:Name="ID">{B6D188ED-79D0-4A89-8B72-FFDB05CCD87C}</SSIS:Property>
-                <SSIS:Property SSIS:Name="Name">Plymouth_Controller</SSIS:Property>
+                <SSIS:Property SSIS:Name="ID">{45EE90B7-59E7-4A6C-8958-6A4D3529DA83}</SSIS:Property>
+                <SSIS:Property SSIS:Name="Name">eFront_Controller</SSIS:Property>
                 <SSIS:Property SSIS:Name="VersionMajor">0</SSIS:Property>
                 <SSIS:Property SSIS:Name="VersionMinor">0</SSIS:Property>
-                <SSIS:Property SSIS:Name="VersionBuild">3</SSIS:Property>
+                <SSIS:Property SSIS:Name="VersionBuild">4</SSIS:Property>
                 <SSIS:Property SSIS:Name="VersionComments">
                 </SSIS:Property>
-                <SSIS:Property SSIS:Name="VersionGUID">{927C9DB4-FC51-4BFD-A027-B1C654C063A4}</SSIS:Property>
+                <SSIS:Property SSIS:Name="VersionGUID">{98D7C93A-4C31-4284-90B4-148390F2DF88}</SSIS:Property>
                 <SSIS:Property SSIS:Name="PackageFormatVersion">8</SSIS:Property>
                 <SSIS:Property SSIS:Name="Description">
                 </SSIS:Property>

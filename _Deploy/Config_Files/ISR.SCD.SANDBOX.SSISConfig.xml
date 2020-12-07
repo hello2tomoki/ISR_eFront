@@ -8,11 +8,9 @@
         <SSISEnvironmentVariable name ="Source_ServerName" type ="string" description ="Enter Source_ServerName" value ="EDMDBP" sensitive ="False" />
         <SSISEnvironmentVariable name ="Utility_InitalCatalog" type ="string" description ="Enter Utility_InitalCatalog" value ="RiskRaw" sensitive ="False" />
         <SSISEnvironmentVariable name ="Utility_ServerName" type ="string" description ="Enter Utility_ServerName" value ="Delta" sensitive ="False" />
-        <SSISEnvironmentVariable name ="A1_Timeseries_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="A2_NonTimeseries_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="A3_NonTimeseries_Effective_Date_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Assign_Disable_Max_CADIS_SYSTEM_UPDATED_Check_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
+        
         <SSISEnvironmentVariable name ="EDM_Dates_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
+        
         <SSISEnvironmentVariable name ="Master_FN_CLASS_STRUCTURE_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
         <SSISEnvironmentVariable name ="Master_FN_FX_RATE_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
         <SSISEnvironmentVariable name ="Master_FN_INDEX_CONSTITUENT_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
