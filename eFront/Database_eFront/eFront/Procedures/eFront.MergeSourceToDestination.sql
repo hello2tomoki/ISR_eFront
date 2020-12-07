@@ -114,10 +114,10 @@ THEN INSERT (
       ,SOURCE.[RowHash]
       ,SOURCE.[TransactionID]
 	  ,SOURCE.[InsertedBy]
-	)
+	);
 --When there is a row that exists in target and same record does not exist in source then delete this record target
-WHEN NOT MATCHED BY SOURCE 
-THEN DELETE; 
+--WHEN NOT MATCHED BY SOURCE 
+--THEN DELETE; 
 
 
 
