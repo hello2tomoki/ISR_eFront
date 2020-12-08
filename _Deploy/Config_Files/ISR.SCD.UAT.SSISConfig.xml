@@ -1,97 +1,33 @@
 <SSISDeployments>
   <SSISDeployment catalog="SSISDB">
     <SSISFolder name="RiskRaw">
-      <SSISEnvironment name="SCD">
+      <SSISEnvironment name="RiskRaw_eFront">
         <SSISEnvironmentVariable name ="Destination_InitalCatalog" type ="string" description ="Enter Destination_InitalCatalog" value ="RiskRaw" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Destination_ServerName" type ="string" description ="Enter Destination_ServerName" value ="Uden" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Source_InitalCatalog" type ="string" description ="Enter Source_InitalCatalog" value ="EDM_PROD_DATASTORE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Source_ServerName" type ="string" description ="Enter Source_ServerName" value ="EDMDBP" sensitive ="False" />
+        <SSISEnvironmentVariable name ="Destination_ServerName" type ="string" description ="Enter Destination_ServerName" value ="Delta" sensitive ="False" />
+        <SSISEnvironmentVariable name ="Source_InitalCatalog" type ="string" description ="Enter Source_InitalCatalog" value ="eFrontPCOTracking" sensitive ="False" />
+        <SSISEnvironmentVariable name ="Source_ServerName" type ="string" description ="Enter Source_ServerName" value ="Plymouth" sensitive ="False" />
         <SSISEnvironmentVariable name ="Utility_InitalCatalog" type ="string" description ="Enter Utility_InitalCatalog" value ="RiskRaw" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Utility_ServerName" type ="string" description ="Enter Utility_ServerName" value ="Uden" sensitive ="False" />
+        <SSISEnvironmentVariable name ="Utility_ServerName" type ="string" description ="Enter Utility_ServerName" value ="Delta" sensitive ="False" />
 
-        <SSISEnvironmentVariable name ="A1_Timeseries_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="A2_NonTimeseries_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="A3_NonTimeseries_Effective_Date_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Assign_Disable_Max_CADIS_SYSTEM_UPDATED_Check_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="EDM_Dates_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_CLASS_STRUCTURE_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_FX_RATE_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_INDEX_CONSTITUENT_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_INDEX_TOTAL_LEVEL_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_INDEX_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_INSTRUMENT_CONSOLIDATED_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_INSTRUMENT_DERIVATIVE_DETAIL_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_INSTRUMENT_FIXED_INCOME_ANALYTICS_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_INSTRUMENT_FIXED_INCOME_DETAIL_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_INSTRUMENT_LOOKTHROUGH_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_INSTRUMENT_RATING_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_INSTRUMENT_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_LIST_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_LIST_VALUE_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_PARTY_CLASSIFICATION_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_PARTY_CONSOLIDATED_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_PARTY_HIERARCHY_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_PARTY_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_PORTFOLIO_CONSOLIDATED_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_PORTFOLIO_IDENTIFIER_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_PORTFOLIO_LOOKTHROUGH_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_PORTFOLIO_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_POSITION_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_FN_PRICE_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Master_Position_DatesLogUpdate_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
+        <SSISEnvironmentVariable name ="eFront_Dates_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
+        <SSISEnvironmentVariable name ="dbo_view_PCO_Tracking_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
         <SSISEnvironmentVariable name ="MDS_Dates_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Position_Count_Log_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
-        <SSISEnvironmentVariable name ="Position_Update_Date_Refresh_V1_Disable" type ="boolean" description =""  value ="FALSE" sensitive ="False" />
 
       </SSISEnvironment>
-      <SSISProject name="SCD_EDM_ETL" deploymentFile="\SCD_EDM_ETL\SCD_EDM_ETL\bin\Development\SCD_EDM_ETL.ispac">
-        <SSISProjectEnvironmentReference environment="SCD">
-          <SSISProjectParameterEnvironmentVariableReference environmentVariable ="Destination_InitalCatalog"  projectParameter ="Destination_InitalCatalog"/>
-          <SSISProjectParameterEnvironmentVariableReference environmentVariable ="Destination_ServerName"  projectParameter ="Destination_ServerName"/>
-          <SSISProjectParameterEnvironmentVariableReference environmentVariable ="Source_InitalCatalog"  projectParameter ="Source_InitalCatalog"/>
-          <SSISProjectParameterEnvironmentVariableReference environmentVariable ="Source_ServerName"  projectParameter ="Source_ServerName"/>
-          <SSISProjectParameterEnvironmentVariableReference environmentVariable ="USE_EDM_Dates"  projectParameter ="USE_EDM_Dates"/>
-          <SSISProjectParameterEnvironmentVariableReference environmentVariable ="USE_MDS_Dates"  projectParameter ="USE_MDS_Dates"/>
-          <SSISProjectParameterEnvironmentVariableReference environmentVariable ="Utility_InitalCatalog"  projectParameter ="Utility_InitalCatalog"/>
-          <SSISProjectParameterEnvironmentVariableReference environmentVariable ="Utility_ServerName"  projectParameter ="Utility_ServerName"/>
+      <SSISProject name="RiskRaw_eFront" deploymentFile="\eFront\RiskRaw_eFront\bin\Development\RiskRaw_eFront.ispac">
+        <SSISProjectEnvironmentReference environment="RiskRaw_eFront">
+          <SSISProjectParameterEnvironmentVariableReference environmentVariable="Destination_InitalCatalog" projectParameter="Destination_InitalCatalog"/>
+          <SSISProjectParameterEnvironmentVariableReference environmentVariable="Destination_ServerName" projectParameter="Destination_ServerName"/>
+          <SSISProjectParameterEnvironmentVariableReference environmentVariable="Source_InitalCatalog" projectParameter="Source_InitalCatalog"/>
+          <SSISProjectParameterEnvironmentVariableReference environmentVariable="Source_ServerName" projectParameter="Source_ServerName"/>
+          <SSISProjectParameterEnvironmentVariableReference environmentVariable="Utility_InitalCatalog" projectParameter="Utility_InitalCatalog"/>
+          <SSISProjectParameterEnvironmentVariableReference environmentVariable="Utility_ServerName" projectParameter="Utility_ServerName"/>
         </SSISProjectEnvironmentReference>
-
-        <SSISProjectPackageEnvironmentReference environment="SCD" pacakgeFile="SCD_EDM_Controller.dtsx">
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "A1_Timeseries_Disable" packageParameter = "A1_Timeseries_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "A2_NonTimeseries_Disable" packageParameter = "A2_NonTimeseries_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "A3_NonTimeseries_Effective_Date_Disable" packageParameter = "A3_NonTimeseries_Effective_Date_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Assign_Disable_Max_CADIS_SYSTEM_UPDATED_Check_Disable" packageParameter = "Assign_Disable_Max_CADIS_SYSTEM_UPDATED_Check_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "EDM_Dates_Disable" packageParameter = "EDM_Dates_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_CLASS_STRUCTURE_V1_Disable" packageParameter = "Master_FN_CLASS_STRUCTURE_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_FX_RATE_V1_Disable" packageParameter = "Master_FN_FX_RATE_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_INDEX_CONSTITUENT_V1_Disable" packageParameter = "Master_FN_INDEX_CONSTITUENT_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_INDEX_TOTAL_LEVEL_V1_Disable" packageParameter = "Master_FN_INDEX_TOTAL_LEVEL_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_INDEX_V1_Disable" packageParameter = "Master_FN_INDEX_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_INSTRUMENT_CONSOLIDATED_V1_Disable" packageParameter = "Master_FN_INSTRUMENT_CONSOLIDATED_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_INSTRUMENT_DERIVATIVE_DETAIL_V1_Disable" packageParameter = "Master_FN_INSTRUMENT_DERIVATIVE_DETAIL_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_INSTRUMENT_FIXED_INCOME_ANALYTICS_V1_Disable" packageParameter = "Master_FN_INSTRUMENT_FIXED_INCOME_ANALYTICS_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_INSTRUMENT_FIXED_INCOME_DETAIL_V1_Disable" packageParameter = "Master_FN_INSTRUMENT_FIXED_INCOME_DETAIL_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_INSTRUMENT_LOOKTHROUGH_V1_Disable" packageParameter = "Master_FN_INSTRUMENT_LOOKTHROUGH_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_INSTRUMENT_RATING_V1_Disable" packageParameter = "Master_FN_INSTRUMENT_RATING_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_INSTRUMENT_V1_Disable" packageParameter = "Master_FN_INSTRUMENT_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_LIST_V1_Disable" packageParameter = "Master_FN_LIST_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_LIST_VALUE_V1_Disable" packageParameter = "Master_FN_LIST_VALUE_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_PARTY_CLASSIFICATION_V1_Disable" packageParameter = "Master_FN_PARTY_CLASSIFICATION_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_PARTY_CONSOLIDATED_V1_Disable" packageParameter = "Master_FN_PARTY_CONSOLIDATED_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_PARTY_HIERARCHY_V1_Disable" packageParameter = "Master_FN_PARTY_HIERARCHY_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_PARTY_V1_Disable" packageParameter = "Master_FN_PARTY_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_PORTFOLIO_CONSOLIDATED_V1_Disable" packageParameter = "Master_FN_PORTFOLIO_CONSOLIDATED_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_PORTFOLIO_IDENTIFIER_V1_Disable" packageParameter = "Master_FN_PORTFOLIO_IDENTIFIER_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_PORTFOLIO_LOOKTHROUGH_V1_Disable" packageParameter = "Master_FN_PORTFOLIO_LOOKTHROUGH_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_PORTFOLIO_V1_Disable" packageParameter = "Master_FN_PORTFOLIO_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_POSITION_V1_Disable" packageParameter = "Master_FN_POSITION_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_FN_PRICE_V1_Disable" packageParameter = "Master_FN_PRICE_V1_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Master_Position_DatesLogUpdate_Disable" packageParameter = "Master_Position_DatesLogUpdate_Disable"/>
+        <SSISProjectPackageEnvironmentReference environment="RiskRaw_eFront" pacakgeFile="eFront_Controller.dtsx">
+          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "eFront_Dates_Disable" packageParameter = "eFront_Dates_Disable"/>
+          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "dbo_view_PCO_Tracking_Disable" packageParameter = "dbo_view_PCO_Tracking_Disable"/>
           <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "MDS_Dates_Disable" packageParameter = "MDS_Dates_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Position_Count_Log_Disable" packageParameter = "Position_Count_Log_Disable"/>
-          <SSISProjectPackageParameterEnvironmentVariableReference environmentVariable = "Position_Update_Date_Refresh_V1_Disable" packageParameter = "Position_Update_Date_Refresh_V1_Disable"/>
         </SSISProjectPackageEnvironmentReference>
-
       </SSISProject>
     </SSISFolder>
   </SSISDeployment>
