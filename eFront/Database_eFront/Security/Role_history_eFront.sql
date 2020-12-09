@@ -1,1 +1,1 @@
-﻿CREATE ROLE [history_eFront];
+﻿--CREATE ROLE [history_eFront];

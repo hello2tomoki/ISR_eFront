@@ -1,2 +1,2 @@
-﻿CREATE ROLE [stg_eFront];
+﻿--CREATE ROLE [stg_eFront];
 

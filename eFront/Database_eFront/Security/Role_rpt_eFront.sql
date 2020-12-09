@@ -1,1 +1,1 @@
-﻿CREATE ROLE [rpt_eFront];
+﻿--CREATE ROLE [rpt_eFront];

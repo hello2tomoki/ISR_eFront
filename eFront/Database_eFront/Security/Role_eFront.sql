@@ -1,1 +1,1 @@
-﻿CREATE ROLE [eFront];
+﻿--CREATE ROLE [eFront];
