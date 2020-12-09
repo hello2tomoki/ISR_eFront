@@ -76,7 +76,7 @@
     <Build Include="rpt_eFront\Views\rpt_eFront.dbo_view_PCO_Tracking.sql" />
   </ItemGroup>
   <ItemGroup>
-    <PostDeploy Include="Scripts\Post-Deployment\Script.PostDeployment2.sql" />
+    <PostDeploy Include="Scripts\Post-Deployment\Script.PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Database.publish.xml">
