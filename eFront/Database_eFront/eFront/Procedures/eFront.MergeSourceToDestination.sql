@@ -1,4 +1,5 @@
 ﻿
+-- exec [eFront].[MergeSourceToDestination]
 
 CREATE PROCEDURE [eFront].[MergeSourceToDestination]
 
@@ -43,10 +44,13 @@ USING ( select [Program]
 					+ '|' + coalesce(cast([BCI Vehicle Size] as varchar(500)),'') 
 					+ '|' + coalesce(cast([Aggregate Size] as varchar(500)),'') 
 					--+ '|' + coalesce(cast([effectiveDate] as varchar(500)),'') 
-					+ '|' + coalesce(cast([TransactionID] as varchar(500)),'') 
+					--+ '|' + coalesce(cast([TransactionID] as varchar(500)),'') 
 					) AS RowHash
 		,[TransactionID]
 		,InsertedBy
+		,[LineageTMST]
+		,[LineageID]
+
 from [stg_eFront].[dbo_view_PCO_Tracking]
  ) AS SOURCE 
 
@@ -93,6 +97,9 @@ THEN INSERT (
       ,[RowHash]
       ,[TransactionID]
 	  ,[InsertedBy]
+	  ,[LineageTMST]
+	  ,[LineageID]
+
 ) VALUES (
 	   SOURCE.[Program]
       ,SOURCE.[Investment Type]
@@ -114,10 +121,27 @@ THEN INSERT (
       ,SOURCE.[RowHash]
       ,SOURCE.[TransactionID]
 	  ,SOURCE.[InsertedBy]
-	)
+	  ,SOURCE.[LineageTMST]
+	  ,SOURCE.[LineageID]
+
+	);
 --When there is a row that exists in target and same record does not exist in source then delete this record target
-WHEN NOT MATCHED BY SOURCE 
-THEN DELETE; 
+--WHEN NOT MATCHED BY SOURCE and TARGET.effectivedate = SOURCE.effectivedate 
+--THEN DELETE; 
+
+--Delete will be managed through custom code
+--if data is pulled for one date and merged into main table, this process will delete all data other than the current date in process from main table, 
+--need to avoid this behaviour
+
+
+--Delele from main table will be performed on only records with in dates in process
+--delete ef 
+--from eFront.dbo_view_PCO_Tracking ef
+--left join  stg_eFront.dbo_view_PCO_Tracking st
+--		on	ef.id				= st.id and
+--			ef.effectiveDate	= st.effectiveDate
+--where st.effectiveDate is not null
+
 
 
 

@@ -30,7 +30,7 @@ PRIMARY KEY CLUSTERED
 	[dbo_view_PCO_Tracking_Key] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [eFront],
 	PERIOD FOR SYSTEM_TIME ([ValidFrom_utc], [ValidTo_utc])
-) 
+) TEXTIMAGE_ON [eFront]
 WITH
 (
 SYSTEM_VERSIONING = ON ( HISTORY_TABLE = [History_eFront].[dbo_view_PCO_Tracking] )
@@ -38,6 +38,9 @@ SYSTEM_VERSIONING = ON ( HISTORY_TABLE = [History_eFront].[dbo_view_PCO_Tracking
 GO
 
 ALTER TABLE [eFront].[dbo_view_PCO_Tracking] ADD  DEFAULT (getdate()) FOR [LineageTMST]
+GO
+
+ALTER TABLE [eFront].[dbo_view_PCO_Tracking] ADD  DEFAULT (getdate()) FOR [InsertTMST]
 GO
 
 ALTER TABLE [eFront].[dbo_view_PCO_Tracking] ADD  DEFAULT (getdate()) FOR [ValidFrom_utc]

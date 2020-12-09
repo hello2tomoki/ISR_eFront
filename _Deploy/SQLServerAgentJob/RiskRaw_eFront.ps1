@@ -8,15 +8,16 @@ Write-Output ""
 Write-Output "*************** Beginning SQL Server Agent Job Deployment Process ***************"
 Write-Output ""
 
-$JobName              = 'SCD_RiskRaw'
-$JobDescription       = 'Loads SCD_Simpcorp data'
+$JobName              = 'RiskRaw_eFront'
+$JobDescription       = 'Load PCO Tracking'
 $JobCategory          = 'InfoService'
 $StepId               = 0
 
 #IMPORT MODULE USED FOR THIS PROJECT
 Import-Module dbatools
 #Import-Module .\powershell_functions\SQLServerAgent_Functions.psm1
-Import-Module .\Import-PowershellFunctions.psm1 -Force
+
+Import-Module  .\Import-PowershellFunctions.psm1 -Force
 
 #REPLACE WITH THIS IF YOU WANT TO KEEP THE EXISTING JOB
 New-SQLAgentJob                                                                           `
@@ -32,12 +33,12 @@ New-SQLAgentJobSSISPackageStep                                                  
               -SqlInstance            $DeploymentServerName                               `
               -Job                    $JobName                                            `
               -StepId                 $StepId                                             `
-              -StepName               'SCD_RiskRaw Controller'                       `
+              -StepName               'RiskRaw eFront Controller'                         `
               -ProxyName              'SSIS_Proxy'                                        `
               -folderName             'RiskRaw'                                           `
-              -projectName            'SCD_EDM_ETL_RiskRaw'                                `
-              -masterPackage          'SCD_EDM_Controller.dtsx'                    `
-              -environmentName        'SCD'                                              `
+              -projectName            'RiskRaw_eFront'                                    `
+              -masterPackage          'eFront_Controller.dtsx'                           `
+              -environmentName        'RiskRaw_eFront'                                               `
               -catalogName            'SSISDB'
                                
 
