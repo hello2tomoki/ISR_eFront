@@ -1,1 +1,1 @@
-﻿Execute SCD.sp_refreshViews_Schema  'rpt_SCD'
+﻿Execute eFront.sp_refreshViews_Schema  'rpt_eFront'
