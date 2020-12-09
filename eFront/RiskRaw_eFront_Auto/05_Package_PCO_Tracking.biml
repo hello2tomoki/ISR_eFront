@@ -902,6 +902,7 @@
                                 <Columns>
                                   <Column Name="TransactionID" DataType="Int32">@[$Package::EXEC_PARENT_ID]</Column>
                                   <Column Name="LineageID" DataType="Int32">@[User::ExecAuditlog_ExecID]</Column>
+                                  <Column Name="LineageTMST" DataType="Date">@[User::SSISAudit_LineageTMST]</Column>
                                 </Columns>
                               </DerivedColumns>
                               <OleDbDestination Name="OLE DB Destination" ConnectionName="Destination">

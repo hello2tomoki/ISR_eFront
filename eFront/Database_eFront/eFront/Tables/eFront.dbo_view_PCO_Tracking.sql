@@ -40,6 +40,9 @@ GO
 ALTER TABLE [eFront].[dbo_view_PCO_Tracking] ADD  DEFAULT (getdate()) FOR [LineageTMST]
 GO
 
+ALTER TABLE [eFront].[dbo_view_PCO_Tracking] ADD  DEFAULT (getdate()) FOR [InsertTMST]
+GO
+
 ALTER TABLE [eFront].[dbo_view_PCO_Tracking] ADD  DEFAULT (getdate()) FOR [ValidFrom_utc]
 GO
 
