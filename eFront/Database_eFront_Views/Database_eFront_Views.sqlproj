@@ -71,7 +71,6 @@
     <Build Include="Security\rpt_eFront.sql" />
     <Build Include="Scripts\Post-Deployment\_GrantAuditPrivilegesServiceAccount.sql" />
     <Build Include="Scripts\Post-Deployment\AlterDbSizeGrowth.sql" />
-    <Build Include="Scripts\Post-Deployment\GrantAuditPrivileges.sql" />
     <Build Include="rpt_eFront\Views\rpt_eFront.dbo_view_PCO_Tracking.sql" />
   </ItemGroup>
   <ItemGroup>

@@ -12,5 +12,4 @@ Post-Deployment Script Template
 */
 
 :r .\sp_refreshViews_Schema.sql
-:r .\GrantAuditPrivileges.sql
 :r .\_GrantAuditPrivilegesServiceAccount.sql
