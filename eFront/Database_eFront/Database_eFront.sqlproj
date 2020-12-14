@@ -77,9 +77,6 @@
     <Build Include="Storage\eFront FileGroup File.sql" />
     <Build Include="Storage\eFront FileGroup.sql" />
     <None Include="Scripts\Pre-Deployment\Disable_SystemVersioned_Table.sql" />
-    <Build Include="Security\Role_eFront.sql" />
-    <Build Include="Security\Role_stg_eFront.sql" />
-    <Build Include="Security\Role_history_eFront.sql" />
     <Build Include="Security\eFront.sql" />
     <Build Include="Security\stg_eFront.sql" />
     <Build Include="Security\history_eFront.sql" />
@@ -90,7 +87,6 @@
     </Build>
     <Build Include="stg_eFront\Tables\stg_eFront.dbo_view_PCO_Tracking.sql" />
     <Build Include="eFront\Tables\eFront.dbo_view_PCO_Tracking.sql" />
-    <Build Include="Security\Role_rpt_eFront.sql" />
     <Build Include="eFront\Procedures\eFront.MergeSourceToDestination.sql" />
   </ItemGroup>
   <ItemGroup>
