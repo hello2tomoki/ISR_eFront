@@ -68,7 +68,6 @@
     <Folder Include="rpt_eFront\Views" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Security\Role_rpt_eFront.sql" />
     <Build Include="Security\rpt_eFront.sql" />
     <Build Include="Scripts\Post-Deployment\_GrantAuditPrivilegesServiceAccount.sql" />
     <Build Include="Scripts\Post-Deployment\AlterDbSizeGrowth.sql" />
