@@ -10,3 +10,7 @@ GO;
 ALTER DATABASE [$(DatabaseName)]
 	ADD FILEGROUP [eFront];
 GO;
+
+ALTER DATABASE [$(DatabaseName)]
+	ADD FILEGROUP [History_eFront];
+GO;
