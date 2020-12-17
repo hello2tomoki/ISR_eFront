@@ -1,0 +1,30 @@
+﻿CREATE TABLE [history_eFront].[dbo_view_PCO_Tracking](
+	[dbo_view_PCO_Tracking_Key] [int] NOT NULL,
+	[Program] [nvarchar](510) NULL,
+	[Investment Type] [nvarchar](510) NULL,
+	[Fund] [nvarchar](510) NULL,
+	[Company] [nvarchar](510) NULL,
+	[Industry] [nvarchar](510) NULL,
+	[Industry GICS] [nvarchar](510) NULL,
+	[Geography] [nvarchar](510) NULL,
+	[Original country] [nvarchar](510) NULL,
+	[Fund Currency] [nvarchar](510) NULL,
+	[Company Currency] [nvarchar](510) NULL,
+	[Current Valuation] [float] NULL,
+	[BCI CAD Ownership] [float] NULL,
+	[BCI Ownership %] [float] NULL,
+	[ID] [nvarchar](510) NULL,
+	[BCI Vehicle Size] [float] NULL,
+	[Aggregate Size] [float] NULL,
+	[effectiveDate] [date] NULL,
+	[TransactionID] [int] NULL,
+	[RowHash] [varbinary](max) NULL,
+	[LineageTMST] [datetime] NULL,
+	[LineageID] [int] NULL,
+	[InsertTMST] [datetime] NULL,
+	[InsertedBy] [sysname] NOT NULL,
+	[ValidFrom_utc] [datetime2](3) NOT NULL,
+	[ValidTo_utc] [datetime2](3) NOT NULL
+) ON [History_eFront] TEXTIMAGE_ON [History_eFront]
+
+GO

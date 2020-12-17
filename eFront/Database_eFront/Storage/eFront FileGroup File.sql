@@ -19,3 +19,11 @@ ALTER DATABASE [$(DatabaseName)]
 		,SIZE = 50 MB, FILEGROWTH = 5 MB
 	) TO FILEGROUP [eFront];
 GO;
+ALTER DATABASE [$(DatabaseName)]
+	ADD FILE
+	(
+		NAME = [History_eFront],
+		FILENAME = '$(DefaultDataPath)\$(DatabaseName)_History_eFront.ndf'
+		,SIZE = 50 MB, FILEGROWTH = 5 MB
+	) TO FILEGROUP [eFront];
+GO;
