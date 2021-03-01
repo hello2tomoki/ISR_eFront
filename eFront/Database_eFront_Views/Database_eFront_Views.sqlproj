@@ -97,12 +97,6 @@
     </ArtifactReference>
   </ItemGroup>
   <ItemGroup>
-    <SqlCmdVariable Include="Database_eFront">
-      <DefaultValue>Database_eFront</DefaultValue>
-      <Value>$(SqlCmdVar__1)</Value>
-    </SqlCmdVariable>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Database_eFront\Database_eFront.sqlproj">
       <Name>Database_eFront</Name>
       <Project>{04035fd7-12ea-49de-9a40-8611b7f0c019}</Project>
