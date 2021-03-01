@@ -3,6 +3,7 @@
 	[Program] [nvarchar](510) NULL,
 	[Investment Type] [nvarchar](510) NULL,
 	[Fund] [nvarchar](510) NULL,
+	[Fund Manager] [nvarchar](510) NULL,
 	[Company] [nvarchar](510) NULL,
 	[Industry] [nvarchar](510) NULL,
 	[Industry GICS] [nvarchar](510) NULL,

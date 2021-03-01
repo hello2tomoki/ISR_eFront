@@ -12,6 +12,7 @@ MERGE [eFront].[dbo_view_PCO_Tracking] AS TARGET
 USING ( select [Program]
       ,[Investment Type]
       ,[Fund]
+	  ,[Fund Manager]
       ,[Company]
       ,[Industry]
       ,[Industry GICS]
@@ -30,6 +31,7 @@ USING ( select [Program]
 							coalesce(cast([Program] as varchar(500)),'')
   					+ '|' + coalesce(cast([Investment Type] as varchar(500)),'')
 					+ '|' + coalesce(cast([Fund] as varchar(500)),'')
+					+ '|' + coalesce(cast([Fund Manager] as varchar(500)),'')
 					+ '|' + coalesce(cast([Company] as varchar(500)),'') 
 					+ '|' + coalesce(cast([Industry] as varchar(500)),'') 
 					+ '|' + coalesce(cast([Industry GICS] as varchar(500)),'') 
@@ -61,6 +63,7 @@ THEN UPDATE SET
 	   TARGET.[Program]				= SOURCE.[Program]
       ,TARGET.[Investment Type]		= SOURCE.[Investment Type]
       ,TARGET.[Fund]				= SOURCE.[Fund]
+      ,TARGET.[Fund Manager]		= SOURCE.[Fund Manager]
       ,TARGET.[Company]				= SOURCE.[Company]
       ,TARGET.[Industry]			= SOURCE.[Industry]
       ,TARGET.[Industry GICS]		= SOURCE.[Industry GICS]
@@ -80,6 +83,7 @@ THEN INSERT (
 	   [Program]
       ,[Investment Type]
       ,[Fund]
+	  ,[Fund Manager]
       ,[Company]
       ,[Industry]
       ,[Industry GICS]
@@ -104,6 +108,7 @@ THEN INSERT (
 	   SOURCE.[Program]
       ,SOURCE.[Investment Type]
       ,SOURCE.[Fund]
+	  ,SOURCE.[Fund Manager]
       ,SOURCE.[Company]
       ,SOURCE.[Industry]
       ,SOURCE.[Industry GICS]
