@@ -7,11 +7,11 @@
   DTS:CreatorName="spalla"
   DTS:DTSID="{3162CBC1-FF24-4FFF-A1B2-92397329858E}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="15.0.2000.68"
+  DTS:LastModifiedProductVersion="15.0.1300.375"
   DTS:LocaleID="4105"
   DTS:ObjectName="chUpdateSSISAudit"
   DTS:ProtectionLevel="0"
-  DTS:VersionGUID="{E3B968C9-ECAD-4575-9105-D400294B77A2}"
+  DTS:VersionGUID="{01ED04F5-1BEA-46F3-9F44-7D73973843E4}"
   DTS:VersionMajor="0">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>

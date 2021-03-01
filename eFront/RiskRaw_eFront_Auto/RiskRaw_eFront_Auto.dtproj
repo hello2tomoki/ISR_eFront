@@ -2143,14 +2143,14 @@
             </SSIS:PackageMetaData>
             <SSIS:PackageMetaData SSIS:Name="dbo_view_PCO_Tracking.dtsx">
               <SSIS:Properties>
-                <SSIS:Property SSIS:Name="ID">{147474E7-E5B6-40D7-A51A-C6814E1DBF0A}</SSIS:Property>
+                <SSIS:Property SSIS:Name="ID">{B0EF8A09-04D0-4AAB-974B-9F44618155DC}</SSIS:Property>
                 <SSIS:Property SSIS:Name="Name">dbo_view_PCO_Tracking</SSIS:Property>
                 <SSIS:Property SSIS:Name="VersionMajor">0</SSIS:Property>
                 <SSIS:Property SSIS:Name="VersionMinor">0</SSIS:Property>
                 <SSIS:Property SSIS:Name="VersionBuild">0</SSIS:Property>
                 <SSIS:Property SSIS:Name="VersionComments">
                 </SSIS:Property>
-                <SSIS:Property SSIS:Name="VersionGUID">{2807653B-B65E-4661-8088-8DAC75C9B213}</SSIS:Property>
+                <SSIS:Property SSIS:Name="VersionGUID">{3D6B0331-F98B-456D-9640-269A8B094F60}</SSIS:Property>
                 <SSIS:Property SSIS:Name="PackageFormatVersion">8</SSIS:Property>
                 <SSIS:Property SSIS:Name="Description">
                 </SSIS:Property>
@@ -2159,7 +2159,7 @@
               <SSIS:Parameters>
                 <SSIS:Parameter SSIS:Name="Assign_NonTimeseries_Effective_Date">
                   <SSIS:Properties>
-                    <SSIS:Property SSIS:Name="ID">{7670E97B-51D5-47D5-9839-C343A29FC5A0}</SSIS:Property>
+                    <SSIS:Property SSIS:Name="ID">{DC7D24B7-B1FD-4005-B9A8-E1605C3BDA12}</SSIS:Property>
                     <SSIS:Property SSIS:Name="CreationName">
                     </SSIS:Property>
                     <SSIS:Property SSIS:Name="Description">
@@ -2173,7 +2173,7 @@
                 </SSIS:Parameter>
                 <SSIS:Parameter SSIS:Name="EXEC_PARENT_ID">
                   <SSIS:Properties>
-                    <SSIS:Property SSIS:Name="ID">{BB97A484-1DFC-4333-9FFB-666011549216}</SSIS:Property>
+                    <SSIS:Property SSIS:Name="ID">{D2F01425-F005-4DE0-BC2F-3F5999028538}</SSIS:Property>
                     <SSIS:Property SSIS:Name="CreationName">
                     </SSIS:Property>
                     <SSIS:Property SSIS:Name="Description">
@@ -2187,7 +2187,7 @@
                 </SSIS:Parameter>
                 <SSIS:Parameter SSIS:Name="Param_BatchID">
                   <SSIS:Properties>
-                    <SSIS:Property SSIS:Name="ID">{AC78903E-A50C-4AE0-9CC0-30404E5D52C3}</SSIS:Property>
+                    <SSIS:Property SSIS:Name="ID">{422DC0A0-E023-40E3-9A32-CD4AD53C6937}</SSIS:Property>
                     <SSIS:Property SSIS:Name="CreationName">
                     </SSIS:Property>
                     <SSIS:Property SSIS:Name="Description">
@@ -2510,7 +2510,7 @@
         <ConnectionProviderMappings />
         <ConnectionSecurityMappings />
         <DatabaseStorageLocations />
-        <TargetServerVersion>SQLServer2017</TargetServerVersion>
+        <TargetServerVersion>SQLServer2019</TargetServerVersion>
         <ParameterConfigurationValues>
           <ConfigurationSetting>
             <Id>LastModifiedTime</Id>

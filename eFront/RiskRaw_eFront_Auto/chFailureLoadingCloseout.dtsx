@@ -7,11 +7,11 @@
   DTS:CreatorName="spalla"
   DTS:DTSID="{41556059-3BB3-4875-80D7-725D80B9B539}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="15.0.2000.68"
+  DTS:LastModifiedProductVersion="15.0.1300.375"
   DTS:LocaleID="4105"
   DTS:ObjectName="chFailureLoadingCloseout"
   DTS:ProtectionLevel="0"
-  DTS:VersionGUID="{AD9C5651-370F-4831-BB53-BB98687D82DB}"
+  DTS:VersionGUID="{21EEBC35-4928-4FBF-90E0-6EBAB2BF7D33}"
   DTS:VersionMajor="0">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
