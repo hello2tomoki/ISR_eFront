@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.1022
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{159641D6-6404-4A2A-AE62-294DE0FE8301}") = "RiskRaw_eFront", "RiskRaw_eFront\RiskRaw_eFront.dtproj", "{FE617B7F-BF73-44D2-A9C1-D514918D99C3}"
 EndProject

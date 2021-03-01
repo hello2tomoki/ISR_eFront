@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
   DTS:CreationDate="11/29/2019 10:52:40 AM"
@@ -7,13 +7,13 @@
   DTS:CreatorName="BCIMC\spalla"
   DTS:DTSID="{A504859A-8372-41DA-8EAB-C3230D079B36}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="15.0.2000.128"
+  DTS:LastModifiedProductVersion="15.0.1300.375"
   DTS:LocaleID="1033"
   DTS:ObjectName="raw_eFront_to_Risk_Metatadata_Update"
   DTS:PackageType="5"
   DTS:ProtectionLevel="0"
   DTS:VersionBuild="126"
-  DTS:VersionGUID="{69DC0FFF-4383-4D9B-B43A-F8913D4B4EBD}">
+  DTS:VersionGUID="{63C67657-D78E-406F-8B0A-A3F3C53EC010}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>

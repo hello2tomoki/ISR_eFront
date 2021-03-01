@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
   DTS:CreationDate="12/3/2020 6:37:26 PM"
@@ -7,12 +7,12 @@
   DTS:CreatorName="malam"
   DTS:DTSID="{45EE90B7-59E7-4A6C-8958-6A4D3529DA83}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="15.0.2000.128"
+  DTS:LastModifiedProductVersion="15.0.1300.375"
   DTS:LocaleID="1033"
   DTS:ObjectName="eFront_Controller"
   DTS:ProtectionLevel="0"
   DTS:VersionBuild="4"
-  DTS:VersionGUID="{98D7C93A-4C31-4284-90B4-148390F2DF88}"
+  DTS:VersionGUID="{1526D53C-AFC7-42FD-976B-11FB408CFC5F}"
   DTS:VersionMajor="0">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
@@ -418,7 +418,7 @@
       DTS:Namespace="User"
       DTS:ObjectName="SSISAudit_LineageTMST">
       <DTS:VariableValue
-        DTS:DataType="7">12/7/2020 3:22:08 PM</DTS:VariableValue>
+        DTS:DataType="7">3/1/2021 12:18:13 PM</DTS:VariableValue>
     </DTS:Variable>
     <DTS:Variable
       DTS:CreationName=""

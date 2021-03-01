@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
   DTS:CreationDate="12/6/2019 7:19:22 PM"
@@ -7,11 +7,11 @@
   DTS:CreatorName="spalla"
   DTS:DTSID="{68694612-1DF6-4B6B-946B-09F18FB357C1}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="15.0.2000.68"
+  DTS:LastModifiedProductVersion="15.0.1300.375"
   DTS:LocaleID="4105"
   DTS:ObjectName="chCompleteExecAuditLog"
   DTS:ProtectionLevel="0"
-  DTS:VersionGUID="{8A409B8D-8D16-4500-8A6A-003CD3FFC443}"
+  DTS:VersionGUID="{3CD01ACF-4141-4307-9C00-D0FDB976B9B8}"
   DTS:VersionMajor="0">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>

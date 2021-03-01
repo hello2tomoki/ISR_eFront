@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <DeploymentModel>Project</DeploymentModel>
-  <ProductVersion>15.0.2000.128</ProductVersion>
+  <ProductVersion>15.0.1300.375</ProductVersion>
   <SchemaVersion>9.0.1.0</SchemaVersion>
   <State>$base64$PFNvdXJjZUNvbnRyb2xJbmZvIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOmRkbDI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDAzL2VuZ2luZS8yIiB4bWxuczpkZGwyXzI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDAzL2VuZ2luZS8yLzIiIHhtbG5zOmRkbDEwMF8xMDA9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDA4L2VuZ2luZS8xMDAvMTAwIiB4bWxuczpkZGwyMDA9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDEwL2VuZ2luZS8yMDAiIHhtbG5zOmRkbDIwMF8yMDA9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDEwL2VuZ2luZS8yMDAvMjAwIiB4bWxuczpkZGwzMDA9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDExL2VuZ2luZS8zMDAiIHhtbG5zOmRkbDMwMF8zMDA9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDExL2VuZ2luZS8zMDAvMzAwIiB4bWxuczpkZGw0MDA9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDEyL2VuZ2luZS80MDAiIHhtbG5zOmRkbDQwMF80MDA9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDEyL2VuZ2luZS80MDAvNDAwIiB4bWxuczpkZGw1MDA9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDEzL2VuZ2luZS81MDAiIHhtbG5zOmRkbDUwMF81MDA9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vYW5hbHlzaXNzZXJ2aWNlcy8yMDEzL2VuZ2luZS81MDAvNTAwIiB4bWxuczpkd2Q9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vRGF0YVdhcmVob3VzZS9EZXNpZ25lci8xLjAiPg0KICA8RW5hYmxlZD5mYWxzZTwvRW5hYmxlZD4NCiAgPFByb2plY3ROYW1lPjwvUHJvamVjdE5hbWU+DQogIDxBdXhQYXRoPjwvQXV4UGF0aD4NCiAgPExvY2FsUGF0aD48L0xvY2FsUGF0aD4NCiAgPFByb3ZpZGVyPjwvUHJvdmlkZXI+DQo8L1NvdXJjZUNvbnRyb2xJbmZvPg==</State>
   <Database>
@@ -1890,14 +1890,14 @@
             </SSIS:PackageMetaData>
             <SSIS:PackageMetaData SSIS:Name="dbo_view_PCO_Tracking.dtsx">
               <SSIS:Properties>
-                <SSIS:Property SSIS:Name="ID">{EC581037-902C-491A-AE01-BEBF15728036}</SSIS:Property>
+                <SSIS:Property SSIS:Name="ID">{DF91B977-AC6B-4C6E-BEAB-5411F951AA37}</SSIS:Property>
                 <SSIS:Property SSIS:Name="Name">dbo_view_PCO_Tracking</SSIS:Property>
                 <SSIS:Property SSIS:Name="VersionMajor">0</SSIS:Property>
                 <SSIS:Property SSIS:Name="VersionMinor">0</SSIS:Property>
                 <SSIS:Property SSIS:Name="VersionBuild">0</SSIS:Property>
                 <SSIS:Property SSIS:Name="VersionComments">
                 </SSIS:Property>
-                <SSIS:Property SSIS:Name="VersionGUID">{94FA3D3A-E4E1-4480-8A7F-A88331637F2B}</SSIS:Property>
+                <SSIS:Property SSIS:Name="VersionGUID">{C3F0B1EE-D78D-42A5-92F7-68835839F969}</SSIS:Property>
                 <SSIS:Property SSIS:Name="PackageFormatVersion">8</SSIS:Property>
                 <SSIS:Property SSIS:Name="Description">
                 </SSIS:Property>
@@ -1906,7 +1906,7 @@
               <SSIS:Parameters>
                 <SSIS:Parameter SSIS:Name="Assign_NonTimeseries_Effective_Date">
                   <SSIS:Properties>
-                    <SSIS:Property SSIS:Name="ID">{F595869A-9F50-44E4-A369-691EFAADB09A}</SSIS:Property>
+                    <SSIS:Property SSIS:Name="ID">{D937D5DE-C383-408D-BFFD-FB32C9B3D883}</SSIS:Property>
                     <SSIS:Property SSIS:Name="CreationName">
                     </SSIS:Property>
                     <SSIS:Property SSIS:Name="Description">
@@ -1920,7 +1920,7 @@
                 </SSIS:Parameter>
                 <SSIS:Parameter SSIS:Name="EXEC_PARENT_ID">
                   <SSIS:Properties>
-                    <SSIS:Property SSIS:Name="ID">{56923DB1-71AB-48C2-AC5E-1EC9BE04D202}</SSIS:Property>
+                    <SSIS:Property SSIS:Name="ID">{F01BBEA6-1D20-4A06-912C-F7C769EA5C81}</SSIS:Property>
                     <SSIS:Property SSIS:Name="CreationName">
                     </SSIS:Property>
                     <SSIS:Property SSIS:Name="Description">
@@ -1934,7 +1934,7 @@
                 </SSIS:Parameter>
                 <SSIS:Parameter SSIS:Name="Param_BatchID">
                   <SSIS:Properties>
-                    <SSIS:Property SSIS:Name="ID">{B72572AD-58B0-4A56-A67A-B6FA4CC5D82B}</SSIS:Property>
+                    <SSIS:Property SSIS:Name="ID">{E02C3B35-4020-4D77-BF10-1B13A5B3B399}</SSIS:Property>
                     <SSIS:Property SSIS:Name="CreationName">
                     </SSIS:Property>
                     <SSIS:Property SSIS:Name="Description">
@@ -1972,7 +1972,7 @@
                     <SSIS:Property SSIS:Name="IncludeInDebugDump">0</SSIS:Property>
                     <SSIS:Property SSIS:Name="Required">0</SSIS:Property>
                     <SSIS:Property SSIS:Name="Sensitive">0</SSIS:Property>
-                    <SSIS:Property SSIS:Name="Value">data source=Delta;initial catalog=Sandbox3;provider=SQLNCLI11.1;integrated security=SSPI;auto translate=False;</SSIS:Property>
+                    <SSIS:Property SSIS:Name="Value">data source=Delta;initial catalog=Sandbox2;provider=SQLNCLI11.1;integrated security=SSPI;auto translate=False;</SSIS:Property>
                     <SSIS:Property SSIS:Name="DataType">18</SSIS:Property>
                   </SSIS:Properties>
                 </SSIS:Parameter>
@@ -2148,7 +2148,7 @@
                     <SSIS:Property SSIS:Name="IncludeInDebugDump">0</SSIS:Property>
                     <SSIS:Property SSIS:Name="Required">0</SSIS:Property>
                     <SSIS:Property SSIS:Name="Sensitive">0</SSIS:Property>
-                    <SSIS:Property SSIS:Name="Value">data source=Delta;initial catalog=Sandbox3;provider=SQLNCLI11.1;integrated security=SSPI;auto translate=False;</SSIS:Property>
+                    <SSIS:Property SSIS:Name="Value">data source=Delta;initial catalog=Sandbox2;provider=SQLNCLI11.1;integrated security=SSPI;auto translate=False;</SSIS:Property>
                     <SSIS:Property SSIS:Name="DataType">18</SSIS:Property>
                   </SSIS:Properties>
                 </SSIS:Parameter>
@@ -2228,13 +2228,7 @@
         <ConnectionProviderMappings />
         <ConnectionSecurityMappings />
         <DatabaseStorageLocations />
-        <TargetServerVersion>SQLServer2017</TargetServerVersion>
-        <AzureMode>false</AzureMode>
-        <LinkedAzureTenantId />
-        <LinkedAzureAccountId />
-        <LinkedAzureSSISIR />
-        <LinkedAzureStorage />
-        <RemoteExecutionFolder />
+        <TargetServerVersion>SQLServer2019</TargetServerVersion>
         <ParameterConfigurationValues>
           <ConfigurationSetting>
             <Id>LastModifiedTime</Id>

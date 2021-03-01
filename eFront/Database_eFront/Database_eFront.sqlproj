@@ -88,8 +88,8 @@
     </Build>
     <Build Include="stg_eFront\Tables\stg_eFront.dbo_view_PCO_Tracking.sql" />
     <Build Include="eFront\Tables\eFront.dbo_view_PCO_Tracking.sql" />
-    <Build Include="eFront\Procedures\eFront.MergeSourceToDestination.sql" />
     <Build Include="History_eFront\History_eFront.dbo_view_PCO_Tracking.sql" />
+    <Build Include="eFront\Procedures\eFront.MergeSourceToDestination.sql" />
   </ItemGroup>
   <ItemGroup>
     <PreDeploy Include="Scripts\Pre-Deployment\Script.PreDeployment.sql" />

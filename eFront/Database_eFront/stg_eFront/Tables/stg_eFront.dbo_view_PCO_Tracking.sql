@@ -2,6 +2,7 @@
     [Program]           NVARCHAR (510) NULL,
     [Investment Type]   NVARCHAR (510) NULL,
     [Fund]              NVARCHAR (510) NULL,
+    [Fund Manager]      NVARCHAR (510) NULL,
     [Company]           NVARCHAR (510) NULL,
     [Industry]          NVARCHAR (510) NULL,
     [Industry GICS]     NVARCHAR (510) NULL,
