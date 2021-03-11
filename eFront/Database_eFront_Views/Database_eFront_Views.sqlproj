@@ -36,7 +36,7 @@
     <DefineTrace>true</DefineTrace>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <SqlTargetName>Risk.DataWarehouse.RiskRaw.SCD_Views</SqlTargetName>
+    <SqlTargetName>Risk.DataWarehouse.RiskRaw.eFront_Views</SqlTargetName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Output\</OutputPath>
@@ -49,7 +49,7 @@
     <DefineTrace>true</DefineTrace>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <SqlTargetName>Risk.DataWarehouse.RiskRaw.SCD_Views</SqlTargetName>
+    <SqlTargetName>Risk.DataWarehouse.RiskRaw.eFront_Views</SqlTargetName>
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
